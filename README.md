@@ -1,5 +1,3 @@
-![image](https://user-images.githubusercontent.com/74857364/147022046-4d1a2e2a-db51-49a8-b485-244980e4d7f8.png)
-
 # ADME(애드미)
 
 ***Adore memories*** 의 줄임말로 ADME(애드미)가 만들어졌습니다.
