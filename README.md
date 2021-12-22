@@ -14,4 +14,4 @@
 이제 ‘나’를 기록하세요.
 
 
-###### @ Thanks for ingkyo
+###### @ Thanks for inkyo
