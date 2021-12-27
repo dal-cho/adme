@@ -38,3 +38,8 @@ out/
 
 gradle
 src/test/
+src/main/resources
+!src/main/resources/application.properties
+gradlew
+gradlew.bat
+settings.gradle
