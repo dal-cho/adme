@@ -37,7 +37,7 @@ out/
 .vscode/
 
 gradle
-src/test/
+
 src/main/resources/templates
 src/main/resources/static
 src/main/resources/scripts
