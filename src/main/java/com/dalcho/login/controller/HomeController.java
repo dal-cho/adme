@@ -13,4 +13,11 @@ public class HomeController {
         model.addAttribute("username", userDetails.getUsername());
         return "index";
     }
+
+    @GetMapping("/example")
+    public String ex(Model model) {
+        model.addAttribute("data","data");
+        return "home";
+
+    }
 }

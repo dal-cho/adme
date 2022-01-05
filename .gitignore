@@ -40,6 +40,9 @@ gradle
 src/test/
 src/main/resources/templates
 src/main/resources/static
+src/main/resources/scripts
+src/main/resources/styles
+
 gradlew
 gradlew.bat
 settings.gradle
