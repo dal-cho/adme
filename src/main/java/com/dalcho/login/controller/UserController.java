@@ -36,7 +36,7 @@ public class UserController {
     // 회원 가입 페이지
     @GetMapping("/user/signup")
     public String signup() {
-        return "signup";
+        return "home";
     }
 
     // 회원 가입 요청 처리

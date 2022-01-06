@@ -31,6 +31,13 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자 ID 가 존재합니다.");
         }
 
+        String nickname = requestDto.getNickname();
+        // 회원 닉네임 중복 확인
+        Optional<User> found2 = userRepository.findByNickname(nickname);
+        if (found2.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        }
+
         // 패스워드 인코딩
         String password = passwordEncoder.encode(requestDto.getPassword());
         String email = requestDto.getEmail();
@@ -43,7 +50,7 @@ public class UserService {
             role = UserRole.ADMIN;
         }
 
-        User user = new User(username, password, email, role);
+        User user = new User(username, nickname, password, email, role);
         userRepository.save(user);
     }
 
