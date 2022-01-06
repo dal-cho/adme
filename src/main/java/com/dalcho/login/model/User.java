@@ -13,8 +13,9 @@ import javax.persistence.*;
 @Entity // DB 테이블 역할을 합니다.
 public class User extends Timestamped {
 
-    public User(String username, String password, String email, UserRole role) {
+    public User(String username, String nickname, String password, String email, UserRole role) {
         this.username = username;
+        this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.role = role;
@@ -28,6 +29,9 @@ public class User extends Timestamped {
     // 반드시 값을 가지도록 합니다.
     @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
+    private String nickname;
 
     @Column(nullable = false)
     private String password;
