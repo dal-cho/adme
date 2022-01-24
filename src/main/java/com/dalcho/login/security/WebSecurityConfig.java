@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // css 폴더를 login 없이 허용
                 .antMatchers("/css/**").permitAll()
 
-                //// js 폴더를 login 없이 허용
+                // js 폴더를 login 없이 허용
                 .antMatchers("/js/**").permitAll()
 
                 // 회원 관리 URL 전부를 login 없이 허용

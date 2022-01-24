@@ -30,7 +30,7 @@ public class UserController {
     @GetMapping("/user/login/error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
-        return "home"; //login
+        return "error"; //login
     }
 
     // 회원 가입 페이지
