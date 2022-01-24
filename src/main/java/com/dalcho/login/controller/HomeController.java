@@ -14,10 +14,17 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/example")
-    public String ex(Model model) {
+    @GetMapping("/login")
+    public String login(Model model) {
         model.addAttribute("data","data");
         return "home";
-
     }
+
+    @GetMapping("/10s") // 10s 페이지
+    public String ten(Model model) {
+        model.addAttribute("data","data");
+        return "tenseconds";
+    }
+
+
 }
