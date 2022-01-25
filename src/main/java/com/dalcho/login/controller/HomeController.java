@@ -26,5 +26,16 @@ public class HomeController {
         return "tenseconds";
     }
 
+    @GetMapping("/space") // space 페이지
+    public String space(Model model) {
+        model.addAttribute("data","data");
+        return "space";
+    }
+
+    @GetMapping("/board") // 글 작성 페이지
+    public String board(Model model) {
+        model.addAttribute("data","data");
+        return "board";
+    }
 
 }
