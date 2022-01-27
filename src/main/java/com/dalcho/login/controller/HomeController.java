@@ -38,4 +38,10 @@ public class HomeController {
         return "board";
     }
 
+    @GetMapping("/registry") // 글 작성 페이지
+    public String upload(Model model) {
+        model.addAttribute("data","data");
+        return "registry";
+    }
+
 }
