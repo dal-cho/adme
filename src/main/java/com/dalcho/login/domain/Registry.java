@@ -19,24 +19,14 @@ public class Registry {
     @Column(name = "RegistryId")
     private Long idx;
 
-    @Column(nullable = true)
-    private String nickname;
+    @Column(nullable = false)
+    private String title;
 
     @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
-    private String content;
-
-    @Column(nullable = false)
-    private String puppy;
-
-    @Column(nullable = false)
-    private String image;
+    private String main;
 
     public Registry(RegistryDto registryDto) {
-        this.address = registryDto.getAddress();
-        this.content = registryDto.getContent();
-        this.puppy = registryDto.getPuppy();
+        this.title = registryDto.getTitle();
+        this.main = registryDto.getMain();
     }
 }

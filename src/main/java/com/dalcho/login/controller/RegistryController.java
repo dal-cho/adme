@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class RegistryController {
     private final RegistryService registryService;
 
@@ -24,7 +24,7 @@ public class RegistryController {
     }
 
     // 테스트(리스트 전체 가져오기)
-    @GetMapping("/registry/test")
+    @GetMapping("/space")
     public List<Registry> doTest() {
         return registryService.doTest();
     }
