@@ -4,7 +4,6 @@ import com.dalcho.login.domain.Registry;
 import com.dalcho.login.dto.RegistryDto;
 import com.dalcho.login.service.RegistryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
