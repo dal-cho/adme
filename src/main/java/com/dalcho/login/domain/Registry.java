@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
-public class Registry {
+public class Registry extends Timestamped {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     @Column(name = "RegistryId")
