@@ -5,6 +5,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HomeController {
@@ -32,11 +33,6 @@ public class HomeController {
 //        return "space";
 //    }
 
-    @GetMapping("/board") // 글 작성 페이지
-    public String board(Model model) {
-        model.addAttribute("data","data");
-        return "board";
-    }
 
     @GetMapping("/registry") // 글 작성 페이지
     public String upload(Model model) {
