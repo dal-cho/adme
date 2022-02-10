@@ -4,10 +4,8 @@ import com.dalcho.login.domain.Registry;
 import com.dalcho.login.dto.RegistryDto;
 import com.dalcho.login.service.RegistryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,8 +22,13 @@ public class RegistryController {
 
     // 테스트(리스트 전체 가져오기)
     @GetMapping("/space")
-    public List<Registry> doTest() {
-        return registryService.doTest();
+    public Page<Registry> doTest(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size)
+            //@RequestParam("sortBy") String sortBy,
+            //@RequestParam("isAsc") boolean isAsc)
+    {
+        page = page - 1; // 0부터 시작
+        return registryService.doTest(page, size);
     }
-
 }

@@ -1,10 +1,7 @@
 package com.dalcho.login.domain;
 
 import com.dalcho.login.dto.RegistryDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,6 +10,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Entity
+@ToString
 public class Registry extends Timestamped {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
