@@ -22,9 +22,9 @@ public class RegistryService {
 
     @Transactional
     public Registry setUpload(RegistryDto registryDto) throws IOException {
-        Registry upload = new Registry(registryDto);
-        registryRepository.save(upload);
-        return upload;
+        Registry registry = new Registry(registryDto);
+        registryRepository.save(registry);
+        return registry;
     }
 
     // 테스트
@@ -37,5 +37,4 @@ public class RegistryService {
         Page<Registry> allTest = registryRepository.findAll(pageable);
         return allTest;
     }
-
 }
