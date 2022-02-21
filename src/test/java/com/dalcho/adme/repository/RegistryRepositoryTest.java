@@ -13,7 +13,7 @@ import java.util.Optional;
 @SpringBootTest
 @Transactional
 @Rollback(false)
-class RegistryRepositoryTest {
+class RegistryRepositoryTest { // 검증 완료 o
     @Autowired RegistryRepository registryRepository;
 
     @Test

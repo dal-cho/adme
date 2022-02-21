@@ -20,7 +20,7 @@ class RegistryServiceTest {
     @Autowired RegistryService registryService;
 
     @Test
-    void register() throws Exception {
+    void register() throws Exception { // 검증 x
         //given
         RegistryDto registry1 = new RegistryDto();
         registry1.setTitle("첫 번째");
