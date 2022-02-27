@@ -19,7 +19,9 @@ import org.springframework.data.domain.Page;
 @Service
 public class RegistryService {
     private final RegistryRepository registryRepository;
-    private static final int BLOCK_PAGE_NUM_COUNT = 6;
+
+//    private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
+    private static final int PAGE_POST_COUNT = 6; // 한 페이지에 존재하는 게시글 수
 
     @Transactional
     public Registry setUpload(RegistryDto registryDto) throws IOException {
@@ -36,7 +38,7 @@ public class RegistryService {
 
 
     public PagingResult getBoards(int curPage) {
-        Pageable pageable = PageRequest.of(curPage-1, BLOCK_PAGE_NUM_COUNT);
+        Pageable pageable = PageRequest.of(curPage-1, PAGE_POST_COUNT);
         Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);
 
         List<Registry> boardList = boards.getContent();
