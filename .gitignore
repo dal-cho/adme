@@ -46,3 +46,5 @@ src/main/resources/styles
 gradlew
 gradlew.bat
 settings.gradle
+
+src/main/java/com/dalcho/adme/socket
