@@ -5,8 +5,10 @@ import com.dalcho.adme.model.User;
 import com.dalcho.adme.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -15,7 +17,8 @@ import static com.dalcho.adme.model.UserRole.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@ExtendWith( SpringExtension. class )
+@SpringBootTest ( webEnvironment = SpringBootTest . WebEnvironment . RANDOM_PORT )
 @Transactional
 class UserServiceTest {
     @Autowired UserService userService;
@@ -25,11 +28,13 @@ class UserServiceTest {
 
         SignupRequestDto requestDto1 = new SignupRequestDto();
         requestDto1.setUsername("dkj");
+        requestDto1.setNickname("dkj");
         requestDto1.setPassword("dkj");
         requestDto1.setEmail("dkj");
         //requestDto1.setAdmin(false);
         SignupRequestDto requestDto2 = new SignupRequestDto();
         requestDto2.setUsername("dkj");
+        requestDto2.setNickname("dkj");
         requestDto2.setPassword("dkj");
         requestDto2.setEmail("dkj");
         //requestDto2.setAdmin(false);
