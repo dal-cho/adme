@@ -1,7 +1,6 @@
 package com.dalcho.adme.controller;
 
 import com.dalcho.adme.dto.SignupRequestDto;
-import com.dalcho.adme.model.User;
 import com.dalcho.adme.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +23,7 @@ public class UserController {
     // 회원 로그인 페이지
     @GetMapping("/user/login")
     public String login() {
-        return "home"; //login
+        return "login";
     }
 
     @GetMapping("/user/login/error")
@@ -36,7 +35,7 @@ public class UserController {
     // 회원 가입 페이지
     @GetMapping("/user/signup")
     public String signup() {
-        return "home";
+        return "login";
     }
 
     // 회원 가입 요청 처리

@@ -5,7 +5,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HomeController {
@@ -15,10 +14,15 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/login")
-    public String login(Model model) {
-        model.addAttribute("data","data");
-        return "home";
+//    @GetMapping("/login")
+//    public String login(Model model) {
+//        model.addAttribute("data","data");
+//        return "login";
+//    }
+
+    @GetMapping("/chat")
+    public String chat() {
+        return "chat";
     }
 
     @GetMapping("/10s") // 10s 페이지
@@ -30,14 +34,14 @@ public class HomeController {
     @GetMapping("/slide") // space 페이지
     public String space(Model model) {
         model.addAttribute("data","data");
-        return "slide";
+        return "empathy-space";
     }
 
-
-    @GetMapping("/registry") // 글 작성 페이지
-    public String upload(Model model) {
-        model.addAttribute("data","data");
-        return "registry";
-    }
+//
+//    @GetMapping("/registry") // 글 작성 페이지
+//    public String upload(Model model) {
+//        model.addAttribute("data","data");
+//        return "registry";
+//    }
 
 }
