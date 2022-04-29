@@ -42,6 +42,25 @@ public class UserController {
     @PostMapping("/user/signup")
     public String registerUser(SignupRequestDto requestDto) {
         userService.registerUser(requestDto);
-        return "redirect:/";
+        return "redirect:/adme";
     }
+
+
+    @GetMapping("/chat")
+    public String chat() {
+        return "chat";
+    }
+
+    @GetMapping("/10s") // 10s 페이지
+    public String ten(Model model) {
+        model.addAttribute("data","data");
+        return "tenseconds";
+    }
+
+    @GetMapping("/slide") // space 페이지
+    public String space(Model model) {
+        model.addAttribute("data","data");
+        return "empathy-space";
+    }
+
 }
