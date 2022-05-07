@@ -1,8 +1,10 @@
 package com.dalcho.adme.controller;
 
 import com.dalcho.adme.dto.SignupRequestDto;
+import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +44,13 @@ public class UserController {
     @PostMapping("/user/signup")
     public String registerUser(SignupRequestDto requestDto) {
         userService.registerUser(requestDto);
-        return "redirect:/adme";
+        return "redirect:/";
+    }
+
+    @GetMapping("/")
+    public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        model.addAttribute("nickname", userDetails.getUser().getNickname());
+        return "index";
     }
 
 
