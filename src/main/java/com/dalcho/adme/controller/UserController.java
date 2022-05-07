@@ -1,8 +1,10 @@
 package com.dalcho.adme.controller;
 
 import com.dalcho.adme.dto.SignupRequestDto;
+import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,4 +46,29 @@ public class UserController {
         userService.registerUser(requestDto);
         return "redirect:/";
     }
+
+    @GetMapping("/")
+    public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        model.addAttribute("nickname", userDetails.getUser().getNickname());
+        return "index";
+    }
+
+
+    @GetMapping("/chat")
+    public String chat() {
+        return "chat";
+    }
+
+    @GetMapping("/10s") // 10s 페이지
+    public String ten(Model model) {
+        model.addAttribute("data","data");
+        return "tenseconds";
+    }
+
+    @GetMapping("/slide") // space 페이지
+    public String space(Model model) {
+        model.addAttribute("data","data");
+        return "empathy-space";
+    }
+
 }
