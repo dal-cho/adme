@@ -19,8 +19,8 @@ import java.util.List;
 @RestController
 @ServerEndpoint("/websocket")
 //websocket 핸들러를 구현하기 위해서 기본적으로 TextWebSocketHandler를 상속
-public class WebsocketController extends TextWebSocketHandler {
-    private static final Logger logger = LoggerFactory.getLogger(WebsocketController.class);
+public class WebSocketController extends TextWebSocketHandler {
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
     private static List<Session> sessionUsers = Collections.synchronizedList(new ArrayList<>());
 
     private static final List<Session> session = new ArrayList<Session>();
