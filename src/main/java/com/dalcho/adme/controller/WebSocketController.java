@@ -3,6 +3,7 @@ package com.dalcho.adme.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
@@ -25,6 +26,10 @@ public class WebSocketController extends TextWebSocketHandler {
 
     private static final List<Session> session = new ArrayList<Session>();
 
+    @GetMapping("/websocket/count")
+    public int userCount() {
+        return sessionUsers.size();
+    }
 
     @OnOpen // 사용자가 페이지에 접속할 때 실행되는 @OnOpen메서드에서 세션 리스트에 담아준다.
     public void open(Session newUser) {
@@ -33,6 +38,7 @@ public class WebSocketController extends TextWebSocketHandler {
         sessionUsers.add(newUser);
         System.out.println(newUser.getId());
         System.out.println("현재 접속자 수 : " + sessionUsers.size());
+        userCount();
     }     // 사용자가 증가할 때마다 세션의 getId()는 1씩 증가하며 문자열 형태로 지정된다.
 
 
