@@ -15,7 +15,6 @@ import java.util.Optional;
 @ExtendWith( SpringExtension. class )
 @SpringBootTest ( webEnvironment = SpringBootTest . WebEnvironment . RANDOM_PORT )
 @Transactional
-@Rollback(false)
 class RegistryRepositoryTest { // 검증 완료 o
     @Autowired RegistryRepository registryRepository;
 
@@ -30,8 +29,8 @@ class RegistryRepositoryTest { // 검증 완료 o
         registryRepository.save(registry);
 
         //then
-        Assertions.assertThat(1L).isEqualTo(registry.getIdx());
-        //Assertions.assertThat("hi").isEqualTo(registry.getTitle());
-        //Assertions.assertThat("hello").isEqualTo(registry.getMain());
+        //Assertions.assertThat(1L).isEqualTo(registry.getIdx());
+        Assertions.assertThat("hi").isEqualTo(registry.getTitle());
+        Assertions.assertThat("hello").isEqualTo(registry.getMain());
     }
 }

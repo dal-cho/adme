@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith( SpringExtension. class )
 @SpringBootTest ( webEnvironment = SpringBootTest . WebEnvironment . RANDOM_PORT )
 @Transactional
-@Rollback(false)
 class RegistryServiceTest {
     @Autowired RegistryRepository registryRepository;
     @Autowired RegistryService registryService;
