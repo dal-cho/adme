@@ -18,6 +18,9 @@ public class Registry extends Timestamped {
     private Long idx;
 
     @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
@@ -26,5 +29,6 @@ public class Registry extends Timestamped {
     public Registry(RegistryDto registryDto) {
         this.title = registryDto.getTitle();
         this.main = registryDto.getMain();
+        this.nickname = registryDto.getNickname();
     }
 }

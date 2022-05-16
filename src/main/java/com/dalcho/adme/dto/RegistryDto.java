@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @Getter
 public class RegistryDto {
+    private String nickname;
     private String title;
     private String main;
 }

@@ -46,4 +46,13 @@ public class RegistryService {
         return new PagingResult(boardList, boards.getTotalPages());
     }
 
+
+    // 게시글 상세 보기
+    public Registry getIdxRegistry(Long idx) {
+        Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(
+                () -> new NullPointerException("해당 게시글 없음")
+        );
+        return getIdxRegistry;
+    }
+
 }
