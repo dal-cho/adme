@@ -19,16 +19,17 @@ public class RegistryController {
         return registryService.setUpload(registryDto);
     }
 
-//   //테스트(리스트 전체 가져오기)
-//    @GetMapping("/space")
-//    public List<Registry> doTest() {
-//        return registryService.doTest();
-//    }
 
-    //작성글 조회
+    //작성 글 페이징
     @GetMapping("/space/{curPage}")
     public PagingResult readBoard(@PathVariable Integer curPage) {
         return registryService.getBoards(curPage);
     }
 
+
+    // 게시글 상세 보기
+    @GetMapping("/registry")
+    public Registry getIdxRegistry(@RequestParam Long idx) {
+        return registryService.getIdxRegistry(idx);
+    }
 }
