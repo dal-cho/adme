@@ -23,6 +23,7 @@ public class RegistryService {
 //    private static final int BLOCK_PAGE_NUM_COUNT = 5; // 블럭에 존재하는 페이지 번호 수
     private static final int PAGE_POST_COUNT = 6; // 한 페이지에 존재하는 게시글 수
 
+    // 게시글 등록
     @Transactional
     public Registry setUpload(RegistryDto registryDto) throws IOException {
         Registry registry = new Registry(registryDto);
@@ -30,20 +31,14 @@ public class RegistryService {
         return registry;
     }
 
-    // 테스트
-    public List<Registry> doTest() {
-        List<Registry> allTest = registryRepository.findAll();
-        return allTest;
-    }
 
-
+    // 작성 글 페이징
     public PagingResult getBoards(int curPage) {
-        Pageable pageable = PageRequest.of(curPage-1, PAGE_POST_COUNT);
-        Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Pageable pageable = PageRequest.of(curPage-1, PAGE_POST_COUNT); // 찾을 페이지, 한 페이지의 size
 
-        List<Registry> boardList = boards.getContent();
-
-        return new PagingResult(boardList, boards.getTotalPages());
+        Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);// 생성 날짜 순으로 보여주기
+        List<Registry> boardList = boards.getContent(); // 조회된 데이터
+        return new PagingResult(boardList, boards.getTotalPages()); // 조회된 데이터, 전체 페이지의 수
     }
 
 
