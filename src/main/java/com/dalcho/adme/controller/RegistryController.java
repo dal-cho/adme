@@ -14,13 +14,14 @@ import java.io.IOException;
 public class RegistryController {
     private final RegistryService registryService;
 
+    // 게시글 등록
     @PostMapping("/registry") //@RequestParam이 여러개 있다. -> @ModelAttribute
     public Registry setUpload(@ModelAttribute RegistryDto registryDto) throws IOException {
         return registryService.setUpload(registryDto);
     }
 
 
-    //작성 글 페이징
+    // 작성 글 페이징
     @GetMapping("/space/{curPage}")
     public PagingResult readBoard(@PathVariable Integer curPage) {
         return registryService.getBoards(curPage);
