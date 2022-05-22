@@ -46,19 +46,18 @@ public class RegistryService {
         Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);// 생성 날짜 순으로 보여주기
         List<Registry> boardList = boards.getContent(); // 조회된 데이터
 
-        nowPage = boards.getNumber()+1;
-        startPage = (int) Math.ceil( nowPage / (double) displayPageNum ) *5+1;
-        endPage = (int) (Math.ceil(displayPageNum / (double) displayPageNum) * displayPageNum);
+        nowPage = (boards.getNumber()+1);
+        startPage = (int) Math.ceil( (nowPage-1) / (double) displayPageNum ) *5+1;
+        endPage = startPage+4;
         prev = startPage == 1 ? false : true; // 이전 버튼 생성 여부
 
-        // next 수정 필요
-        next = endPage > boards.getTotalPages();
-        if(endPage > boards.getTotalPages()) {
+        next = endPage < boards.getTotalPages()?  true : false;
+        if(endPage >= boards.getTotalPages()) {
             endPage = boards.getTotalPages();
             next = false;
         }
 
-        return new PagingResult(boardList, boards.getTotalPages(), startPage, endPage, prev, next, displayPageNum);
+        return new PagingResult(boardList, boards.getTotalPages(), startPage, endPage, prev, next);
     }
 
 
