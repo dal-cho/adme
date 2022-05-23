@@ -47,7 +47,7 @@ public class RegistryService {
         List<Registry> boardList = boards.getContent(); // 조회된 데이터
 
         nowPage = (boards.getNumber()+1);
-        startPage = (int) Math.ceil( (nowPage-1) / (double) displayPageNum ) *5+1;
+        startPage = ((int) Math.floor( nowPage / (double) (displayPageNum+1) ) *5 )+1;
         endPage = startPage+4;
         prev = startPage == 1 ? false : true; // 이전 버튼 생성 여부
 
