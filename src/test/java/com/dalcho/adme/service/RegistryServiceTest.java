@@ -27,10 +27,12 @@ class RegistryServiceTest {
         RegistryDto registry1 = new RegistryDto();
         registry1.setTitle("첫 번째");
         registry1.setMain("1");
+        registry1.setNickname("nickname");
 
         RegistryDto registry2 = new RegistryDto();
         registry2.setTitle("두 번째");
         registry2.setMain("2");
+        registry2.setNickname("nickname2");
 
         //when
         Registry saveRegistry1 = registryService.setUpload(registry1);
