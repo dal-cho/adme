@@ -42,7 +42,7 @@ public class RegistryService {
         Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);// 생성 날짜 순으로 보여주기
         List<Registry> boardList = boards.getContent(); // 조회된 데이터
         nowPage = (boards.getNumber()+1);
-        startPage = ((int) Math.floor( nowPage / (double) (displayPageNum+1) ) *5 )+1;
+        startPage = ( ((int)  Math.ceil(nowPage/ (double) displayPageNum )) -1) *5 +1;
         endPage = startPage+4;
         prev = startPage == 1 ? false : true;
         next = endPage < boards.getTotalPages()?  true : false;
