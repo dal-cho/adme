@@ -28,15 +28,12 @@ public class RegistryPagingTest {
     @DisplayName("MySql을 이용한 TEST")
     @Test
     void paging() throws Exception {
-        Random random = new Random();
-        int count = registryService.getBoards(1).getCount(); // 총 페이지 수
-        int randomCount = random.nextInt(count + 1); // 1~count 사이의 랜덤
-
-        int start = registryService.getBoards(randomCount).getStartPage(); // 시작 번호
-        int end = registryService.getBoards(randomCount).getEndPage(); // 끝 번호
-
-        boolean prev = registryService.getBoards(randomCount).isPrev();
-        boolean next = registryService.getBoards(randomCount).isNext();
+        int curPage = 1;
+        int count = registryService.getBoards(curPage).getCount(); // 총 페이지 수
+        int start = registryService.getBoards(curPage).getStartPage(); // 시작 번호
+        int end = registryService.getBoards(curPage).getEndPage(); // 끝 번호
+        boolean prev = registryService.getBoards(curPage).isPrev();
+        boolean next = registryService.getBoards(curPage).isNext();
         if(end >= count) {
             end = count;
             next = false;
