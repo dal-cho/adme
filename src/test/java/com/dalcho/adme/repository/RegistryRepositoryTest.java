@@ -24,6 +24,7 @@ class RegistryRepositoryTest { // 검증 완료 o
         Registry registry = new Registry();
         registry.setTitle("hi");
         registry.setMain("hello");
+        registry.setNickname("testCodeId");
 
         //when
         registryRepository.save(registry);
