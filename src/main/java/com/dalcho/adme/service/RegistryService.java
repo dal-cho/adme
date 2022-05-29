@@ -19,7 +19,7 @@ import org.springframework.data.domain.Page;
 @Service
 public class RegistryService {
     private final RegistryRepository registryRepository;
-    private static final int PAGE_POST_COUNT = 6; // 한 페이지에 존재하는 게시글 수
+    private static final int PAGE_POST_COUNT = 9; // 한 페이지에 존재하는 게시글 수
     private int displayPageNum = 5;
     private int startPage;
     private int endPage;
