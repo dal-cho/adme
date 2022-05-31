@@ -54,10 +54,10 @@ public class UserController {
     }
 
 
-    @GetMapping("/chat")
-    public String chat() {
-        return "chat";
-    }
+//    @GetMapping("/chat")
+//    public String chat() {
+//        return "chat";
+//    }
 
     @GetMapping("/10s") // 10s 페이지
     public String ten(Model model) {
@@ -65,10 +65,10 @@ public class UserController {
         return "tenseconds";
     }
 
-    @GetMapping("/slide") // space 페이지
-    public String space(Model model) {
-        model.addAttribute("data","data");
-        return "empathy-space";
-    }
+//    @GetMapping("/slide") // space 페이지
+//    public String space(Model model) {
+//        model.addAttribute("data","data");
+//        return "empathy-space";
+//    }
 
 }
