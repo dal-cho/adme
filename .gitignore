@@ -49,3 +49,5 @@ settings.gradle
 
 src/main/java/com/dalcho/adme/socket
 src/main/java/com/dalcho/adme/prac
+node_modules
+package-lock.json
