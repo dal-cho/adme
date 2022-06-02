@@ -1,12 +1,10 @@
 package com.dalcho.adme.service;
 
-import com.dalcho.adme.controller.WebSocketController;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -47,13 +45,24 @@ public class WebSocketService extends TextWebSocketHandler {
 
 
     @OnMessage // 사용자로부터 메시지를 받았을 때, 실행된다.
-    public void getMsg(String msg) {
+    public void getMsg(Session recieveSession, String msg) {
         for (int i = 0; i < session.size(); i++) {
-            try {
-                session.get(i).getBasicRemote().sendText(msg);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if( !recieveSession.getId().equals(session.get(i).getId()) ) {
+                try {
+                    session.get(i).getBasicRemote().sendText("$" + msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            else {
+                try {
+                    session.get(i).getBasicRemote().sendText(msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
         }
     }
 
