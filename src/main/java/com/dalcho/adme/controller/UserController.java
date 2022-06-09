@@ -40,12 +40,12 @@ public class UserController {
         return "login";
     }
 
-    // 회원 가입 요청 처리
-    @PostMapping("/user/signup")
-    public String registerUser(SignupRequestDto requestDto) {
-        userService.registerUser(requestDto);
-        return "redirect:/";
-    }
+//    // 회원 가입 요청 처리
+//    @PostMapping("/user/signup")
+//    public String registerUser(SignupRequestDto requestDto) {
+//        userService.registerUser(requestDto);
+//        return "redirect:/";
+//    }
 
     @GetMapping("/")
     public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {

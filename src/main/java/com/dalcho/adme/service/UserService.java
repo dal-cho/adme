@@ -54,5 +54,33 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public String checkId(SignupRequestDto requestDto) {
+        String username = requestDto.getUsername();
+        System.out.println("username = " + username);
+        // 회원 ID 중복 확인
+        Optional<User> found = userRepository.findByUsername(username);
+        if (found.isPresent()) { // isPresent : 값이 있는지 check
+            return "중복된 사용자 ID 가 존재합니다.";
+        }else{
+            if (username == null || username.isEmpty()) {
+                return "아이디를 입력해주세요";
+            }
+            return "사용가능한 ID 입니다.";
+        }
+    };
 
+
+    public String checkNickname(SignupRequestDto requestDto) {
+        String nickname = requestDto.getNickname();
+        // 회원 닉네임 중복 확인
+        Optional<User> found2 = userRepository.findByNickname(nickname);
+        if (found2.isPresent()) { // isPresent : 값이 있는지 check
+            return "중복된 닉네임이 존재합니다.";
+        } else{
+            if (nickname == null || nickname.isEmpty()) {
+                return "닉네임을 입력해주세요";
+            }
+            return "사용가능한 닉네임 입니다.";
+        }
+    };
 }
