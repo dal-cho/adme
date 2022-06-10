@@ -28,6 +28,15 @@ public class UserController {
         return "login";
     }
 
+//    @GetMapping("/user/login")
+//    public String login(@RequestParam(value = "error", required = false) String error,
+//                        @RequestParam(value = "exception", required = false)
+//                                String exception, Model model) {
+//        model.addAttribute("error", error);
+//        model.addAttribute("exception", exception);
+//        return "login";
+//    }
+
     @GetMapping("/user/login/error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
@@ -35,12 +44,12 @@ public class UserController {
     }
 
     // 회원 가입 페이지
-    @GetMapping("/user/signup")
-    public String signup() {
-        return "login";
-    }
+//    @GetMapping("/user/signup")
+//    public String signup() {
+//        return "login";
+//    }
 
-//    // 회원 가입 요청 처리
+    // 회원 가입 요청 처리
 //    @PostMapping("/user/signup")
 //    public String registerUser(SignupRequestDto requestDto) {
 //        userService.registerUser(requestDto);
