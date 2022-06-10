@@ -31,13 +31,16 @@ class UserServiceTest {
         requestDto1.setNickname("dkj");
         requestDto1.setPassword("dkj");
         requestDto1.setEmail("dkj");
-        //requestDto1.setAdmin(false);
+        requestDto1.setPasswordConfirm("dkj");
+
+
         SignupRequestDto requestDto2 = new SignupRequestDto();
         requestDto2.setUsername("dkj");
         requestDto2.setNickname("dkj");
         requestDto2.setPassword("dkj");
         requestDto2.setEmail("dkj");
-        //requestDto2.setAdmin(false);
+        requestDto2.setPasswordConfirm("dkj");
+
 
         //when
         userService.registerUser(requestDto1);
