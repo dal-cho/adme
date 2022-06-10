@@ -40,6 +40,8 @@ public class UserService {
 
         // 패스워드 인코딩
         String password = passwordEncoder.encode(requestDto.getPassword());
+        String passwordConfirm = passwordEncoder.encode(requestDto.getPasswordConfirm());
+
         String email = requestDto.getEmail();
         // 사용자 ROLE 확인
         UserRole role = UserRole.USER;
@@ -50,10 +52,13 @@ public class UserService {
             role = UserRole.ADMIN;
         }
 
-        User user = new User(username, nickname, password, email, role);
+        //
+
+        User user = new User(username, nickname, password, passwordConfirm, email, role);
         userRepository.save(user);
     }
 
+    // id 중복 체크
     public String checkId(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         System.out.println("username = " + username);
@@ -72,6 +77,7 @@ public class UserService {
 
     public String checkNickname(SignupRequestDto requestDto) {
         String nickname = requestDto.getNickname();
+        System.out.println("nickname = " + nickname);
         // 회원 닉네임 중복 확인
         Optional<User> found2 = userRepository.findByNickname(nickname);
         if (found2.isPresent()) { // isPresent : 값이 있는지 check
@@ -83,4 +89,36 @@ public class UserService {
             return "사용가능한 닉네임 입니다.";
         }
     };
+
+    public String checkPasswordConfirm(SignupRequestDto requestDto) {
+//        String password = passwordEncoder.encode(requestDto.getPassword());
+//        String passwordConfirm = passwordEncoder.encode(requestDto.getPasswordConfirm());
+
+        String password = requestDto.getPassword();
+        String passwordConfirm = requestDto.getPasswordConfirm();
+
+        System.out.println("password = " + password);
+        System.out.println("passwordConfirm = " + passwordConfirm);
+        //Optional<User> found3 = userRepository.findByPasswordAndpassword_confirm(password, password_confirm);
+        if (passwordConfirm == null ||  passwordConfirm.isEmpty()) {
+            return "비밀번호를 입력해주세요";
+        } else {
+            if (!password.equals(passwordConfirm)) {
+                return "비밀번호가 다릅니다.";
+            } else {
+                return "비밀번호가 일치합니다.";
+            }
+        }
+    }
+
+//    public String signUp(SignupRequestDto requestDto) {
+//        try {registerUser(requestDto);
+//        return "success";
+//        }
+//        catch (Exception e) {
+//            return "fail";
+//        }
+//    }
+
+
 }
