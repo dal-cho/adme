@@ -2,7 +2,6 @@ package com.dalcho.adme.service;
 
 import com.dalcho.adme.dto.SignupRequestDto;
 import com.dalcho.adme.model.User;
-import com.dalcho.adme.model.UserRole;
 import com.dalcho.adme.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +13,6 @@ import java.util.Optional;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private static final String ADMIN_TOKEN = "AAABnv/xRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -43,18 +41,8 @@ public class UserService {
         String passwordConfirm = passwordEncoder.encode(requestDto.getPasswordConfirm());
 
         String email = requestDto.getEmail();
-        // 사용자 ROLE 확인
-        UserRole role = UserRole.USER;
-        if (requestDto.isAdmin()) {
-            if (!requestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
-            }
-            role = UserRole.ADMIN;
-        }
 
-        //
-
-        User user = new User(username, nickname, password, passwordConfirm, email, role);
+        User user = new User(username, nickname, password, passwordConfirm, email);
         userRepository.save(user);
     }
 
@@ -99,7 +87,7 @@ public class UserService {
 
         System.out.println("password = " + password);
         System.out.println("passwordConfirm = " + passwordConfirm);
-        //Optional<User> found3 = userRepository.findByPasswordAndpassword_confirm(password, password_confirm);
+
         if (passwordConfirm == null ||  passwordConfirm.isEmpty()) {
             return "비밀번호를 입력해주세요";
         } else {
@@ -110,15 +98,4 @@ public class UserService {
             }
         }
     }
-
-//    public String signUp(SignupRequestDto requestDto) {
-//        try {registerUser(requestDto);
-//        return "success";
-//        }
-//        catch (Exception e) {
-//            return "fail";
-//        }
-//    }
-
-
 }

@@ -13,13 +13,12 @@ import javax.persistence.*;
 @Entity // DB 테이블 역할을 합니다.
 public class User extends Timestamped {
 
-    public User(String username, String nickname, String password, String passwordConfirm, String email, UserRole role) {
+    public User(String username, String nickname, String password, String passwordConfirm, String email) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
         this.email = email;
-        this.role = role;
     }
 
     // ID가 자동으로 생성 및 증가합니다.
@@ -43,7 +42,4 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private UserRole role;
 }
