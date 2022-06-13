@@ -54,13 +54,15 @@ public class UserService {
         Optional<User> found = userRepository.findByUsername(username);
         if (found.isPresent()) { // isPresent : 값이 있는지 check
             return "중복된 사용자 ID 가 존재합니다.";
-        }else{
+        } else {
             if (username == null || username.isEmpty()) {
                 return "아이디를 입력해주세요";
             }
             return "사용가능한 ID 입니다.";
         }
-    };
+    }
+
+    ;
 
 
     public String checkNickname(SignupRequestDto requestDto) {
@@ -70,25 +72,24 @@ public class UserService {
         Optional<User> found2 = userRepository.findByNickname(nickname);
         if (found2.isPresent()) { // isPresent : 값이 있는지 check
             return "중복된 닉네임이 존재합니다.";
-        } else{
+        } else {
             if (nickname == null || nickname.isEmpty()) {
                 return "닉네임을 입력해주세요";
             }
             return "사용가능한 닉네임 입니다.";
         }
-    };
+    }
+
+    ;
 
     public String checkPasswordConfirm(SignupRequestDto requestDto) {
-//        String password = passwordEncoder.encode(requestDto.getPassword());
-//        String passwordConfirm = passwordEncoder.encode(requestDto.getPasswordConfirm());
-
         String password = requestDto.getPassword();
         String passwordConfirm = requestDto.getPasswordConfirm();
 
         System.out.println("password = " + password);
         System.out.println("passwordConfirm = " + passwordConfirm);
 
-        if (passwordConfirm == null ||  passwordConfirm.isEmpty()) {
+        if (passwordConfirm == null || passwordConfirm.isEmpty()) {
             return "비밀번호를 입력해주세요";
         } else {
             if (!password.equals(passwordConfirm)) {
@@ -98,4 +99,15 @@ public class UserService {
             }
         }
     }
+
+    // 회원가입
+    public String signUp(SignupRequestDto requestDto) {
+        try {
+            registerUser(requestDto);
+            return "회원가입이 완료되었습니다.";
+        } catch (Exception e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
 }

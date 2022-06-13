@@ -11,6 +11,4 @@ public class SignupRequestDto {
     private String password;
     private String passwordConfirm;
     private String email;
-    private boolean admin = false;
-    private String adminToken = "";
 }
