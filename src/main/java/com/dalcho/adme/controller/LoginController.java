@@ -38,6 +38,12 @@ public class LoginController {
         return userService.checkPasswordConfirm(requestDto);
     }
 
+    // 회원 가입 페이지
+    @PostMapping("/user/signup")
+    public String signUp(@ModelAttribute SignupRequestDto requestDto) {
+        return userService.signUp(requestDto);
+    }
+
 
 
 }
