@@ -1,6 +1,6 @@
 package com.dalcho.adme.security;
 
-import com.dalcho.adme.model.User;
+import com.dalcho.adme.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

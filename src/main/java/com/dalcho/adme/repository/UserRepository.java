@@ -1,6 +1,6 @@
 package com.dalcho.adme.repository;
 
-import com.dalcho.adme.model.User;
+import com.dalcho.adme.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.*;

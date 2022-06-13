@@ -1,7 +1,7 @@
 package com.dalcho.adme.service;
 
 import com.dalcho.adme.dto.SignupRequestDto;
-import com.dalcho.adme.model.User;
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

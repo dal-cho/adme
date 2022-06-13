@@ -1,4 +1,4 @@
-package com.dalcho.adme.model;
+package com.dalcho.adme.domain;
 
 import com.dalcho.adme.domain.Timestamped;
 import lombok.Getter;
