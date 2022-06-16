@@ -1,5 +1,6 @@
 package com.dalcho.adme.service;
 
+import com.dalcho.adme.dto.LoginDto;
 import com.dalcho.adme.dto.SignupRequestDto;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.repository.UserRepository;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private Object CustomAuthFailureHandler;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -108,6 +110,37 @@ public class UserService {
         } catch (Exception e) {
             throw new IllegalArgumentException();
         }
+    }
+
+
+
+    public String login(LoginDto loginDto) {
+        String username = loginDto.getUsername();
+        String password = loginDto.getPassword();
+
+        System.out.println("service");
+        // id 찾기
+        Optional<User> foundId = userRepository.findByUsername(username);
+
+        //pw 찾기
+        Optional<User> foundPw = userRepository.findAllByUsername(username);
+        System.out.println("foundPw = " + foundPw);
+
+
+
+        if (foundId.isPresent()) {
+            String encodedPw = foundPw.get().getPassword();
+            System.out.println("encodedPw = " + encodedPw);
+            if (!passwordEncoder.matches(password, encodedPw) && (password.equals(encodedPw))) {
+                return "환영합니다.";
+            } else {
+                return "비밀번호를 잘 못 입력하셨습니다.";
+            }
+        }
+        else {
+            return "등록된 사용자가 없습니다.";
+        }
+
     }
 
 }

@@ -1,10 +1,12 @@
 package com.dalcho.adme.controller;
 
+import com.dalcho.adme.dto.LoginDto;
 import com.dalcho.adme.dto.SignupRequestDto;
 import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -15,7 +17,7 @@ public class LoginController {
     private final UserService userService;
 
     @GetMapping("/user/login/nickname") // session에 저장하기
-    public Object sessionRequest(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpSession session){
+    public Object sessionRequest(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpSession session) {
         session.setAttribute("nickname", userDetails.getUser().getNickname());
         return session.getAttribute("nickname");
     }
@@ -45,5 +47,9 @@ public class LoginController {
     }
 
 
+    @PostMapping("/user/login/input")
+    public String login(@ModelAttribute LoginDto loginDto) {
+        return userService.login(loginDto);
+    }
 
 }

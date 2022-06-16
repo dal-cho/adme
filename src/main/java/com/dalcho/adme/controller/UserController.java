@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -23,25 +24,28 @@ public class UserController {
 
 
     // 회원 로그인 페이지
-    @GetMapping("/user/login")
-    public String login(){
-        return "login";
-    }
-
 //    @GetMapping("/user/login")
-//    public String login(@RequestParam(value = "error", required = false) String error,
-//                        @RequestParam(value = "exception", required = false)
-//                                String exception, Model model) {
-//        model.addAttribute("error", error);
-//        model.addAttribute("exception", exception);
+//    public String login(){
 //        return "login";
 //    }
 
-    @GetMapping("/user/login/error")
-    public String loginError(Model model) {
-        model.addAttribute("loginError", true);
-        return "error"; //login
+    @GetMapping("/user/login")
+    public String login(@RequestParam(value = "error", required = false) String error,
+                        @RequestParam(value = "exception", required = false)
+                                String exception, Model model) {
+        model.addAttribute("error", error);
+        model.addAttribute("exception", exception);
+
+        return "login";
     }
+
+
+
+//    @GetMapping("/user/login/error")
+//    public String loginError(Model model) {
+//        model.addAttribute("loginError", true);
+//        return "error"; //login
+//    }
 
     // 회원 가입 페이지
     @GetMapping("/user/signup")
@@ -61,6 +65,4 @@ public class UserController {
         model.addAttribute("nickname", userDetails.getUser().getNickname());
         return "index";
     }
-    
-
 }
