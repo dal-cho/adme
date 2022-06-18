@@ -4,23 +4,17 @@ import com.dalcho.adme.dto.LoginDto;
 import com.dalcho.adme.dto.SignupRequestDto;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private Object CustomAuthFailureHandler;
-
-    @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
 
     public void registerUser(SignupRequestDto requestDto) {
@@ -62,9 +56,7 @@ public class UserService {
             }
             return "사용가능한 ID 입니다.";
         }
-    }
-
-    ;
+    };
 
 
     public String checkNickname(SignupRequestDto requestDto) {
@@ -80,10 +72,10 @@ public class UserService {
             }
             return "사용가능한 닉네임 입니다.";
         }
-    }
+    };
 
-    ;
 
+    // 비밀번호 확인 체크
     public String checkPasswordConfirm(SignupRequestDto requestDto) {
         String password = requestDto.getPassword();
         String passwordConfirm = requestDto.getPasswordConfirm();
@@ -113,7 +105,7 @@ public class UserService {
     }
 
 
-
+    // 로그인 페이지
     public String login(LoginDto loginDto) {
         String username = loginDto.getUsername();
         String password = loginDto.getPassword();
@@ -127,17 +119,15 @@ public class UserService {
         System.out.println("foundPw = " + foundPw);
 
 
-
         if (foundId.isPresent()) {
             String encodedPw = foundPw.get().getPassword();
             System.out.println("encodedPw = " + encodedPw);
-            if (!passwordEncoder.matches(password, encodedPw) && (password.equals(encodedPw))) {
+            if (passwordEncoder.matches(password, encodedPw) && (!password.equals(encodedPw))) {
                 return "환영합니다.";
             } else {
                 return "비밀번호를 잘 못 입력하셨습니다.";
             }
-        }
-        else {
+        } else {
             return "등록된 사용자가 없습니다.";
         }
 
