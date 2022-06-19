@@ -35,7 +35,6 @@ public class UserService {
         // 패스워드 인코딩
         String password = passwordEncoder.encode(requestDto.getPassword());
         String passwordConfirm = passwordEncoder.encode(requestDto.getPasswordConfirm());
-
         String email = requestDto.getEmail();
 
         User user = new User(username, nickname, password, passwordConfirm, email);
