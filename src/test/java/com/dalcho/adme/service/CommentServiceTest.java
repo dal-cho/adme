@@ -1,12 +1,11 @@
 package com.dalcho.adme.service;
 
-import com.dalcho.adme.socket.g.Comment;
+import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
-import com.dalcho.adme.socket.g.CommentDto;
+import com.dalcho.adme.dto.CommentDto;
 import com.dalcho.adme.dto.RegistryDto;
-import com.dalcho.adme.socket.g.CommentRepository;
+import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
-import com.dalcho.adme.socket.g.CommentService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
