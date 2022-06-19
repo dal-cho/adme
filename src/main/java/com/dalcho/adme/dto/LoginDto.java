@@ -3,12 +3,9 @@ package com.dalcho.adme.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class SignupRequestDto {
+@Setter
+public class LoginDto {
     private String username;
-    private String nickname;
     private String password;
-    private String passwordConfirm;
-    private String email;
 }
