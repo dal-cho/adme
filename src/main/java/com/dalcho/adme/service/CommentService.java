@@ -1,6 +1,7 @@
 package com.dalcho.adme.service;
 
 import com.dalcho.adme.domain.Comment;
+import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.dto.CommentDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
@@ -28,6 +29,25 @@ public class CommentService {
     public List<Comment> getComment(int idx){
         List<Comment> commentList = commentRepository.findAllByRegistryId(idx);
         return commentList;
+    }
+
+    public Comment updateComment(Long commentId, int registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException {
+        registryRepository.findById((long) registryId).orElseThrow(
+                () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
+        );
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
+        );
+
+        if (!userDetails.getUser().getNickname().equals(comment.getNickname()) ) {
+            throw new AccessDeniedException("권한이 없습니다.");
+        }
+
+        comment.setComment(commentDto.getComment());
+        commentRepository.save(comment);
+        return comment;
+
     }
 
 }

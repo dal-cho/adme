@@ -15,26 +15,27 @@ import javax.persistence.*;
 public class Comment extends Timestamped {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    @Column(name = "comment_id")
+    @Column(name = "COMMENT_ID")
     private Long idx;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String comment;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private int registryId;
-
-    @Column(nullable = false)
-    private String registryNickname;
 
     public Comment(CommentDto commentDto) {
         this.nickname = commentDto.getNickname();
         this.comment = commentDto.getComment();
         this.registryId = commentDto.getRegistryId();
-        this.registryNickname = commentDto.getRegistryNickname();
     }
 
+    //    public Comment(CommentDto commentDto, Registry registry) {
+    //        this.nickname = commentDto.getNickname();
+    //        this.comment = commentDto.getComment();
+    //        this.registry = registry;
+    //    }
 }
