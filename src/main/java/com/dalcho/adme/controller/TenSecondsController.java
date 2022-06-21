@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.name.Rename;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -142,6 +146,58 @@ public class TenSecondsController {
             e.printStackTrace();
         }
         return result;
+    }
+    // 업로드 이미지 클릭시 해당 파일 다운로드
+    @GetMapping(value = "10s/video/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile(String fileName){
+
+        log.info("다운로드 시작");
+
+        // fileName 이 경로와 같이 설정되어 있어서 이름만 따로 분리해준다.
+        fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+
+        // 옳바른 경로 저장
+        Resource resource = new FileSystemResource(uploadFolderPath + fileName);
+
+        String resourceName = resource.getFilename();
+
+        // uuid 제거
+        String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
+
+        HttpHeaders headers = new HttpHeaders();
+
+        try {
+            headers.add("Content-Disposition", "attachment; filename=" + new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1"));
+        }catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+    }
+
+    // 첨부파일 삭제
+    @PostMapping("10s/video/delete")
+    @ResponseBody
+    public ResponseEntity<String> deleteFile(String fileName, String type) {
+        log.info("deleteFile : " + fileName);
+
+        File file;
+
+        try {
+            file = new File(uploadFolderPath + URLDecoder.decode(fileName, "UTF-8"));
+
+            file.delete();
+
+            file = new File(uploadFolderPath + "thumbnail/" + URLDecoder.decode(fileName, "UTF-8"));
+
+            file.delete();
+
+        }catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<String>("deleted", HttpStatus.OK);
     }
 
     // 이미지 타입인지 확인하기
