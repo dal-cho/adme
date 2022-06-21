@@ -40,7 +40,6 @@ public class CommentServiceTest {
         comment.setComment("funfun");
         comment.setNickname("hh");
         comment.setRegistryId(1);
-        comment.setRegistryNickname("nickname");
 
         //when
         Comment saveComment = commentService.setComment(comment);
@@ -66,13 +65,11 @@ public class CommentServiceTest {
         comment.setComment("funfun");
         comment.setNickname("hh");
         comment.setRegistryId(1);
-        comment.setRegistryNickname("nickname");
 
         CommentDto comment1 = new CommentDto();
         comment1.setComment("wow");
         comment1.setNickname("hh");
         comment1.setRegistryId(1);
-        comment1.setRegistryNickname("nickname");
 
         //when
         Registry saveRegistry = registryService.setUpload(registry);

@@ -27,4 +27,12 @@ public class CommentController {
     public List<Comment> getComment(@RequestParam int idx){
         return commentService.getComment(idx);
     }
+
+    // AuthenticationPrincipal : 로그인한 사용자의 정보를 파라메터로 받고 싶을때
+    @PutMapping("/comment/{commentId}/registry/{registryId}")
+    public Comment updateComment(@PathVariable Long commentId, @PathVariable int registryId,
+                                 @RequestBody CommentDto commentDto,
+                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws AccessDeniedException {
+        return commentService.updateComment(commentId, registryId, commentDto, userDetails);
+    }
 }
