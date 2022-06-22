@@ -15,12 +15,6 @@ import javax.servlet.http.HttpSession;
 public class LoginController {
     private final UserService userService;
 
-    @GetMapping("/user/login/nickname") // session에 저장하기
-    public Object sessionRequest(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpSession session) {
-        session.setAttribute("nickname", userDetails.getUser().getNickname());
-        return session.getAttribute("nickname");
-    }
-
     // id 중복 확인
     @PostMapping("/user/signup/username")
     public String checkId(@ModelAttribute SignupRequestDto requestDto) {
