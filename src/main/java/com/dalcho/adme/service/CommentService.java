@@ -50,4 +50,9 @@ public class CommentService {
 
     }
 
+    // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
+    public String findUser(UserDetailsImpl userDetails) {
+        return userDetails.getUser().getNickname();
+    }
+
 }

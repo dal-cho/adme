@@ -19,7 +19,7 @@ public class CommentController {
 
     // 댓글 저장
     @PostMapping("/comment")
-    public Comment setComment(CommentDto commentDto){
+    public Comment setComment(@ModelAttribute CommentDto commentDto) {
         return commentService.setComment(commentDto);
     }
 
@@ -34,5 +34,10 @@ public class CommentController {
                                  @RequestBody CommentDto commentDto,
                                  @AuthenticationPrincipal UserDetailsImpl userDetails) throws AccessDeniedException {
         return commentService.updateComment(commentId, registryId, commentDto, userDetails);
+    }
+
+    @GetMapping("/finduser")  // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
+    public String findUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.findUser(userDetails);
     }
 }
