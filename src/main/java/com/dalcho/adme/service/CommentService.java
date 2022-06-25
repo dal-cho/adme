@@ -31,6 +31,7 @@ public class CommentService {
         return commentList;
     }
 
+    @Transactional
     public Comment updateComment(Long commentId, int registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException {
         registryRepository.findById((long) registryId).orElseThrow(
                 () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
@@ -50,6 +51,22 @@ public class CommentService {
 
     }
 
+    @Transactional
+    public void deleteComment(Long commentId, int registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException {
+        registryRepository.findById((long) registryId).orElseThrow(
+                () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
+        );
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
+        );
+
+        if (!userDetails.getUser().getNickname().equals(comment.getNickname()) ) {
+            throw new AccessDeniedException("권한이 없습니다.");
+        }
+
+        commentRepository.delete(comment);
+    }
     // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
     public String findUser(UserDetailsImpl userDetails) {
         return userDetails.getUser().getNickname();
