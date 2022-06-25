@@ -36,6 +36,14 @@ public class CommentController {
         return commentService.updateComment(commentId, registryId, commentDto, userDetails);
     }
 
+    // 댓글 삭제
+    @DeleteMapping("/comment/{commentId}/registry/{registryId}")
+    public void deleteComment(@PathVariable Long commentId, @PathVariable int registryId,
+                              @RequestBody CommentDto commentDto,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails)throws AccessDeniedException {
+        commentService.deleteComment(commentId, registryId, commentDto, userDetails);
+    }
+
     @GetMapping("/finduser")  // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
     public String findUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.findUser(userDetails);

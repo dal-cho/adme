@@ -18,13 +18,13 @@ public class Comment extends Timestamped {
     @Column(name = "COMMENT_ID")
     private Long idx;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String comment;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private int registryId;
 
     public Comment(CommentDto commentDto) {
