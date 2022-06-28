@@ -37,17 +37,6 @@ dependencies {
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
     // websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    //javax 설정
-//    compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
-
-    // 썸네일 라이브러리 추가
-    //implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
-
-    // 업로드된 파일의 데이터 변환
-    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.9'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.2'
-    //json
-    implementation group: 'org.json', name: 'json', version: '20160810'
 
 }
 
