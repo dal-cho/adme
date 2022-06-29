@@ -11,33 +11,28 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TenSeconds extends Timestamped{
+public class TenSeconds {
 
-    // 비디오에 필요한 요소 id, userId, video, title, comment, tag
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // id 자동 카운트
+    @GeneratedValue(strategy = GenerationType.AUTO)// id 자동 카운트
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;
+    private String fileName;
 
     @Column(nullable = false)
-    private String video;
+    private String uuid;
 
     @Column(nullable = false)
-    private String title;
+    private String uploadPath;
 
     @Column(nullable = false)
-    private String comment;
+    private boolean image;
 
-    @Column(nullable = false)
-    private String tag;
-
-    public TenSeconds(VideoDto videoDto, Long userId) {
-        this.userId = userId;
-        this.video = videoDto.getVideo();
-        this.title = videoDto.getTitle();
-        this.comment = videoDto.getComment();
-        this.tag = videoDto.getTag();
+    public TenSeconds(VideoDto videoDto) {
+        this.fileName = videoDto.getFileName();
+        this.uuid = videoDto.getUuid();
+        this.uploadPath = videoDto.getUploadPath();
+        this.image = videoDto.isImage();
     }
 }
