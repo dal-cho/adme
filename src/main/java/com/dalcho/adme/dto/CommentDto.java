@@ -13,4 +13,5 @@ public class CommentDto {
     private String nickname;
     private String comment;
     private int registryId;
+    private String registryNickname;
 }
