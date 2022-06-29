@@ -50,6 +50,7 @@ public class CommentServiceTest {
         comment.setComment("funfun");
         comment.setNickname("hh");
         comment.setRegistryId(1);
+        comment.setRegistryNickname("first");
 
         //when
         Comment saveComment = commentService.setComment(comment);
@@ -67,16 +68,18 @@ public class CommentServiceTest {
         User user = userService.registerUser(userDto);
         this.nowUser = new UserDetailsImpl(user);
 
-        RegistryDto registryDto = new RegistryDto("닉네임","타이틀","본문");
-
+        // 게시글
+        RegistryDto registryDto = new RegistryDto("test1","타이틀","본문");
         Registry saveRegistry = new Registry(registryDto);
         this.registry = registryRepository.save(saveRegistry);
 
+        // 댓글
         this.commentDto = new CommentDto();
         int registryIdx = Math.toIntExact(registry.getIdx());
         this.commentDto.setComment("comment");
         this.commentDto.setNickname(nowUser.getUsername());
         this.commentDto.setRegistryId(registryIdx);
+        this.commentDto.setRegistryNickname(registry.getNickname()); // 작성자
     }
 
 
@@ -93,6 +96,7 @@ public class CommentServiceTest {
         );
 
         assertEquals("comment의 id값이 일치하는지 확인", comment.getIdx(), commentTest.getIdx());
+        assertEquals("comment의 nickname이 일치하는지 확인", comment.getRegistryNickname(), registry.getNickname());
     }
 
 

@@ -27,10 +27,14 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private int registryId;
 
+    @Column(nullable = false)
+    private String registryNickname;
+
     public Comment(CommentDto commentDto) {
         this.nickname = commentDto.getNickname();
         this.comment = commentDto.getComment();
         this.registryId = commentDto.getRegistryId();
+        this.registryNickname = commentDto.getRegistryNickname();
     }
 
     //    public Comment(CommentDto commentDto, Registry registry) {
