@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -91,6 +92,5 @@ public class CommentRepositoryTest {
         assertThat(saveComment.getComment()).isEqualTo(results.get(0).getComment());
         assertThat(saveComment1.getComment()).isEqualTo(results.get(1).getComment());
     }
-
 
 }
