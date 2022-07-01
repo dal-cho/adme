@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -92,5 +93,19 @@ public class CommentRepositoryTest {
         assertThat(saveComment1.getComment()).isEqualTo(results.get(1).getComment());
     }
 
+    @Test
+    void CommentZero() {
+        Object result = commentRepository.getCommentZero();
+        Object result1 = commentRepository.getCommentZero1();
+        System.out.println(" = = = = = = = = ");
+        System.out.println("");
+        System.out.println(result);
+        System.out.println(result1);
+
+        System.out.println("");
+        System.out.println(" = = = = = = = = ");
+
+        // a테이블에는 값이 있고 b 테이블에는 값이 없는 경우
+    }
 
 }

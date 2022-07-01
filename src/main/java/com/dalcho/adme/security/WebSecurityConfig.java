@@ -39,6 +39,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // h2-console URL 을 login 없이 허용
                 .antMatchers("/h2-console/**").permitAll()
 
+                // 로그인 하기 전 기본 페이지 로그인 없이 허용
+                .antMatchers("/").permitAll() // adme 페이지
+
                 // 그 외 모든 요청은 인증과정 필요
                 .anyRequest().authenticated()
                 .and()
@@ -46,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/user/login")
 //                .failureUrl("/user/login/error")
                 .failureHandler(customFailureHandler)
-                .defaultSuccessUrl("/")
+                .defaultSuccessUrl("/adme")
                 .permitAll()
                 .and()
                 .logout()

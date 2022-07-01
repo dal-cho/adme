@@ -20,7 +20,6 @@ public class UserController {
         this.userService = userService;
     }
 
-
     // 회원 로그인 페이지
     @GetMapping("/user/login")
     public String login(){
@@ -36,8 +35,6 @@ public class UserController {
 
         return model;
     }
-
-
 
 //    @GetMapping("/user/login/error")
 //    public String loginError(Model model) {
@@ -58,9 +55,15 @@ public class UserController {
 //        return "redirect:/";
 //    }
 
-    @GetMapping("/")
+    @GetMapping("/adme") // 기본 페이지
     public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         model.addAttribute("nickname", userDetails.getUser().getNickname());
+        return "adme";
+    }
+
+    @GetMapping("/") // 로그인 없이 이용가능한 페이지
+    public String mainPage() {
         return "index";
     }
+
 }
