@@ -66,4 +66,9 @@ public class UserController {
         return "index";
     }
 
+    @GetMapping("/taste") // 로그인 없이 이용가능한 페이지
+    public String taste() {
+        return "blur";
+    }
+
 }

@@ -42,6 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 로그인 하기 전 기본 페이지 로그인 없이 허용
                 .antMatchers("/").permitAll() // adme 페이지
 
+                .antMatchers("/taste").permitAll() // 공감공간 페이지
+
                 // 그 외 모든 요청은 인증과정 필요
                 .anyRequest().authenticated()
                 .and()
