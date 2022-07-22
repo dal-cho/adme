@@ -26,17 +26,19 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     // 스프링 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    // Thymeleaf (뷰 템플릿 엔진)
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
     // websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // Bzip2 파일 압축
+    implementation 'org.apache.commons:commons-compress:1.21'
 
 }
 

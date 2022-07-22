@@ -1,11 +1,12 @@
 package com.dalcho.adme.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class VideoDto {
     private String fileName;
-    private String uuid;
     private String uploadPath;
-    private boolean image;
+    private MultipartFile image;
+//    private LocalDateTime videoDate;
 }

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TenSeconds {
+public class VideoFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)// id 자동 카운트
@@ -21,18 +21,18 @@ public class TenSeconds {
     private String fileName;
 
     @Column(nullable = false)
-    private String uuid;
-
-    @Column(nullable = false)
     private String uploadPath;
 
     @Column(nullable = false)
-    private boolean image;
+    private String image;
 
-    public TenSeconds(VideoDto videoDto) {
+//    @Column(nullable = false)
+//    private String videoDate;
+
+    public VideoFile(VideoDto videoDto) {
         this.fileName = videoDto.getFileName();
-        this.uuid = videoDto.getUuid();
-        this.uploadPath = videoDto.getUploadPath();
-        this.image = videoDto.isImage();
+        this.uploadPath = String.valueOf(videoDto.getUploadPath());
+        this.image = String.valueOf(videoDto.getImage());
+//        this.videoDate = String.valueOf(videoDto.getVideoDate());
     }
 }
