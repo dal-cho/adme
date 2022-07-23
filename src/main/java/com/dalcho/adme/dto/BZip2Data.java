@@ -30,7 +30,7 @@ public class BZip2Data implements Serializable {
         }
     }
 
-    // PreparedStatement. setBytes (int, bytes)에 설정하는 값이이 메소드로부터 취득된다
+    // PreparedStatement.setBytes(int, bytes)에 설정하는 값이 메소드로부터 취득된다
     byte[] getValue() {
         if ( bzip2 == null ) {
             bzip2 = CompressUtils.compress( data );

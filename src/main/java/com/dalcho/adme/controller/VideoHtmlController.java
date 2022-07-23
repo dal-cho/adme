@@ -14,4 +14,5 @@ public class VideoHtmlController {
     public void tenSeconds() {
         log.info("TenSeconds Page");
     }
+
 }
