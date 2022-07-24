@@ -1,18 +1,9 @@
 package com.dalcho.adme.service;
 
-import com.dalcho.adme.domain.TenSeconds;
-import com.dalcho.adme.dto.SignupRequestDto;
-import com.dalcho.adme.dto.VideoDto;
-import com.dalcho.adme.domain.User;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.sql.SQLException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,11 +17,8 @@ public class UserVideoIntergrationTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    TenSecondsService tenSecondsService;
 
     Long userId = null;
-    TenSeconds createVideo = null;
 
 //    @Test
 //    @Order(1)
