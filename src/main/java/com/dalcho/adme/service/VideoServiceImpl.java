@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service("VideoService")
@@ -23,12 +25,15 @@ public class VideoServiceImpl implements VideoService{
 
     // application.properties 에서 설정한 파일 저장 경로
     @Value("${spring.servlet.multipart.location}")
-    private String location;
+    private String fileUploadLocation;
+
+    public List<VideoFile> getList() throws IOException{
+        return videoRepository.findAll();
+    }
 
     @Override
     public VideoFile uploadFile(MultipartFile file, VideoDto videoDto) throws IOException {
-
-        log.info("VideoServiceImpl");
+        LocalDateTime now = LocalDateTime.now();
 
         String filename = file.getOriginalFilename();
         String dbUploadFilename = NameUtils.createStoreFileName(filename);
@@ -38,16 +43,20 @@ public class VideoServiceImpl implements VideoService{
         }
 
         // Static 폴더에 파일 저장 -> 추후 Server 에 저장
-        multipartFileUtils.saveFile(file, filename, location);
+        multipartFileUtils.saveFile(file, dbUploadFilename, fileUploadLocation);
 
         // 서버에 저장하는 파일의 이름은 uuid 설정으로 중복을 피해준다.
         videoDto.setFileName(dbUploadFilename);
-        videoDto.setUploadPath(location);
-        videoDto.setImage(file);
+        videoDto.setUploadPath(fileUploadLocation);
+        videoDto.setFileSize(file.getSize());
+        videoDto.setFileType(file.getContentType());
+        videoDto.setFileData(file.getBytes());
+        videoDto.setVideoDate(now);
 
         VideoFile videoFile = new VideoFile(videoDto);
 
         videoRepository.save(videoFile);
+
         return videoFile;
     }
 }
