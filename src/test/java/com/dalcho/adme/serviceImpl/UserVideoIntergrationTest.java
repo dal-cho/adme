@@ -1,5 +1,6 @@
-package com.dalcho.adme.service;
+package com.dalcho.adme.serviceImpl;
 
+import com.dalcho.adme.service.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
