@@ -1,7 +1,8 @@
-package com.dalcho.adme.service;
+package com.dalcho.adme.serviceImpl;
 
+import com.dalcho.adme.Impl.RegistryServiceImpl;
 import com.dalcho.adme.repository.RegistryRepository;
-import org.assertj.core.api.Assertions;
+import com.dalcho.adme.service.RegistryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,9 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.*;
-import java.util.List;
-import java.util.Random;
-
 //import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -23,7 +21,7 @@ public class RegistryPagingTest {
     @Autowired
     RegistryRepository registryRepository;
     @Autowired
-    RegistryService registryService;
+    RegistryServiceImpl registryService;
 
     @DisplayName("MySql을 이용한 TEST")
     @Test

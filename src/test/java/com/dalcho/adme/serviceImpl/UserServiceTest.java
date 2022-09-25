@@ -1,5 +1,6 @@
-package com.dalcho.adme.service;
+package com.dalcho.adme.serviceImpl;
 
+import com.dalcho.adme.Impl.UserServiceImpl;
 import com.dalcho.adme.dto.SignupRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest ( webEnvironment = SpringBootTest . WebEnvironment . RANDOM_PORT )
 @Transactional
 class UserServiceTest {
-    @Autowired UserService userService;
+    @Autowired
+    UserServiceImpl userService;
     @Autowired private PasswordEncoder passwordEncoder;
 
     @Test

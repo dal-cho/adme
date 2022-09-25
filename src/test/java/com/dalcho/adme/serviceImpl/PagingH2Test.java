@@ -1,7 +1,9 @@
-package com.dalcho.adme.service;
+package com.dalcho.adme.serviceImpl;
 
+import com.dalcho.adme.Impl.RegistryServiceImpl;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.repository.RegistryRepository;
+import com.dalcho.adme.service.RegistryService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.List;
-
 @DisplayName("H2를 이용한 TEST")
 @TestPropertySource(locations = "/application.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -21,7 +21,7 @@ public class PagingH2Test {
     @Autowired
     RegistryRepository registryRepository;
     @Autowired
-    RegistryService registryService;
+    RegistryServiceImpl registryService;
 
     @Test
     @DisplayName("실제 로직이 잘 동작하는지 test")

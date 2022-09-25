@@ -1,5 +1,6 @@
-package com.dalcho.adme.service;
+package com.dalcho.adme.serviceImpl;
 
+import com.dalcho.adme.Impl.CommentServiceImpl;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
@@ -9,6 +10,8 @@ import com.dalcho.adme.dto.SignupRequestDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.security.UserDetailsImpl;
+import com.dalcho.adme.service.RegistryService;
+import com.dalcho.adme.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +24,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.util.AssertionErrors.assertEquals;
@@ -32,10 +34,12 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 @SpringBootTest( webEnvironment = SpringBootTest . WebEnvironment . RANDOM_PORT )
 @Transactional
 public class CommentServiceTest {
-    @Autowired CommentService commentService;
+    @Autowired CommentServiceImpl commentService;
     @Autowired CommentRepository commentRepository;
-    @Autowired RegistryService registryService;
-    @Autowired UserService userService;
+    @Autowired
+    RegistryService registryService;
+    @Autowired
+    UserService userService;
     @Autowired RegistryRepository registryRepository;
 
     UserDetailsImpl nowUser;
