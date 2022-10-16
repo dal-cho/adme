@@ -8,18 +8,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    //private final AuthenticationFailureHandler UserLoginFailHandler;
+public class WebSecurityConfig {
     private final AuthenticationFailureHandler customFailureHandler;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { //SecurityFilterChain 를 빈으로 등록하는 방식
         http.csrf().disable();
         http.headers().frameOptions().disable();
 
@@ -57,6 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutUrl("/user/logout")
                 .permitAll();
+        return http.build();
     }
 
     @Bean
