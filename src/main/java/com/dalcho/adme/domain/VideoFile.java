@@ -9,7 +9,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class VideoFile {
 
@@ -18,10 +17,13 @@ public class VideoFile {
     private Long id;
 
     @Column(nullable = false)
-    private String fileName;
+    private String uuid;
 
     @Column(nullable = false)
     private String uploadPath;
+
+    @Column(nullable = false)
+    private String ext;
 
     @Column(nullable = false)
     private Long fileSize; // 파일 사이즈 바이트 수
@@ -36,8 +38,9 @@ public class VideoFile {
     private String videoDate;
 
     public VideoFile(VideoDto videoDto) {
-        this.fileName = videoDto.getFileName();
+        this.uuid = videoDto.getUuid();
         this.uploadPath = String.valueOf(videoDto.getUploadPath());
+        this.ext = videoDto.getExt();
         this.fileSize = videoDto.getFileSize();
         this.fileType = videoDto.getFileType();
         this.fileData = videoDto.getFileData();
