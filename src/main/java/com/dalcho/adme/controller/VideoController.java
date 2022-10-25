@@ -27,8 +27,8 @@ public class VideoController {
     }
 
     @PostMapping(value = "/tenseconds/videos")
-    public VideoFile uploadFile(@RequestParam("uploadFile") MultipartFile file, VideoDto dto) throws Exception {
+    public VideoFile uploadFile(@RequestParam("uploadFile") MultipartFile file) throws Exception {
         log.info("VideoController Post");
-        return videoService.uploadFile(file, dto);
+        return videoService.uploadFile(file);
     }
 }
