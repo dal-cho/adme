@@ -3,6 +3,8 @@ package com.dalcho.adme.service;
 import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.VideoDto;
 import com.dalcho.adme.repository.VideoRepository;
+import com.dalcho.adme.system.OSValidator;
+import com.dalcho.adme.utils.videoUtils.FfmpegUtils;
 import com.dalcho.adme.utils.videoUtils.MultipartFileUtils;
 import com.dalcho.adme.utils.videoUtils.NameUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,43 +22,53 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VideoServiceImpl implements VideoService{
 
-    private final MultipartFileUtils multipartFileUtils;
     private final VideoRepository videoRepository;
+    private final OSValidator osValidator;
 
-    // application.properties 에서 설정한 파일 저장 경로
-    @Value("${spring.servlet.multipart.location}")
-    private String fileUploadLocation;
+//    // application.properties 에서 설정한 파일 저장 경로
+//    private final String fileUploadLocation = osValidator.checkOs();
 
-    public List<VideoFile> getList() throws IOException{
-        return videoRepository.findAll();
-    }
+    @Value("${ffmpeg.path}")
+    private String ffmpegPath;
+    @Value("${ffprobe.path}")
+    private String ffprobePath;
 
     @Override
-    public VideoFile uploadFile(MultipartFile file, VideoDto videoDto) throws IOException {
-        LocalDateTime now = LocalDateTime.now();
-
-        String filename = file.getOriginalFilename();
-        String dbUploadFilename = NameUtils.createStoreFileName(filename);
+    public VideoFile uploadFile(MultipartFile file) throws IOException {
 
         if ( file.isEmpty()) {
-            throw new IllegalArgumentException( "cloud not save empty file. " + filename );
+            throw new IllegalArgumentException("cloud not save empty file. " + file.getOriginalFilename());
         }
 
-        // Static 폴더에 파일 저장 -> 추후 Server 에 저장
-        multipartFileUtils.saveFile(file, dbUploadFilename, fileUploadLocation);
+        LocalDateTime now = LocalDateTime.now();
+        String filename = file.getOriginalFilename();
+        String uploadPath = osValidator.checkOs();
 
-        // 서버에 저장하는 파일의 이름은 uuid 설정으로 중복을 피해준다.
-        videoDto.setFileName(dbUploadFilename);
-        videoDto.setUploadPath(fileUploadLocation);
-        videoDto.setFileSize(file.getSize());
-        videoDto.setFileType(file.getContentType());
-        videoDto.setFileData(file.getBytes());
-        videoDto.setVideoDate(now);
+        VideoDto videoDto = VideoDto.builder()
+                .uuid(NameUtils.createStoreFileName(filename))
+                .uploadPath(uploadPath)
+                .ext(NameUtils.extractExt(filename))
+                .fileSize(file.getSize())
+                .fileType(file.getContentType())
+                .fileData(file.getBytes())
+                .videoDate(now)
+                .build();
+
+        // Static 폴더에 파일 저장 -> 추후 Server 에 저장
+        MultipartFileUtils.saveFile(file, videoDto);
+
+        //썸네일 만들기
+        FfmpegUtils.createThumbnail(ffmpegPath, ffprobePath, videoDto);
 
         VideoFile videoFile = new VideoFile(videoDto);
 
-        videoRepository.save(videoFile);
+//        contents.setVideo(videoRepository.save(videoFile)) // 비디오 db에 저장 + 비디오 Entity 값 리턴
+//        contentsRepository.save(contents)
 
-        return videoFile;
+        return videoRepository.save(videoFile);
+    }
+
+    public List<VideoFile> getList() {
+        return videoRepository.findAll();
     }
 }
