@@ -24,13 +24,13 @@ public class CommentController {
     }
 
     @GetMapping("/comment")
-    public List<Comment> getComment(@RequestParam int idx){
+    public List<Comment> getComment(@RequestParam Long idx){
         return commentService.getComment(idx);
     }
 
     // AuthenticationPrincipal : 로그인한 사용자의 정보를 파라메터로 받고 싶을때
     @PutMapping("/comment/{commentId}/registry/{registryId}")
-    public Comment updateComment(@PathVariable Long commentId, @PathVariable int registryId,
+    public Comment updateComment(@PathVariable Long commentId, @PathVariable Long registryId,
                                  @RequestBody CommentDto commentDto,
                                  @AuthenticationPrincipal UserDetailsImpl userDetails) throws AccessDeniedException {
         return commentService.updateComment(commentId, registryId, commentDto, userDetails);
@@ -38,7 +38,7 @@ public class CommentController {
 
     // 댓글 삭제
     @DeleteMapping("/comment/{commentId}/registry/{registryId}")
-    public void deleteComment(@PathVariable Long commentId, @PathVariable int registryId,
+    public void deleteComment(@PathVariable Long commentId, @PathVariable Long registryId,
                               @RequestBody CommentDto commentDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails)throws AccessDeniedException {
         commentService.deleteComment(commentId, registryId, commentDto, userDetails);

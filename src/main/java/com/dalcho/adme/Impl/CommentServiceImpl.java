@@ -1,6 +1,7 @@
 package com.dalcho.adme.Impl;
 
 import com.dalcho.adme.domain.Comment;
+import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.dto.CommentDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
@@ -22,17 +23,20 @@ public class CommentServiceImpl implements CommentService {
 	@Transactional
 	public Comment setComment(CommentDto commentDto) {
 		Comment comment = new Comment(commentDto);
+		// 연관관계 매핑
+		Registry registry = registryRepository.findById(comment.getRegistry().getIdx()).get();
+		comment.setRegistry(registry);
 		commentRepository.save(comment);
 		return comment;
 	}
 
-	public List<Comment> getComment(int idx){
+	public List<Comment> getComment(Long idx){
 		List<Comment> commentList = commentRepository.findAllByRegistryId(idx);
 		return commentList;
 	}
 
 	@Transactional
-	public Comment updateComment(Long commentId, int registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws
+	public Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws
 			AccessDeniedException {
 		registryRepository.findById((long) registryId).orElseThrow(
 				() -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
@@ -53,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Transactional
-	public void deleteComment(Long commentId, int registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException {
+	public void deleteComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException {
 		registryRepository.findById((long) registryId).orElseThrow(
 				() -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
 		);

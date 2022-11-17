@@ -12,6 +12,6 @@ import lombok.Setter;
 public class CommentDto {
     private String nickname;
     private String comment;
-    private int registryId;
+    private Long registryId;
     private String registryNickname;
 }

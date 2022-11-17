@@ -11,11 +11,11 @@ public interface CommentService {
 
     Comment setComment(CommentDto commentDto);
 
-    List<Comment> getComment(int idx);
+    List<Comment> getComment(Long idx);
 
-   Comment updateComment(Long commentId, int registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException;
+   Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException;
 
-    void deleteComment(Long commentId, int registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException;
+    void deleteComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException;
 
     String findUser(UserDetailsImpl userDetails);
 }
