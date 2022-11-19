@@ -42,7 +42,7 @@ public class CommentRepositoryTest {
 
     @BeforeEach
     void beforeEach() {
-        commentDto = new CommentDto("commentNickname", "testComment", 1,"registryNickname");
+        commentDto = new CommentDto("commentNickname", "testComment", 1L,"registryNickname");
         comment = new Comment(commentDto);
     }
 
@@ -72,13 +72,13 @@ public class CommentRepositoryTest {
         CommentDto comment = new CommentDto();
         comment.setComment("funfun");
         comment.setNickname("hh");
-        comment.setRegistryId(1);
+        comment.setRegistryId(1L);
         comment.setRegistryNickname("nickname");
 
         CommentDto comment1 = new CommentDto();
         comment1.setComment("wow");
         comment1.setNickname("hh");
-        comment1.setRegistryId(1);
+        comment1.setRegistryId(1L);
         comment1.setRegistryNickname("nickname");
 
         //when
@@ -87,7 +87,7 @@ public class CommentRepositoryTest {
         Comment saveComment1 = commentRepository.save(new Comment(comment1));
 
         //then
-        int idx = Math.toIntExact(saveRegistry.getIdx()); // long을 int로 형변환
+        Long idx = saveRegistry.getIdx();
         List<Comment> results = commentRepository.findAllByRegistryId(idx);
         assertThat(saveComment.getComment()).isEqualTo(results.get(0).getComment());
         assertThat(saveComment1.getComment()).isEqualTo(results.get(1).getComment());

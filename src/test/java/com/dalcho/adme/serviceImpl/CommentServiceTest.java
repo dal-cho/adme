@@ -53,7 +53,7 @@ public class CommentServiceTest {
         CommentDto comment = new CommentDto();
         comment.setComment("funfun");
         comment.setNickname("hh");
-        comment.setRegistryId(1);
+        comment.setRegistryId(1L);
         comment.setRegistryNickname("first");
 
         //when
@@ -79,10 +79,9 @@ public class CommentServiceTest {
 
         // 댓글
         this.commentDto = new CommentDto();
-        int registryIdx = Math.toIntExact(registry.getIdx());
         this.commentDto.setComment("comment");
         this.commentDto.setNickname(nowUser.getUsername());
-        this.commentDto.setRegistryId(registryIdx);
+        this.commentDto.setRegistryId(registry.getIdx());
         this.commentDto.setRegistryNickname(registry.getNickname()); // 작성자
     }
 
@@ -110,7 +109,7 @@ public class CommentServiceTest {
     @DisplayName("comment 수정")
     void updateComment() throws IOException {
 
-        int registryIdx = Math.toIntExact(registry.getIdx());
+        //int registryIdx = Math.toIntExact(registry.getIdx());
         Comment comment = commentService.setComment(commentDto);
 
         CommentDto commentDtoEdit = new CommentDto();
@@ -118,7 +117,7 @@ public class CommentServiceTest {
 
 
         //when
-        Comment commentTest = commentService.updateComment(comment.getIdx(), registryIdx, commentDtoEdit, nowUser);
+        Comment commentTest = commentService.updateComment(comment.getIdx(), comment.getRegistryId(), commentDtoEdit, nowUser);
 
         //then
         assertEquals("Comment Id 값이 일치하는지 확인.", comment.getIdx(), commentTest.getIdx());
@@ -134,8 +133,7 @@ public class CommentServiceTest {
         Comment comment = commentService.setComment(commentDto);
 
         //when
-        int registryIdx = Math.toIntExact(registry.getIdx());
-        commentService.deleteComment(comment.getIdx(), registryIdx, commentDto, nowUser);
+        commentService.deleteComment(comment.getIdx(), comment.getRegistryId(), commentDto, nowUser);
 
         // then
         Optional<Comment> commentTest = commentRepository.findById(comment.getIdx());
