@@ -26,24 +26,23 @@ public class CommentandRegistryTest {
 
     @Test
     void commentSave_Identity() {
-
-        Registry registry = new Registry();
-        registry.setNickname("coco");
-        registry.setTitle("안녕하세요");
-        registry.setMain("hi");
-
+        Registry registry = Registry.builder()
+                .nickname("coco")
+                .title("안녕하세요")
+                .main("hi")
+                .build();
         registryRepository.save(registry);
 
-        Comment comment = new Comment();
-        comment.setComment("❤️🧡💛💚💙💜🤎🖤");
-        comment.setNickname("우헤헤");
-        comment.setRegistryId(5L);
-        comment.setRegistryNickname("pop");
+        Comment comment = Comment.builder()
+                .nickname("우헤헤")
+                .comment("❤️🧡💛💚💙💜🤎🖤")
+                .registry(registry)
+                .build();
 
         comment.setRegistry(registry);
         commentRepository.save(comment);
 
-        Comment savedComment  = commentRepository.findById(1L).get();
+        Comment savedComment = commentRepository.findById(1L).get();
         Registry savedRegistry = savedComment.getRegistry();
 
         Assertions.assertThat("coco").isEqualTo(savedRegistry.getNickname());

@@ -3,17 +3,16 @@ package com.dalcho.adme.domain;
 import com.dalcho.adme.domain.Timestamped;
 import com.dalcho.adme.dto.CommentDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@Setter
+
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Comment extends Timestamped {
     @Id
@@ -26,12 +25,6 @@ public class Comment extends Timestamped {
 
     @Column(nullable = false)
     private String comment;
-
-    @Column(name = "registryIdd", nullable = false) //registryId
-    private Long registryId;
-
-    @Column(nullable = false)
-    private String registryNickname;
 
     @ManyToOne
     @JoinColumn(name = "registry_id")
@@ -46,7 +39,7 @@ public class Comment extends Timestamped {
         //registry.getComments().add(this);
 
         // 무한 루프 안걸리게 하기
-        if (! registry.getComments().contains(this)) {
+        if (!registry.getComments().contains(this)) {
             registry.addComment(this);
 
         }
@@ -55,12 +48,23 @@ public class Comment extends Timestamped {
     public Comment(CommentDto commentDto) {
         this.nickname = commentDto.getNickname();
         this.comment = commentDto.getComment();
-        this.registryId = commentDto.getRegistryId();
-        this.registryNickname = commentDto.getRegistryNickname();
+        Long registryIdx = commentDto.getRegistryIdx();
+    }
+
+    @Builder
+    public Comment(String nickname, String comment, Registry registry) {
+        this.nickname = nickname;
+        this.comment = comment;
+        this.registry = registry;
     }
 
     @Override
     public String toString() {
         return "id : " + idx + ", comment : " + comment;
     }
+
+    public void updateComment(String comment) {
+        this.comment = comment;
+    }
+
 }
