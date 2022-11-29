@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +23,12 @@ public class CommentServiceImpl implements CommentService {
 
 	@Transactional
 	public Comment setComment(CommentDto commentDto) {
-		Comment comment = new Comment(commentDto);
+		Registry registryId = registryRepository.getById(commentDto.getRegistryIdx());
+		Comment comment = Comment.builder()
+				.comment(commentDto.getComment())
+				.nickname(commentDto.getNickname())
+				.registry(registryId)
+				.build();
 		// 연관관계 매핑
 		Registry registry = registryRepository.findById(comment.getRegistry().getIdx()).get();
 		comment.setRegistry(registry);
@@ -31,14 +37,14 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	public List<Comment> getComment(Long idx){
-		List<Comment> commentList = commentRepository.findAllByRegistryId(idx);
+		List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
 		return commentList;
 	}
 
 	@Transactional
 	public Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws
 			AccessDeniedException {
-		registryRepository.findById((long) registryId).orElseThrow(
+		registryRepository.findById(registryId).orElseThrow(
 				() -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
 		);
 
@@ -50,15 +56,14 @@ public class CommentServiceImpl implements CommentService {
 			throw new AccessDeniedException("권한이 없습니다.");
 		}
 
-		comment.setComment(commentDto.getComment());
+		comment.updateComment(commentDto.getComment());
 		commentRepository.save(comment);
 		return comment;
-
 	}
 
 	@Transactional
 	public void deleteComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException {
-		registryRepository.findById((long) registryId).orElseThrow(
+		registryRepository.findById(registryId).orElseThrow(
 				() -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
 		);
 

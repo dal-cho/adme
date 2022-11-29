@@ -21,10 +21,16 @@ class RegistryRepositoryTest { // 검증 완료 o
     @Test
     void registryTest() throws Exception {
         //given
-        Registry registry = new Registry();
-        registry.setTitle("hi");
-        registry.setMain("hello");
-        registry.setNickname("testCodeId");
+//        Registry registry = new Registry();
+//        registry.setTitle("hi");
+//        registry.setMain("hello");
+//        registry.setNickname("testCodeId");
+
+        Registry registry = Registry.builder()
+                .nickname("coco")
+                .title("hi")
+                .main("hello")
+                .build();
 
         //when
         registryRepository.save(registry);

@@ -8,12 +8,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@ToString
 public class Registry extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -22,6 +20,10 @@ public class Registry extends Timestamped {
 
     @Column(nullable = false)
     private String nickname;
+
+    public void setIdx(Long idx) {
+        this.idx = idx;
+    }
 
     @Column(nullable = false)
     private String title;
@@ -35,6 +37,14 @@ public class Registry extends Timestamped {
 
     public Registry(long idx, String nickname, String title, String main) {
         super();
+    }
+
+
+    @Builder
+    public Registry(String nickname, String title, String main) {
+        this.nickname = nickname;
+        this.title = title;
+        this.main = main;
     }
 
     public void addComment(Comment comment) {

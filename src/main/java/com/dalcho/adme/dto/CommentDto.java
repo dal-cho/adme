@@ -1,9 +1,7 @@
 package com.dalcho.adme.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.dalcho.adme.domain.Registry;
+import lombok.*;
 
 @Setter
 @Getter
@@ -12,6 +10,5 @@ import lombok.Setter;
 public class CommentDto {
     private String nickname;
     private String comment;
-    private Long registryId;
-    private String registryNickname;
+    private Long registryIdx;
 }
