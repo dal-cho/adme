@@ -1,5 +1,6 @@
 package com.dalcho.adme.controller;
 
+import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.CommentService;
 import com.dalcho.adme.domain.Comment;
@@ -10,7 +11,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -47,5 +50,10 @@ public class CommentController {
     @GetMapping("/finduser")  // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
     public String findUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.findUser(userDetails);
+    }
+
+    @GetMapping("/needComment")
+    public List<Optional<Registry>> needComments() {
+        return commentService.needComments();
     }
 }

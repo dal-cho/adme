@@ -21,10 +21,6 @@ public class Registry extends Timestamped {
     @Column(nullable = false)
     private String nickname;
 
-    public void setIdx(Long idx) {
-        this.idx = idx;
-    }
-
     @Column(nullable = false)
     private String title;
 
@@ -39,6 +35,9 @@ public class Registry extends Timestamped {
         super();
     }
 
+    public void setIdx(Long idx) {
+        this.idx = idx;
+    }
 
     @Builder
     public Registry(String nickname, String title, String main) {
