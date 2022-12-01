@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService {
 	// id 중복 체크
 	public String checkId(SignupRequestDto requestDto) {
 		String username = requestDto.getUsername();
-		System.out.println("username = " + username);
 		// 회원 ID 중복 확인
 		Optional<User> found = userRepository.findByUsername(username);
 		if (found.isPresent()) { // isPresent : 값이 있는지 check
@@ -62,7 +61,6 @@ public class UserServiceImpl implements UserService {
 
 	public String checkNickname(SignupRequestDto requestDto) {
 		String nickname = requestDto.getNickname();
-		System.out.println("nickname = " + nickname);
 		// 회원 닉네임 중복 확인
 		Optional<User> found2 = userRepository.findByNickname(nickname);
 		if (found2.isPresent()) { // isPresent : 값이 있는지 check
@@ -80,9 +78,6 @@ public class UserServiceImpl implements UserService {
 	public String checkPasswordConfirm(SignupRequestDto requestDto) {
 		String password = requestDto.getPassword();
 		String passwordConfirm = requestDto.getPasswordConfirm();
-
-		System.out.println("password = " + password);
-		System.out.println("passwordConfirm = " + passwordConfirm);
 
 		if (passwordConfirm == null || passwordConfirm.isEmpty()) {
 			return "비밀번호를 입력해주세요";
@@ -111,14 +106,11 @@ public class UserServiceImpl implements UserService {
 		String username = loginDto.getUsername();
 		String password = loginDto.getPassword();
 
-		System.out.println("service");
 		// id 찾기
 		Optional<User> foundId = userRepository.findByUsername(username);
 
 		//pw 찾기
 		Optional<User> foundPw = userRepository.findAllByUsername(username);
-		System.out.println("foundPw = " + foundPw);
-
 
 		if (foundId.isPresent()) {
 			String encodedPw = foundPw.get().getPassword();

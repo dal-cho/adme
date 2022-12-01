@@ -27,7 +27,7 @@ public class Comment extends Timestamped {
     private String comment;
 
     @ManyToOne
-    @JoinColumn(name = "registry_id")
+    @JoinColumn(name = "registry_id", nullable = false)
     private Registry registry;
 
     public void setRegistry(Registry registry) {
