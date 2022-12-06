@@ -48,18 +48,22 @@ public class CommentRepositoryTest {
                 .title("안녕하세요")
                 .main("hi")
                 .build();
-        commentDto = new CommentDto("commentNickname","comment", registry);
-        comment = new Comment(commentDto);
+        Registry saveRegistry = registryRepository.save(registry);
+        commentDto = new CommentDto("commentNickname","comment", saveRegistry.getIdx());
+//        comment = new Comment(commentDto);
+//        comment = commentRepository.save(commentDto.toEntity());
     }
 
 
     @Test
     @DisplayName("comment 저장")
     void saveComment() {
-        Comment saveComment = commentRepository.save(comment);
+        System.out.println(commentDto.toString());
+        Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
+        Comment saveComment = commentRepository.save(commentDto.toEntity(registry));
 
-        assertThat(comment).isSameAs(saveComment);
-        assertThat(comment.getComment()).isEqualTo(saveComment.getComment());
+        assertThat(registry).isSameAs(saveComment.getRegistry());
+        assertThat("comment").isEqualTo(saveComment.getComment());
         //assertThat(commentRepository.count()).isEqualTo(1);
 
     }
@@ -84,11 +88,11 @@ public class CommentRepositoryTest {
         comment1.setNickname("hh");
 
         //when
-        Registry saveRegistry = registryRepository.save(new Registry(registry));
-        comment.setRegistry(saveRegistry);
-        comment1.setRegistry(saveRegistry);
-        Comment saveComment = commentRepository.save(new Comment(comment));
-        Comment saveComment1 = commentRepository.save(new Comment(comment1));
+        Registry saveRegistry = registryRepository.save(registry.toEntity());
+//        comment.setRegistryIdx(saveRegistry.getIdx());
+//        comment1.setRegistryIdx(saveRegistry.getIdx());
+        Comment saveComment = commentRepository.save(comment.toEntity(saveRegistry));
+        Comment saveComment1 = commentRepository.save(comment1.toEntity(saveRegistry));
 
         //then
         Long idx = saveRegistry.getIdx();

@@ -55,15 +55,18 @@ public class CommentServiceTest {
                 .title("안녕하세요")
                 .main("hi")
                 .build();
-        Registry saveRegistry = registryRepository.save(registry1);
+        Registry saveRegistry1 = registryRepository.save(registry1);
 
-        CommentDto comment = new CommentDto();
-        comment.setComment("funfun");
-        comment.setNickname("hh");
-        comment.setRegistry(saveRegistry);
+        CommentDto commentDto = new CommentDto();
+        commentDto.setComment("funfun");
+        commentDto.setNickname("hh");
+        commentDto.setRegistryIdx(saveRegistry1.getIdx());
+
+        Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
+        Comment comment = commentDto.toEntity(registry);
 
         //when
-        Comment saveComment = commentService.setComment(comment);
+        Comment saveComment = commentService.setComment(commentDto);
 
         //then
         Assertions.assertThat(comment.getComment()).isEqualTo(saveComment.getComment());
@@ -78,15 +81,15 @@ public class CommentServiceTest {
         this.nowUser = new UserDetailsImpl(user);
 
         // 게시글
-        RegistryDto registryDto = new RegistryDto("test1","타이틀","본문");
-        Registry saveRegistry = new Registry(registryDto);
+        Registry saveRegistry = new Registry("test1","타이틀","본문");
+        //Registry saveRegistry = new Registry(registryDto);
         this.registry = registryRepository.save(saveRegistry);
 
         // 댓글
         this.commentDto = new CommentDto();
         this.commentDto.setComment("comment");
         this.commentDto.setNickname(nowUser.getUsername());
-        this.commentDto.setRegistry(saveRegistry);
+        this.commentDto.setRegistryIdx(saveRegistry.getIdx());
     }
 
 

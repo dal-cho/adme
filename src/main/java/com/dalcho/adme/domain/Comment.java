@@ -45,12 +45,6 @@ public class Comment extends Timestamped {
         }
     }
 
-    public Comment(CommentDto commentDto) {
-        this.nickname = commentDto.getNickname();
-        this.comment = commentDto.getComment();
-        Long registryIdx = commentDto.getRegistryIdx();
-    }
-
     @Builder
     public Comment(String nickname, String comment, Registry registry) {
         this.nickname = nickname;
