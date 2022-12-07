@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -25,17 +22,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     public Comment setComment(CommentDto commentDto) {
-        Registry registryId = registryRepository.getById(commentDto.getRegistryIdx());
-        Comment comment = Comment.builder()
-                .comment(commentDto.getComment())
-                .nickname(commentDto.getNickname())
-                .registry(registryId)
-                .build();
-        // 연관관계 매핑
-        Registry registry = registryRepository.findById(comment.getRegistry().getIdx()).get();
-        comment.setRegistry(registry);
-        commentRepository.save(comment);
-        return comment;
+        Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
+        Comment comment = commentDto.toEntity(registry);
+        //comment.setRegistry(registry);
+        Comment save = commentRepository.save(comment);
+        return save;
     }
 
     public List<Comment> getComment(Long idx) {

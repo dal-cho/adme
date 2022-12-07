@@ -55,10 +55,4 @@ public class Registry extends Timestamped {
             comment.setRegistry(this);
         }
     }
-
-    public Registry(RegistryDto registryDto) {
-        this.title = registryDto.getTitle();
-        this.main = registryDto.getMain();
-        this.nickname = registryDto.getNickname();
-    }
 }
