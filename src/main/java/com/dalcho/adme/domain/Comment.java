@@ -3,6 +3,7 @@ package com.dalcho.adme.domain;
 import com.dalcho.adme.domain.Timestamped;
 import com.dalcho.adme.dto.CommentDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,7 +27,8 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private String comment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "registry_id", nullable = false)
     private Registry registry;
 

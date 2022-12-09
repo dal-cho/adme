@@ -14,7 +14,4 @@ import java.util.List;
 public interface RegistryRepository extends JpaRepository<Registry, Long> {
     // 생성 날짜 순으로 보여주기(desc : 내림차순)
     Page<Registry> findAllByOrderByCreatedAtDesc(Pageable pageable);
-
-    @Query("select r.idx from Registry r")
-    ArrayList<Long> findAllByIdx();
 }

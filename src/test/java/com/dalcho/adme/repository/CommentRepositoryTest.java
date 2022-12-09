@@ -27,7 +27,6 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("H2를 이용한 Comment TEST")
 @TestPropertySource(locations = "/application.properties")
-@ExtendWith( SpringExtension. class )
 @SpringBootTest( webEnvironment = SpringBootTest . WebEnvironment . RANDOM_PORT )
 @Transactional
 public class CommentRepositoryTest {

@@ -24,7 +24,6 @@ public class CommentServiceImpl implements CommentService {
     public Comment setComment(CommentDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
         Comment comment = commentDto.toEntity(registry);
-        //comment.setRegistry(registry);
         Comment save = commentRepository.save(comment);
         return save;
     }
@@ -76,33 +75,12 @@ public class CommentServiceImpl implements CommentService {
         return userDetails.getUser().getNickname();
     }
 
+
     public List<Optional<Registry>> needComments() {
-        List<Long> allByIdx = registryRepository.findAllByIdx();
-        List<Long> allByRegistry_idx = commentRepository.findAllByRegistry_Idx();
-        List<Long> temp = new ArrayList<>();
-        temp.addAll(allByIdx);
-
-        for (Long item : allByIdx) {
-            if (allByRegistry_idx.contains(item) == true) {
-                temp.remove(item);
-            }
-        }
-
+        List<Long> temp = commentRepository.findTop10By();
         List<Optional<Registry>> result = new ArrayList<>();
-
-        if (temp.isEmpty()) {
-            Registry registry = new Registry("admin", "admin","admin");
-            result.add(Optional.ofNullable(registry));
-        }
-
-        if (temp.toArray().length > 10) {
-            for (int i = 0; i < 10; i++) {
-                result.add(registryRepository.findById(temp.get(i)));
-            }
-        } else {
-            for (int i = 0; i < temp.toArray().length; i++) {
-                result.add(registryRepository.findById(temp.get(i)));
-            }
+        for (int i = 0; i < temp.toArray().length; i++) {
+            result.add(registryRepository.findById(temp.get(i)));
         }
         return result;
     }
