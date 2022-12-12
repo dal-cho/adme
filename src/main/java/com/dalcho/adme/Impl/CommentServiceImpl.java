@@ -8,6 +8,8 @@ import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ public class CommentServiceImpl implements CommentService {
     private final RegistryRepository registryRepository;
 
     @Transactional
-    public Comment setComment(CommentDto commentDto) {
+    public Comment postComment(CommentDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
         Comment comment = commentDto.toEntity(registry);
         Comment save = commentRepository.save(comment);
@@ -77,7 +79,8 @@ public class CommentServiceImpl implements CommentService {
 
 
     public List<Optional<Registry>> needComments() {
-        List<Long> temp = commentRepository.findTop10By();
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Long> temp = commentRepository.findTop10By(pageable);
         List<Optional<Registry>> result = new ArrayList<>();
         for (int i = 0; i < temp.toArray().length; i++) {
             result.add(registryRepository.findById(temp.get(i)));

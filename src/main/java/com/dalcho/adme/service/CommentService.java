@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface CommentService {
 
-    Comment setComment(CommentDto commentDto);
+    Comment postComment(CommentDto commentDto);
 
     List<Comment> getComment(Long idx);
 
