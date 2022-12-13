@@ -22,8 +22,8 @@ public class CommentController {
 
     // 댓글 저장
     @PostMapping("/comment")
-    public Comment setComment(@ModelAttribute CommentDto commentDto) {
-        return commentService.setComment(commentDto);
+    public Comment postComment(@ModelAttribute CommentDto commentDto) {
+        return commentService.postComment(commentDto);
     }
 
     @GetMapping("/comment")
