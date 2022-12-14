@@ -9,6 +9,7 @@ import com.dalcho.adme.dto.RegistryDto;
 import com.dalcho.adme.dto.SignupRequestDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
+import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.RegistryService;
 import com.dalcho.adme.service.UserService;
@@ -30,30 +31,42 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @DisplayName("H2를 이용한 Comment TEST")
 @TestPropertySource(locations = "/application.properties")
-@ExtendWith( SpringExtension. class )
-@SpringBootTest( webEnvironment = SpringBootTest . WebEnvironment . RANDOM_PORT )
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 public class CommentServiceTest {
-    @Autowired CommentServiceImpl commentService;
-    @Autowired CommentRepository commentRepository;
+    @Autowired
+    CommentServiceImpl commentService;
+    @Autowired
+    CommentRepository commentRepository;
     @Autowired
     RegistryService registryService;
     @Autowired
     UserService userService;
-    @Autowired RegistryRepository registryRepository;
+    @Autowired
+    RegistryRepository registryRepository;
+    @Autowired UserRepository userRepository;
 
-    UserDetailsImpl nowUser;
+    UserDetailsImpl userDetails;
     CommentDto commentDto;
     Registry registry;
 
     @Test
     @DisplayName("beforeEach 작성 전에 작성한 post test")
     void save1Comment() throws IOException {
+        User user = User.builder()
+                .username("username")
+                .nickname("hh")
+                .password("password")
+                .email("email")
+                .build();
+
+        User saveUser = userRepository.save(user);
+
         //given
         Registry registry1 = Registry.builder()
-                .nickname("coco")
                 .title("안녕하세요")
                 .main("hi")
+                .user(saveUser)
                 .build();
         Registry saveRegistry1 = registryRepository.save(registry1);
 
@@ -66,7 +79,7 @@ public class CommentServiceTest {
         Comment comment = commentDto.toEntity(registry);
 
         //when
-        Comment saveComment = commentService.setComment(commentDto);
+        Comment saveComment = commentService.postComment(commentDto);
 
         //then
         Assertions.assertThat(comment.getComment()).isEqualTo(saveComment.getComment());
@@ -76,19 +89,24 @@ public class CommentServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        SignupRequestDto userDto = new SignupRequestDto("test1", "test1", "d","d","d");
-        User user = userService.registerUser(userDto);
-        this.nowUser = new UserDetailsImpl(user);
+        User user = User.builder()
+                .username("username")
+                .nickname("nickname")
+                .password("password")
+                .email("email")
+                .build();
+
+        User saveUser = userRepository.save(user);
+        userDetails = new UserDetailsImpl(saveUser);
 
         // 게시글
-        Registry saveRegistry = new Registry("test1","타이틀","본문");
-        //Registry saveRegistry = new Registry(registryDto);
+        Registry saveRegistry = new Registry("타이틀", "본문", saveUser);
         this.registry = registryRepository.save(saveRegistry);
 
         // 댓글
         this.commentDto = new CommentDto();
         this.commentDto.setComment("comment");
-        this.commentDto.setNickname(nowUser.getUsername());
+        this.commentDto.setNickname(saveUser.getNickname());
         this.commentDto.setRegistryIdx(saveRegistry.getIdx());
     }
 
@@ -98,7 +116,7 @@ public class CommentServiceTest {
         // given
 
         // when
-        Comment comment = commentService.setComment(commentDto);
+        Comment comment = commentService.postComment(commentDto);
 
         // then
         Comment commentTest = commentRepository.findById(comment.getIdx()).orElseThrow(
@@ -106,23 +124,21 @@ public class CommentServiceTest {
         );
 
         assertEquals("comment의 id값이 일치하는지 확인", comment.getIdx(), commentTest.getIdx());
-        assertEquals("comment의 nickname이 일치하는지 확인", comment.getRegistry().getNickname(), registry.getNickname());
+        assertEquals("comment의 nickname이 일치하는지 확인", comment.getRegistry().getUser().getNickname(), registry.getUser().getNickname());
     }
-
-
 
 
     @Test
     @DisplayName("comment 수정")
     void updateComment() throws IOException {
-        Comment comment = commentService.setComment(commentDto);
+        Comment comment = commentService.postComment(commentDto);
 
         CommentDto commentDtoEdit = new CommentDto();
         commentDto.setComment("comment-edit");
 
 
         //when
-        Comment commentTest = commentService.updateComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDtoEdit, nowUser);
+        Comment commentTest = commentService.updateComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDtoEdit, userDetails);
 
         //then
         assertEquals("Comment Id 값이 일치하는지 확인.", comment.getIdx(), commentTest.getIdx());
@@ -130,15 +146,14 @@ public class CommentServiceTest {
     }
 
 
-
     @Test
     @DisplayName("comment 삭제 성공")
     void deleteComment() throws IOException {
         // given
-        Comment comment = commentService.setComment(commentDto);
+        Comment comment = commentService.postComment(commentDto);
 
         //when
-        commentService.deleteComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDto, nowUser);
+        commentService.deleteComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDto, userDetails);
 
         // then
         Optional<Comment> commentTest = commentRepository.findById(comment.getIdx());

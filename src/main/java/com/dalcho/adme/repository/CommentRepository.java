@@ -12,8 +12,6 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByRegistry_Idx(Long idx);
 
-
-//    @Query(value = "SELECT r.registry_id FROM Registry r LEFT JOIN Comment ON r.registry_id = comment.registry_id WHERE Comment.registry_id is null Limit 10;", nativeQuery = true)
     @Query("SELECT r.idx FROM Registry r LEFT JOIN Comment c ON r.idx = c.registry.idx WHERE c.registry.idx is null")
     List<Long> findTop10By(Pageable pageable);
 }

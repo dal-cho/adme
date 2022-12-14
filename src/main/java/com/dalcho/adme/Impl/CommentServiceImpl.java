@@ -10,6 +10,7 @@ import com.dalcho.adme.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,7 +80,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     public List<Optional<Registry>> needComments() {
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "idx");
         List<Long> temp = commentRepository.findTop10By(pageable);
         List<Optional<Registry>> result = new ArrayList<>();
         for (int i = 0; i < temp.toArray().length; i++) {
