@@ -32,17 +32,17 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "registry_id", nullable = false)
     private Registry registry;
 
-    public void setRegistry(Registry registry) {
+    public void addRegistry(Registry registry) {
         // 기존에 연결된게 있을 경우 초기화
         if(this.registry != null) {
-            this.registry.getComments().remove(this);
+            this.registry.getComments().remove(this); // Registry에서 설정한 Comment 변수명 : comments
         }
         this.registry = registry;
         //registry.getComments().add(this);
 
         // 무한 루프 안걸리게 하기
         if (!registry.getComments().contains(this)) {
-            registry.addComment(this);
+            registry.addComment(this); // Registry에서 설정한 메소드명
 
         }
     }
