@@ -2,7 +2,9 @@ package com.dalcho.adme.service;
 
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.dto.RegistryDto;
+import com.dalcho.adme.dto.response.ResRegistryDto;
 import com.dalcho.adme.repository.RegistryRepository;
+import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.utils.PagingResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -18,12 +20,12 @@ import org.springframework.data.domain.Page;
 @Service
 public interface RegistryService {
 
-    Registry setUpload(RegistryDto registryDto) throws IOException;
+    Registry postUpload(RegistryDto registryDto, UserDetailsImpl userDetails) throws IOException;
 
     // 작성 글 페이징
     PagingResult getBoards(int curPage);
 
     // 게시글 상세 보기
-    Registry getIdxRegistry(Long idx);
+    List getIdxRegistry(Long idx);
 
 }

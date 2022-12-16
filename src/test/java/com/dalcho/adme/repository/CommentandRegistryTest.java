@@ -2,6 +2,7 @@ package com.dalcho.adme.repository;
 
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
 import org.assertj.core.api.Assertions;
@@ -21,15 +22,27 @@ public class CommentandRegistryTest {
     RegistryRepository registryRepository;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     CommentRepository commentRepository;
 
+    User userSave;
 
     @Test
     void commentSave_Identity() {
-        Registry registry = Registry.builder()
+        User user = User.builder()
+                .username("username")
                 .nickname("coco")
+                .password("password")
+                .email("email")
+                .build();
+        userSave = userRepository.save(user);
+
+        Registry registry = Registry.builder()
                 .title("안녕하세요")
                 .main("hi")
+                .user(userSave)
                 .build();
         registryRepository.save(registry);
 
@@ -39,13 +52,12 @@ public class CommentandRegistryTest {
                 .registry(registry)
                 .build();
 
-        comment.setRegistry(registry);
         commentRepository.save(comment);
 
         Comment savedComment = commentRepository.findById(1L).get();
         Registry savedRegistry = savedComment.getRegistry();
 
-        Assertions.assertThat("coco").isEqualTo(savedRegistry.getNickname());
+        Assertions.assertThat("coco").isEqualTo(savedRegistry.getUser().getNickname());
         Assertions.assertThat("❤️🧡💛💚💙💜🤎🖤").isEqualTo(savedComment.getComment());
     }
 
