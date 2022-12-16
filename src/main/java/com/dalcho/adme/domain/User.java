@@ -1,32 +1,22 @@
 package com.dalcho.adme.domain;
 
 import com.dalcho.adme.domain.Timestamped;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@Setter
-@Getter // get 함수를 일괄적으로 만들어줍니다.
-@NoArgsConstructor // 기본 생성자를 만들어줍니다.
-@Entity // DB 테이블 역할을 합니다.
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class User extends Timestamped {
-
-    public User(String username, String nickname, String password, String passwordConfirm, String email) {
-        this.username = username;
-        this.nickname = nickname;
-        this.password = password;
-        this.passwordConfirm = passwordConfirm;
-        this.email = email;
-    }
-
-    // ID가 자동으로 생성 및 증가합니다.
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "user_id")
     private Long id;
 
-    // 반드시 값을 가지도록 합니다.
     @Column(nullable = false)
     private String username;
 
@@ -42,4 +32,30 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String email;
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Registry> registries = new ArrayList<>();
+
+    public void addRegistry(Registry registry) {
+        this.registries.add(registry);
+        if (registry.getUser() != this) {
+            registry.addUser(this);
+        }
+    }
+
+    @Builder
+    public User(String username, String nickname, String password, String email) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+    }
+
+    public User(String username, String nickname, String password, String passwordConfirm, String email) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.passwordConfirm = passwordConfirm;
+        this.email = email;
+    }
 }

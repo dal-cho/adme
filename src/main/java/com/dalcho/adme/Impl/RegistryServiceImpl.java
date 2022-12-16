@@ -1,24 +1,33 @@
 package com.dalcho.adme.Impl;
 
 import com.dalcho.adme.domain.Registry;
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
+import com.dalcho.adme.dto.response.ResRegistryDto;
 import com.dalcho.adme.repository.RegistryRepository;
+import com.dalcho.adme.repository.UserRepository;
+import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.RegistryService;
 import com.dalcho.adme.utils.PagingResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class RegistryServiceImpl implements RegistryService {
     private final RegistryRepository registryRepository;
+    private final UserRepository userRepository;
     private static final int PAGE_POST_COUNT = 9; // 한 페이지에 존재하는 게시글 수
     private int displayPageNum = 5;
     private int startPage;
@@ -29,8 +38,9 @@ public class RegistryServiceImpl implements RegistryService {
 
     // 게시글 등록
     @Transactional
-    public Registry setUpload(RegistryDto registryDto) throws IOException {
-        return registryRepository.save(registryDto.toEntity());
+    public Registry postUpload(RegistryDto registryDto, UserDetailsImpl userDetails) throws IOException {
+        Registry registry = registryDto.toEntity(userDetails.getUser());
+        return registryRepository.save(registry);
     }
 
 
@@ -54,11 +64,14 @@ public class RegistryServiceImpl implements RegistryService {
 
 
     // 게시글 상세 보기
-    public Registry getIdxRegistry(Long idx) {
+    public List<Object> getIdxRegistry(Long idx) {
         Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(
                 () -> new NullPointerException("해당 게시글 없음")
         );
-        return getIdxRegistry;
+        String nickname = getIdxRegistry.getUser().getNickname();
+        List<Object> list = new ArrayList<>();
+        list.add(getIdxRegistry);
+        list.add(nickname);
+        return list;
     }
-
 }

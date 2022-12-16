@@ -2,12 +2,16 @@ package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.dto.RegistryDto;
+import com.dalcho.adme.dto.response.ResRegistryDto;
+import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.RegistryService;
 import com.dalcho.adme.utils.PagingResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -16,8 +20,8 @@ public class RegistryController {
 
     // 게시글 등록
     @PostMapping("/registry") //@RequestParam이 여러개 있다. -> @ModelAttribute
-    public Registry setUpload(@ModelAttribute RegistryDto registryDto) throws IOException {
-        return registryService.setUpload(registryDto);
+    public Registry postUpload(@ModelAttribute RegistryDto registryDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return registryService.postUpload(registryDto, userDetails);
     }
 
 
@@ -30,7 +34,7 @@ public class RegistryController {
 
     // 게시글 상세 보기
     @GetMapping("/registry")
-    public Registry getIdxRegistry(@RequestParam Long idx) {
+    public List getIdxRegistry(@RequestParam Long idx) {
         return registryService.getIdxRegistry(idx);
     }
 }
