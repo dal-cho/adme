@@ -46,7 +46,6 @@ public class CommentServiceImpl implements CommentService {
                         .registryNickname(commentList.get(0).getRegistry().getUser().getNickname())
                         .commentName(commentList.get(i).getUser().getNickname())
                         .comment(commentList.get(i).getComment())
-                        .size(commentList.size())
                         .commentId(commentList.get(i).getIdx())
                         .build();
                 resCommentDtoList.add(resCommentDto);
