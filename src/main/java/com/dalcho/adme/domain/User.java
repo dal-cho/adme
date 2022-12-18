@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@ToString
 public class User extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -34,12 +35,25 @@ public class User extends Timestamped {
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
+    @ToString.Exclude
     private List<Registry> registries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Comment> comments = new ArrayList<>();
 
     public void addRegistry(Registry registry) {
         this.registries.add(registry);
         if (registry.getUser() != this) {
             registry.addUser(this);
+        }
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        if (comment.getUser() != this) {
+            comment.addUser(this);
         }
     }
 

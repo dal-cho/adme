@@ -5,8 +5,6 @@ import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.CommentDto;
-import com.dalcho.adme.dto.RegistryDto;
-import com.dalcho.adme.dto.SignupRequestDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
@@ -17,11 +15,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -44,7 +40,8 @@ public class CommentServiceTest {
     UserService userService;
     @Autowired
     RegistryRepository registryRepository;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
     UserDetailsImpl userDetails;
     CommentDto commentDto;
@@ -76,14 +73,14 @@ public class CommentServiceTest {
         commentDto.setRegistryIdx(saveRegistry1.getIdx());
 
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
-        Comment comment = commentDto.toEntity(registry);
+        Comment comment = commentDto.toEntity(registry, user);
 
         //when
         Comment saveComment = commentService.postComment(commentDto);
 
         //then
         Assertions.assertThat(comment.getComment()).isEqualTo(saveComment.getComment());
-        Assertions.assertThat(comment.getNickname()).isEqualTo(saveComment.getNickname());
+        Assertions.assertThat(comment.getUser().getNickname()).isEqualTo(saveComment.getUser().getNickname());
     }
 
 

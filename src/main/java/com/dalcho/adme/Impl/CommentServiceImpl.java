@@ -2,9 +2,12 @@ package com.dalcho.adme.Impl;
 
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.CommentDto;
+import com.dalcho.adme.dto.response.ResCommentDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
+import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +25,36 @@ import java.util.*;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final RegistryRepository registryRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public Comment postComment(CommentDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
-        Comment comment = commentDto.toEntity(registry);
+        User user = userRepository.findByNickname(commentDto.getNickname()).orElseThrow();
+        Comment comment = commentDto.toEntity(registry, user);
         Comment save = commentRepository.save(comment);
         return save;
     }
 
-    public List<Comment> getComment(Long idx) {
+    public List<ResCommentDto> getComment(Long idx) throws NullPointerException {
         List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
-        return commentList;
+        ResCommentDto resCommentDto;
+        List<ResCommentDto> resCommentDtoList = new LinkedList<>();
+        try {
+            for (int i = 0; i < commentList.size(); i++) {
+                resCommentDto = ResCommentDto.builder()
+                        .registryNickname(commentList.get(0).getRegistry().getUser().getNickname())
+                        .commentName(commentList.get(i).getUser().getNickname())
+                        .comment(commentList.get(i).getComment())
+                        .size(commentList.size())
+                        .commentId(commentList.get(i).getIdx())
+                        .build();
+                resCommentDtoList.add(resCommentDto);
+            }
+        } catch (NullPointerException e) {
+            throw new NullPointerException("[error] CommentServiceImpl의 getComment()에서 null이 포함 ↓  \n" + e.getMessage() + "\n");
+        }
+        return resCommentDtoList;
     }
 
     @Transactional
@@ -47,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
                 () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
         );
 
-        if (!userDetails.getUser().getNickname().equals(comment.getNickname())) {
+        if (!userDetails.getUser().getNickname().equals(comment.getUser().getNickname())) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 
@@ -66,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
                 () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
         );
 
-        if (!userDetails.getUser().getNickname().equals(comment.getNickname())) {
+        if (!userDetails.getUser().getNickname().equals(comment.getUser().getNickname())) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 

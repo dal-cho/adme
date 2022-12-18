@@ -1,17 +1,16 @@
 package com.dalcho.adme.controller;
 
+import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
+import com.dalcho.adme.dto.CommentDto;
+import com.dalcho.adme.dto.response.ResCommentDto;
 import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.CommentService;
-import com.dalcho.adme.domain.Comment;
-import com.dalcho.adme.dto.CommentDto;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ public class CommentController {
     }
 
     @GetMapping("/comment")
-    public List<Comment> getComment(@RequestParam Long idx){
+    public List<ResCommentDto> getComment(@RequestParam Long idx){
         return commentService.getComment(idx);
     }
 

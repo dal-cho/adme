@@ -2,7 +2,6 @@ package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.dto.RegistryDto;
-import com.dalcho.adme.dto.response.ResRegistryDto;
 import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.RegistryService;
 import com.dalcho.adme.utils.PagingResult;
