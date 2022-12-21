@@ -18,7 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -54,6 +57,13 @@ public class CommentServiceImpl implements CommentService {
             throw new NullPointerException("[error] CommentServiceImpl의 getComment()에서 null이 포함 ↓  \n" + e.getMessage() + "\n");
         }
         return resCommentDtoList;
+    }
+
+    public ResCommentDto getCountComment(Long idx) {
+        List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
+        ResCommentDto resCommentDto = new ResCommentDto();
+        resCommentDto.setSize(commentList.size());
+        return resCommentDto;
     }
 
     @Transactional
