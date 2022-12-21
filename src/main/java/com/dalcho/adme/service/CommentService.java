@@ -3,6 +3,7 @@ package com.dalcho.adme.service;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.dto.CommentDto;
+import com.dalcho.adme.dto.response.ResCommentDto;
 import com.dalcho.adme.security.UserDetailsImpl;
 
 import java.nio.file.AccessDeniedException;
@@ -13,9 +14,9 @@ public interface CommentService {
 
     Comment postComment(CommentDto commentDto);
 
-    List<Comment> getComment(Long idx);
+    List<ResCommentDto> getComment(Long idx);
 
-   Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException;
+    Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException;
 
     void deleteComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException;
 

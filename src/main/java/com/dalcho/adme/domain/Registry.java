@@ -26,16 +26,14 @@ public class Registry extends Timestamped {
 
     @OneToMany(mappedBy = "registry")
     @JsonIgnore
+    @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
+    @ToString.Exclude
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-//    public Registry(long idx, String nickname, String title, String main) {
-//        //super();
-//    }
 
     public void setIdx(Long idx) {
         this.idx = idx;

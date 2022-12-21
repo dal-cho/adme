@@ -66,7 +66,7 @@ public class CommentRepositoryTest {
     @DisplayName("comment 저장")
     void saveComment() {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
-        Comment saveComment = commentRepository.save(commentDto.toEntity(registry));
+        Comment saveComment = commentRepository.save(commentDto.toEntity(registry, saveUser));
 
         assertThat(registry).isSameAs(saveComment.getRegistry());
         assertThat("comment").isEqualTo(saveComment.getComment());
@@ -91,8 +91,8 @@ public class CommentRepositoryTest {
 
         //when
         Registry saveRegistry = registryRepository.save(registry.toEntity(saveUser));
-        Comment saveComment = commentRepository.save(comment.toEntity(saveRegistry));
-        Comment saveComment1 = commentRepository.save(comment1.toEntity(saveRegistry));
+        Comment saveComment = commentRepository.save(comment.toEntity(saveRegistry, saveUser));
+        Comment saveComment1 = commentRepository.save(comment1.toEntity(saveRegistry, saveUser));
 
         //then
         Long idx = saveRegistry.getIdx();

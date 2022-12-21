@@ -1,9 +1,7 @@
 package com.dalcho.adme.Impl;
 
 import com.dalcho.adme.domain.Registry;
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
-import com.dalcho.adme.dto.response.ResRegistryDto;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.security.UserDetailsImpl;
@@ -13,15 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -64,11 +59,17 @@ public class RegistryServiceImpl implements RegistryService {
 
 
     // 게시글 상세 보기
-    public List<Object> getIdxRegistry(Long idx) {
+    public List<Object> getIdxRegistry(Long idx) throws NullPointerException {
         Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(
                 () -> new NullPointerException("해당 게시글 없음")
         );
-        String nickname = getIdxRegistry.getUser().getNickname();
+        String nickname;
+        try {
+            nickname = getIdxRegistry.getUser().getNickname();
+        } catch (NullPointerException e) {
+            throw new NullPointerException("[error] RegistryServiceImpl의 getIdxRegistry()에서 null \n" + e.getMessage() + "\n");
+        }
+
         List<Object> list = new ArrayList<>();
         list.add(getIdxRegistry);
         list.add(nickname);

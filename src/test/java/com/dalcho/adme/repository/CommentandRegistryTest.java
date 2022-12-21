@@ -47,7 +47,7 @@ public class CommentandRegistryTest {
         registryRepository.save(registry);
 
         Comment comment = Comment.builder()
-                .nickname("우헤헤")
+                .user(userSave)
                 .comment("❤️🧡💛💚💙💜🤎🖤")
                 .registry(registry)
                 .build();
