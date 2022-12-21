@@ -30,6 +30,11 @@ public class CommentController {
         return commentService.getComment(idx);
     }
 
+    @GetMapping("comment-count")
+    public ResCommentDto getCountComment(@RequestParam Long idx){
+        return commentService.getCountComment(idx);
+    }
+
     // AuthenticationPrincipal : 로그인한 사용자의 정보를 파라메터로 받고 싶을때
     @PutMapping("/comment/{commentId}/registry/{registryId}")
     public Comment updateComment(@PathVariable Long commentId, @PathVariable Long registryId,
