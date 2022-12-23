@@ -36,24 +36,11 @@ public class UserController {
         return model;
     }
 
-//    @GetMapping("/user/login/error")
-//    public String loginError(Model model) {
-//        model.addAttribute("loginError", true);
-//        return "error"; //login
-//    }
-
     // 회원 가입 페이지
     @GetMapping("/user/signup")
     public String signup() {
         return "login";
     }
-
-    // 회원 가입 요청 처리
-//    @PostMapping("/user/signup")
-//    public String registerUser(SignupRequestDto requestDto) {
-//        userService.registerUser(requestDto);
-//        return "redirect:/";
-//    }
 
     @GetMapping("/adme") // 기본 페이지
     public String home(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {

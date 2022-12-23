@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 @Service("VideoService")
 @RequiredArgsConstructor
-public class VideoServiceImpl implements VideoService{
+public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
     private final OSValidator osValidator;
@@ -36,7 +36,7 @@ public class VideoServiceImpl implements VideoService{
     @Override
     public VideoFile uploadFile(MultipartFile file) throws IOException {
 
-        if ( file.isEmpty()) {
+        if (file.isEmpty()) {
             throw new IllegalArgumentException("cloud not save empty file. " + file.getOriginalFilename());
         }
 

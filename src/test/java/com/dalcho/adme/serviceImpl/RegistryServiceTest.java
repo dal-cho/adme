@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +30,12 @@ class RegistryServiceTest {
     void register() throws Exception { // 검증 x
         //given
         User user = User.builder()
-                .username("username")
-                .nickname("nickname")
+                .name("username")
+                .uid("nickname")
                 .password("password")
-                .email("email")
                 .build();
 
         User saveUser = userRepository.save(user);
-        UserDetailsImpl userDetails = new UserDetailsImpl(saveUser);
 
         RegistryDto registry1 = new RegistryDto();
         registry1.setTitle("첫 번째");
@@ -48,8 +47,8 @@ class RegistryServiceTest {
 
         //when
 
-        Registry saveRegistry1 = registryService.postUpload(registry1, userDetails);
-        Registry saveRegistry2 = registryService.postUpload(registry2, userDetails);
+        Registry saveRegistry1 = registryService.postUpload(registry1, saveUser);
+        Registry saveRegistry2 = registryService.postUpload(registry2, saveUser);
 
         //then
         Assertions.assertThat(registry1.getTitle()).isEqualTo(saveRegistry1.getTitle());
