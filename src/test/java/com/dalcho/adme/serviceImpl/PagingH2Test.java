@@ -30,10 +30,9 @@ public class PagingH2Test {
     @DisplayName("실제 로직이 잘 동작하는지 test")
     public void paging() {
         User user = User.builder()
-                .username("username")
-                .nickname("nickname")
+                .name("username")
+                .uid("nickname")
                 .password("123456")
-                .email("lulu")
                 .build();
         User saveUser = userRepository.save(user);
         Registry registry = registryRepository.save(new Registry("TEST", "HI", saveUser));
@@ -68,10 +67,9 @@ public class PagingH2Test {
         int displayPageNum = 5;
 
         User user = User.builder()
-                .username("username")
-                .nickname("nickname")
+                .name("username")
+                .uid("nickname")
                 .password("123456")
-                .email("lulu")
                 .build();
         User saveUser = userRepository.save(user);
 

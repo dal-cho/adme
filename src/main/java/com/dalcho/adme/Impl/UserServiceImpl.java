@@ -58,8 +58,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    ;
-
 
     public String checkNickname(SignupRequestDto requestDto) {
         String nickname = requestDto.getNickname();
@@ -74,8 +72,6 @@ public class UserServiceImpl implements UserService {
             return "사용가능한 닉네임 입니다.";
         }
     }
-
-    ;
 
 
     // 비밀번호 확인 체크

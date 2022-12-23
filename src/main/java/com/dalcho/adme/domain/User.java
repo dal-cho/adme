@@ -2,36 +2,109 @@ package com.dalcho.adme.domain;
 
 import com.dalcho.adme.domain.Timestamped;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table
 @Entity
+@Getter
+@Builder
 @ToString
-public class User extends Timestamped {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User implements UserDetails {
     @Id
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String username;
+    @Column(nullable = false, unique = true)
+    private String uid; // 회원 ID (JWT 토큰 내 정보)
 
-    @Column(nullable = false)
-    private String nickname;
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Json 결과로 출력하지 않을 데이터에 대해 해당 어노테이션 설정 값 추가
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = true)
-    private String passwordConfirm;
-
     @Column(nullable = false)
-    private String email;
+    private String name;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>(); // 권한을 List 로 저장
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * security 에서 사용하는 회원 구분 id
+     *
+     * @return uid
+     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public String getUsername() {
+        return this.uid;
+    }
+
+    /**
+     * 계정이 만료되었는지 체크하는 로직
+     *
+     * true: 만료안됨
+     * @return true
+     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    /**
+     * 계정이 잠겼는지 체크하는 로직
+     *
+     * @return true
+     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    /**
+     * 계정의 패스워드가 만료되었는지 체크하는 로직
+     *
+     * @return true
+     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    /**
+     * 계정이 사용가능한지 체크하는 로직
+     *
+     * @return true
+     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+//    @Column(nullable = false)
+//    private String email;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
@@ -56,20 +129,7 @@ public class User extends Timestamped {
             comment.addUser(this);
         }
     }
-
-    @Builder
-    public User(String username, String nickname, String password, String email) {
-        this.username = username;
-        this.nickname = nickname;
-        this.password = password;
-        this.email = email;
-    }
-
-    public User(String username, String nickname, String password, String passwordConfirm, String email) {
-        this.username = username;
-        this.nickname = nickname;
-        this.password = password;
-        this.passwordConfirm = passwordConfirm;
-        this.email = email;
-    }
 }
+
+
+
