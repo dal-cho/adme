@@ -12,7 +12,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     // connection을 맺을때 CORS 허용
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-
         registry.addEndpoint("/websocket").setAllowedOrigins("*").withSockJS();
         // endpoint는 양 사용자 간 웹소켓 핸드 셰이크를 위해 지정
     }
