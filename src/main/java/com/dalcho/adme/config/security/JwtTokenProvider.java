@@ -1,5 +1,6 @@
 package com.dalcho.adme.config.security;
 
+import com.dalcho.adme.service.UserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -42,11 +42,11 @@ public class JwtTokenProvider {
         log.info("[init] JwtTokenProvider 내 secretKey 초기화 완료");
     }
 
-    public String createToken(String userUid, List<String> roles) {
+    public String createToken(String nickname, List<String> roles) {
         log.info("[createToken] 토큰 생성 시작");
 
         // Claims 객체에 담아 Jwt Token 의 내용에 값 넣기, sub 속정에 값 추가(Uid 사용)
-        Claims claims = Jwts.claims().setSubject(userUid);
+        Claims claims = Jwts.claims().setSubject(nickname);
         claims.put("roles", roles); // 사용자 권한확인용 추가
         Date now = new Date();
 

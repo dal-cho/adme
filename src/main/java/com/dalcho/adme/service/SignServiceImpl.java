@@ -37,16 +37,17 @@ public class SignServiceImpl implements SignService {
 
     @Override
     public SignUpResultDto signUp(SignUpRequestDto signUpRequestDto) {
-        String uid = signUpRequestDto.getUid();
+        String nickname = signUpRequestDto.getNickname();
         String password = signUpRequestDto.getPassword();
         String name = signUpRequestDto.getName();
 
         log.info("[getSignUpResult] 회원 정보 유무 확인");
-        if (userRepository.findByUid(uid) != null) {
+        // Todo.Optional 활용으로 수정
+        if (userRepository.findByNickname(nickname) != null) {
             log.info("[getSignUpResult] ID 중복 확인");
-            User found = userRepository.findByUid(uid);
+            User found = userRepository.findByNickname(nickname);
 
-            if (found.getUid().equals(signUpRequestDto.getUid())) {
+            if (found.getNickname().equals(signUpRequestDto.getNickname())) {
                 throw new IllegalArgumentException("[getSignUpResult] 중복된 사용자 ID 가 존재합니다.");
             }
             log.info("[getSignUpResult] ID 중복 확인 완료");
@@ -65,7 +66,7 @@ public class SignServiceImpl implements SignService {
 
         log.info("[getSignUpResult] 회원 가입 정보 전달");
         User user = User.builder()
-                .uid(uid)
+                .nickname(nickname)
                 .name(name)
                 .password(passwordEncoder.encode(password))
                 .roles(role)
@@ -92,14 +93,14 @@ public class SignServiceImpl implements SignService {
         log.info("[getSignInResult] signDataHandler 로 회원 정보 요청");
         User user;
 
-        if (userRepository.findByUid(signInRequestDto.getUid()) == null) {
+        if (userRepository.findByNickname(signInRequestDto.getNickname()) == null) {
             log.info("[getSignInResult] 아이디가 존재하지 않습니다.");
             throw new RuntimeException();
         } else {
-            user = userRepository.findByUid(signInRequestDto.getUid());
+            user = userRepository.findByNickname(signInRequestDto.getNickname());
         }
 
-        log.info("[getSignInResult] Id : {}", signInRequestDto.getUid());
+        log.info("[getSignInResult] Id : {}", signInRequestDto.getNickname());
 
         log.info("[getSignInResult] 패스워드 비교 수행");
         if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
@@ -118,7 +119,7 @@ public class SignServiceImpl implements SignService {
         log.info("[getSignInResult] SignInResultDto 객체 생성");
         SignInResultDto signInResultDto = SignInResultDto.builder()
                 .role_check(authority)
-                .token(jwtTokenProvider.createToken(user.getUid(), user.getRoles()))
+                .token(jwtTokenProvider.createToken(user.getNickname(), user.getRoles()))
                 .build();
 //
 //        HttpHeaders httpHeaders = new HttpHeaders();

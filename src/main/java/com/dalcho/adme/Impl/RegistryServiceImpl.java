@@ -1,7 +1,6 @@
 package com.dalcho.adme.Impl;
 
 import com.dalcho.adme.domain.Registry;
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
@@ -34,8 +33,8 @@ public class RegistryServiceImpl implements RegistryService {
 
     // 게시글 등록
     @Transactional
-    public Registry postUpload(RegistryDto registryDto, User user) throws IOException {
-        Registry registry = registryDto.toEntity(user);
+    public Registry postUpload(RegistryDto registryDto, UserDetailsImpl userDetails) throws IOException {
+        Registry registry = registryDto.toEntity(userDetails.getUser());
         return registryRepository.save(registry);
     }
 
@@ -66,7 +65,7 @@ public class RegistryServiceImpl implements RegistryService {
         );
         String nickname;
         try {
-            nickname = getIdxRegistry.getUser().getUid();
+            nickname = getIdxRegistry.getUser().getNickname();
         } catch (NullPointerException e) {
             throw new NullPointerException("[error] RegistryServiceImpl의 getIdxRegistry()에서 null \n" + e.getMessage() + "\n");
         }

@@ -1,6 +1,5 @@
 package com.dalcho.adme.domain;
 
-import com.dalcho.adme.domain.Timestamped;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -27,7 +26,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String uid; // 회원 ID (JWT 토큰 내 정보)
+    private String nickname; // 회원 ID (JWT 토큰 내 정보)
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Json 결과로 출력하지 않을 데이터에 대해 해당 어노테이션 설정 값 추가
     @Column(nullable = false)
@@ -50,12 +49,12 @@ public class User implements UserDetails {
     /**
      * security 에서 사용하는 회원 구분 id
      *
-     * @return uid
+     * @return nickname
      */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
     public String getUsername() {
-        return this.uid;
+        return this.nickname;
     }
 
     /**
