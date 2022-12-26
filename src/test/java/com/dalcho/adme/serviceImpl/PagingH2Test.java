@@ -30,8 +30,8 @@ public class PagingH2Test {
     @DisplayName("실제 로직이 잘 동작하는지 test")
     public void paging() {
         User user = User.builder()
-                .name("username")
-                .uid("nickname")
+                .username("username")
+                .nickname("nickname")
                 .password("123456")
                 .build();
         User saveUser = userRepository.save(user);

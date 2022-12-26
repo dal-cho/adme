@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.*;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUid(String uid);
+    User findByNickname(String nickname);
 }
 

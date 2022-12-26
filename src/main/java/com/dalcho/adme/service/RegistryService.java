@@ -1,7 +1,6 @@
 package com.dalcho.adme.service;
 
 import com.dalcho.adme.domain.Registry;
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
 import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.utils.PagingResult;
@@ -14,7 +13,7 @@ import java.util.List;
 @Service
 public interface RegistryService {
 
-    Registry postUpload(RegistryDto registryDto, User user) throws IOException;
+    Registry postUpload(RegistryDto registryDto, UserDetailsImpl userDetails) throws IOException;
 
     // 작성 글 페이징
     PagingResult getBoards(int curPage);
