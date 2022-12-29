@@ -1,6 +1,6 @@
 package com.dalcho.adme.serviceImpl;
 
-import com.dalcho.adme.Impl.CommentServiceImpl;
+import com.dalcho.adme.service.Impl.CommentServiceImpl;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
@@ -8,9 +8,7 @@ import com.dalcho.adme.dto.CommentDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
-import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.RegistryService;
-import com.dalcho.adme.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,13 +35,11 @@ public class CommentServiceTest {
     @Autowired
     RegistryService registryService;
     @Autowired
-    UserService userService;
-    @Autowired
     RegistryRepository registryRepository;
     @Autowired
     UserRepository userRepository;
 
-    UserDetailsImpl userDetails;
+    User user;
     CommentDto commentDto;
     Registry registry;
 
@@ -51,10 +47,8 @@ public class CommentServiceTest {
     @DisplayName("beforeEach 작성 전에 작성한 post test")
     void save1Comment() throws IOException {
         User user = User.builder()
-                .username("username")
                 .nickname("hh")
                 .password("password")
-                .email("email")
                 .build();
 
         User saveUser = userRepository.save(user);
@@ -87,14 +81,11 @@ public class CommentServiceTest {
     @BeforeEach
     void beforeEach() {
         User user = User.builder()
-                .username("username")
                 .nickname("nickname")
                 .password("password")
-                .email("email")
                 .build();
 
         User saveUser = userRepository.save(user);
-        userDetails = new UserDetailsImpl(saveUser);
 
         // 게시글
         Registry saveRegistry = new Registry("타이틀", "본문", saveUser);
@@ -135,7 +126,7 @@ public class CommentServiceTest {
 
 
         //when
-        Comment commentTest = commentService.updateComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDtoEdit, userDetails);
+        Comment commentTest = commentService.updateComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDtoEdit, user);
 
         //then
         assertEquals("Comment Id 값이 일치하는지 확인.", comment.getIdx(), commentTest.getIdx());
@@ -150,7 +141,7 @@ public class CommentServiceTest {
         Comment comment = commentService.postComment(commentDto);
 
         //when
-        commentService.deleteComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDto, userDetails);
+        commentService.deleteComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDto, user);
 
         // then
         Optional<Comment> commentTest = commentRepository.findById(comment.getIdx());

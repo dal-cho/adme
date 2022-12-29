@@ -1,6 +1,5 @@
 package com.dalcho.adme.serviceImpl;
 
-import com.dalcho.adme.service.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,8 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // @Order로 순서 정하는 방법
 public class UserVideoIntergrationTest {
 
-    @Autowired
-    UserService userService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -58,7 +55,7 @@ public class UserVideoIntergrationTest {
 //        String email = "pinkpig@gmail.com";
 //        boolean admin = false;
 //
-//        SignupRequestDto signupRequestDto = new SignupRequestDto();
+//        signupRequestDto signupRequestDto = new signupRequestDto();
 //        signupRequestDto.setUsername(username);
 //        signupRequestDto.setNickname(nickname);
 //        signupRequestDto.setPassword(password);

@@ -1,8 +1,7 @@
 package com.dalcho.adme.serviceImpl;
 
-import com.dalcho.adme.Impl.RegistryServiceImpl;
+import com.dalcho.adme.service.Impl.RegistryServiceImpl;
 import com.dalcho.adme.repository.RegistryRepository;
-import com.dalcho.adme.service.RegistryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

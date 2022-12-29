@@ -1,5 +1,6 @@
 package com.dalcho.adme.config.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,14 +13,37 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    public SecurityConfiguration(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    public static final String[] WHITE_LIST = {
+            "/sign-api/sign-in",
+            "/sign-api/sign-up",
+            "/sign-api/exception",
+            "**exception**"
+    };
+
+    public static final String[] GET_WHITE_LIST = {
+            "/tenSeconds/**"
+    };
+
+    public static final String[] USER_ENABLE = {
+            "/tenSeconds/video",
+            "/sign-api/cookie"
+    };
+
+    public static final String[] VIEW_LIST = {
+            "/static/**",
+            "/js/**",
+            "/favicon.ico/**",
+            "/user/login",
+            "/tenSeconds",
+            "/user/login",
+            "/adme",
+            "/"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -34,14 +58,10 @@ public class SecurityConfiguration {
                 .disable()
                 .and() // 접근설정
                 .authorizeRequests() // 요청에 의한 보안검사 시작
-                .antMatchers("/sign-api/sign-in", "/sign-api/sign-up", "/sign-api/exception").permitAll() // 권한 허용 URL 설정
-                .antMatchers("/v2/api-docs", "/swagger-resources", "/swagger*/**", "/swagger-ui.html", "/webjars/**", "/swagger/**").permitAll() // 권한 허용 URL 설정
-                .antMatchers("/favicon.ico/**","/tenseconds/**", "/signOn", "/test").permitAll()
-                .antMatchers(HttpMethod.GET, "/tenseconds/**").permitAll() // tenseconds 로 시작하는 GET 요청 허용
-                .antMatchers("**exception**", "/sign-api/exception").permitAll() // 'exception' 단어가 들어간 경로는 모두 허용
-                .antMatchers("/static/**","/js/**").permitAll() // 접근 허용
-//                    .antMatchers("/test").authenticated() // 이증된 사용자만 접근 가능
-                .antMatchers("/tenseconds/video","/sign-api/cookie","/ten/test").hasAnyRole("USER","ADMIN") // USER 접근 가능
+                .antMatchers(WHITE_LIST).permitAll() // 권한 허용 URL 설정
+                .antMatchers(VIEW_LIST).permitAll()
+                .antMatchers(HttpMethod.GET, GET_WHITE_LIST).permitAll() // GET 요청 허용
+                .antMatchers(USER_ENABLE).hasAnyRole("USER","ADMIN") // USER 접근 가능
                 .anyRequest().hasRole("ADMIN") // 기타 요청은 인증 권한을 가진 사용자에게 허용
                 .and() // 로그아웃 처리
                 .logout()

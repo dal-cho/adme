@@ -1,4 +1,4 @@
-package com.dalcho.adme.service;
+package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.common.CommonResponse;
 import com.dalcho.adme.config.security.JwtTokenProvider;
@@ -8,6 +8,7 @@ import com.dalcho.adme.dto.sign.SignInResultDto;
 import com.dalcho.adme.dto.sign.SignUpRequestDto;
 import com.dalcho.adme.dto.sign.SignUpResultDto;
 import com.dalcho.adme.repository.UserRepository;
+import com.dalcho.adme.service.SignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,15 +44,18 @@ public class SignServiceImpl implements SignService {
 
         log.info("[getSignUpResult] 회원 정보 유무 확인");
         // Todo.Optional 활용으로 수정
-        if (userRepository.findByNickname(nickname) != null) {
-            log.info("[getSignUpResult] ID 중복 확인");
-            User found = userRepository.findByNickname(nickname);
-
-            if (found.getNickname().equals(signUpRequestDto.getNickname())) {
-                throw new IllegalArgumentException("[getSignUpResult] 중복된 사용자 ID 가 존재합니다.");
-            }
-            log.info("[getSignUpResult] ID 중복 확인 완료");
+        if (userRepository.existsByNickname(nickname)){
+            throw new IllegalArgumentException("[getSignUpResult] 중복된 사용자 ID 가 존재합니다.");
         }
+//        if (userRepository.findByNickname(nickname) != null) {
+//            log.info("[getSignUpResult] 닉네임 중복 확인");
+//            User found = userRepository.findByNickname(nickname);
+//
+//            if (found.getNickname().equals(signUpRequestDto.getNickname())) {
+//                throw new IllegalArgumentException("[getSignUpResult] 중복된 사용자 ID 가 존재합니다.");
+//            }
+//            log.info("[getSignUpResult] ID 중복 확인 완료");
+//        }
         log.info("[getSignUpResult] 회원 정보 유무 확인 완료");
 
         List<String> role = Collections.singletonList("ROLE_USER"); // 변경 불가능한 요소("ROLE_USER") 생성
