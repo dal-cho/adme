@@ -1,4 +1,4 @@
-package com.dalcho.adme.service.Impl;
+package com.dalcho.adme.Impl;
 
 import com.dalcho.adme.service.WebSocketService;
 import lombok.RequiredArgsConstructor;
