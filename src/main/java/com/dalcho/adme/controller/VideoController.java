@@ -14,19 +14,19 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Controller
+@Controller("/tenSeconds")
 @Slf4j
 public class VideoController {
 
     public final VideoService videoService;
 
-    @GetMapping( "/tenseconds/list" )
+    @GetMapping( "/list" )
     public List<VideoFile> listFiles() throws Exception {
         log.info("VideoController GetList");
         return videoService.getList();
     }
 
-    @PostMapping(value = "/tenseconds/videos")
+    @PostMapping(value = "/videos")
     public VideoFile uploadFile(@RequestParam("uploadFile") MultipartFile file) throws Exception {
         log.info("VideoController Post");
         return videoService.uploadFile(file);

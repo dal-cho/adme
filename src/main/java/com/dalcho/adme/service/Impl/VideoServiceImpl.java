@@ -1,8 +1,9 @@
-package com.dalcho.adme.service;
+package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.VideoDto;
 import com.dalcho.adme.repository.VideoRepository;
+import com.dalcho.adme.service.VideoService;
 import com.dalcho.adme.system.OSValidator;
 import com.dalcho.adme.utils.videoUtils.FfmpegUtils;
 import com.dalcho.adme.utils.videoUtils.MultipartFileUtils;

@@ -1,4 +1,4 @@
-package com.dalcho.adme.Impl;
+package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.repository.UserRepository;
 
