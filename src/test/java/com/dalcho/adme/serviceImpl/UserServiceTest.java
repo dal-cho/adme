@@ -24,27 +24,27 @@ class UserServiceTest {
     @Test
     void id중복테스트() throws Exception {
 
-//        signupRequestDto requestDto1 = new signupRequestDto();
-//        requestDto1.setUsername("dkj");
-//        requestDto1.setNickname("dkj");
-//        requestDto1.setPassword("dkj");
-//        requestDto1.setEmail("dkj");
-//        requestDto1.setPasswordConfirm("dkj");
-//
-//
-//        signupRequestDto requestDto2 = new signupRequestDto();
-//        requestDto2.setUsername("dkj");
-//        requestDto2.setNickname("dkj");
-//        requestDto2.setPassword("dkj");
-//        requestDto2.setEmail("dkj");
-//        requestDto2.setPasswordConfirm("dkj");
-//
-//
-//        //when
-//        userService.registerUser(requestDto1);
-//        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-//                () -> userService.registerUser(requestDto2));//예외가 발생해야 한다.
-//        assertThat(e.getMessage()).isEqualTo("중복된 사용자 ID 가 존재합니다.");
+        signupRequestDto requestDto1 = new signupRequestDto();
+        requestDto1.setUsername("dkj");
+        requestDto1.setNickname("dkj");
+        requestDto1.setPassword("dkj");
+        requestDto1.setEmail("dkj");
+        requestDto1.setPasswordConfirm("dkj");
+
+
+        signupRequestDto requestDto2 = new signupRequestDto();
+        requestDto2.setUsername("dkj");
+        requestDto2.setNickname("dkj");
+        requestDto2.setPassword("dkj");
+        requestDto2.setEmail("dkj");
+        requestDto2.setPasswordConfirm("dkj");
+
+
+        //when
+        userService.registerUser(requestDto1);
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> userService.registerUser(requestDto2));//예외가 발생해야 한다.
+        assertThat(e.getMessage()).isEqualTo("중복된 사용자 ID 가 존재합니다.");
     }
 
     @Test

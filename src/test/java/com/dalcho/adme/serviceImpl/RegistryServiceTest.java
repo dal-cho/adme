@@ -6,6 +6,7 @@ import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
+import com.dalcho.adme.security.UserDetailsImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,14 @@ class RegistryServiceTest {
     void register() throws Exception { // 검증 x
         //given
         User user = User.builder()
+                .username("username")
                 .nickname("nickname")
                 .password("password")
+                .email("email")
                 .build();
 
         User saveUser = userRepository.save(user);
+        UserDetailsImpl userDetails = new UserDetailsImpl(saveUser);
 
         RegistryDto registry1 = new RegistryDto();
         registry1.setTitle("첫 번째");
@@ -41,8 +45,8 @@ class RegistryServiceTest {
 
         //when
 
-        Registry saveRegistry1 = registryService.postUpload(registry1, user);
-        Registry saveRegistry2 = registryService.postUpload(registry2, user);
+        Registry saveRegistry1 = registryService.postUpload(registry1, userDetails);
+        Registry saveRegistry2 = registryService.postUpload(registry2, userDetails);
 
         //then
         Assertions.assertThat(registry1.getTitle()).isEqualTo(saveRegistry1.getTitle());
