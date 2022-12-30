@@ -32,6 +32,7 @@ dependencies {
 
     // 스프링 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1' // jwt
 
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
     // websocket

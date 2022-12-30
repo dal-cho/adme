@@ -1,7 +1,6 @@
 package com.dalcho.adme.serviceImpl;
 
-import com.dalcho.adme.Impl.UserServiceImpl;
-import com.dalcho.adme.dto.SignupRequestDto;
+import com.dalcho.adme.service.SignService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class UserServiceTest {
     @Autowired
-    UserServiceImpl userService;
+    SignService userService;
     @Autowired private PasswordEncoder passwordEncoder;
 
     @Test
     void id중복테스트() throws Exception {
 
-        SignupRequestDto requestDto1 = new SignupRequestDto();
+        signupRequestDto requestDto1 = new signupRequestDto();
         requestDto1.setUsername("dkj");
         requestDto1.setNickname("dkj");
         requestDto1.setPassword("dkj");
@@ -33,7 +32,7 @@ class UserServiceTest {
         requestDto1.setPasswordConfirm("dkj");
 
 
-        SignupRequestDto requestDto2 = new SignupRequestDto();
+        signupRequestDto requestDto2 = new signupRequestDto();
         requestDto2.setUsername("dkj");
         requestDto2.setNickname("dkj");
         requestDto2.setPassword("dkj");

@@ -4,25 +4,15 @@ import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.CommentDto;
-import com.dalcho.adme.dto.LoginDto;
 import com.dalcho.adme.dto.RegistryDto;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -44,10 +34,8 @@ public class CommentRepositoryTest {
     @BeforeEach
     void beforeEach() {
         User user = User.builder()
-                .username("username")
                 .nickname("nickname")
                 .password("password")
-                .email("email")
                 .build();
         saveUser = userRepository.save(user);
 

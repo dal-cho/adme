@@ -1,4 +1,4 @@
-package com.dalcho.adme.Impl;
+package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
@@ -8,7 +8,6 @@ import com.dalcho.adme.dto.response.ResCommentDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
-import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public Comment postComment(CommentDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
-        User user = userRepository.findByNickname(commentDto.getNickname()).orElseThrow();
+        User user = userRepository.findByNickname(commentDto.getNickname());
         Comment comment = commentDto.toEntity(registry, user);
         Comment save = commentRepository.save(comment);
         return save;
@@ -67,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws
+    public Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, User user) throws
             AccessDeniedException {
         registryRepository.findById(registryId).orElseThrow(
                 () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
@@ -77,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
                 () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
         );
 
-        if (!userDetails.getUser().getNickname().equals(comment.getUser().getNickname())) {
+        if (!user.getNickname().equals(comment.getUser().getNickname())) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 
@@ -87,7 +86,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Long registryId, CommentDto commentDto, UserDetailsImpl userDetails) throws AccessDeniedException {
+    public void deleteComment(Long commentId, Long registryId, CommentDto commentDto, User user) throws AccessDeniedException {
         registryRepository.findById(registryId).orElseThrow(
                 () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
         );
@@ -96,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
                 () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
         );
 
-        if (!userDetails.getUser().getNickname().equals(comment.getUser().getNickname())) {
+        if (!user.getNickname().equals(comment.getUser().getNickname())) {
             throw new AccessDeniedException("권한이 없습니다.");
         }
 
@@ -104,8 +103,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
-    public String findUser(UserDetailsImpl userDetails) {
-        return userDetails.getUser().getNickname();
+    public String findUser(User user) {
+        return user.getNickname();
     }
 
 

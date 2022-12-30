@@ -1,8 +1,9 @@
-package com.dalcho.adme.service;
+package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.VideoDto;
 import com.dalcho.adme.repository.VideoRepository;
+import com.dalcho.adme.service.VideoService;
 import com.dalcho.adme.system.OSValidator;
 import com.dalcho.adme.utils.videoUtils.FfmpegUtils;
 import com.dalcho.adme.utils.videoUtils.MultipartFileUtils;
@@ -20,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Service("VideoService")
 @RequiredArgsConstructor
-public class VideoServiceImpl implements VideoService{
+public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
     private final OSValidator osValidator;
@@ -36,7 +37,7 @@ public class VideoServiceImpl implements VideoService{
     @Override
     public VideoFile uploadFile(MultipartFile file) throws IOException {
 
-        if ( file.isEmpty()) {
+        if (file.isEmpty()) {
             throw new IllegalArgumentException("cloud not save empty file. " + file.getOriginalFilename());
         }
 

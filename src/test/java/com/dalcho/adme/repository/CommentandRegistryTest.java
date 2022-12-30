@@ -3,17 +3,11 @@ package com.dalcho.adme.repository;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.repository.CommentRepository;
-import com.dalcho.adme.repository.RegistryRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
 @DisplayName("H2를 이용한 TEST")
 @DataJpaTest
@@ -32,10 +26,8 @@ public class CommentandRegistryTest {
     @Test
     void commentSave_Identity() {
         User user = User.builder()
-                .username("username")
                 .nickname("coco")
                 .password("password")
-                .email("email")
                 .build();
         userSave = userRepository.save(user);
 

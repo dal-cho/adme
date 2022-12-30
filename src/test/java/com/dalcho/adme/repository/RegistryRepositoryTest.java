@@ -26,10 +26,8 @@ class RegistryRepositoryTest { // 검증 완료 o
     void registryTest() throws Exception {
         //given
         User saveuser = User.builder()
-                .username("username")
                 .nickname("nickname")
                 .password("password")
-                .email("email")
                 .build();
 
         user = userRepository.save(saveuser);
