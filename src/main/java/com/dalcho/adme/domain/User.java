@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Table
 @Entity
 @Getter
 @ToString
@@ -39,14 +38,6 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>(); // 권한을 List 로 저장
-
-    @Builder
-    public User(String nickname, String password, String name, List<String> roles) {
-        this.nickname = nickname;
-        this.password = password;
-        this.name = name;
-        this.roles = roles;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -91,6 +82,11 @@ public class User implements UserDetails {
     @ToString.Exclude
     private List<Registry> registries = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Comment> comments = new ArrayList<>();
+
     public void addRegistry(Registry registry) {
         this.registries.add(registry);
         if (registry.getUser() != this) {
@@ -98,16 +94,19 @@ public class User implements UserDetails {
         }
     }
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<Comment> comments = new ArrayList<>();
-
     public void addComment(Comment comment) {
         this.comments.add(comment);
         if (comment.getUser() != this) {
             comment.addUser(this);
         }
+    }
+
+    @Builder
+    public User(String nickname, String password, String name, List<String> roles) {
+        this.nickname = nickname;
+        this.password = password;
+        this.name = name;
+        this.roles = roles;
     }
 }
 
