@@ -16,9 +16,7 @@ import java.util.stream.Collectors;
 @Table
 @Entity
 @Getter
-@Builder
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements UserDetails {
     @Id
@@ -40,8 +38,15 @@ public class User implements UserDetails {
 //    private String email;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
     private List<String> roles = new ArrayList<>(); // 권한을 List 로 저장
+
+    @Builder
+    public User(String nickname, String password, String name, List<String> roles) {
+        this.nickname = nickname;
+        this.password = password;
+        this.name = name;
+        this.roles = roles;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -50,71 +55,41 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * security 에서 사용하는 회원 구분 id
-     *
-     * @return nickname
-     */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
     public String getUsername() {
         return this.nickname;
     }
 
-    /**
-     * 계정이 만료되었는지 체크하는 로직
-     *
-     * true: 만료안됨
-     * @return true
-     */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    /**
-     * 계정이 잠겼는지 체크하는 로직
-     *
-     * @return true
-     */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    /**
-     * 계정의 패스워드가 만료되었는지 체크하는 로직
-     *
-     * @return true
-     */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    /**
-     * 계정이 사용가능한지 체크하는 로직
-     *
-     * @return true
-     */
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Override
     public boolean isEnabled() {
         return true;
     }
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    @ToString.Exclude
-    private List<Registry> registries = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     @ToString.Exclude
-    private List<Comment> comments = new ArrayList<>();
+    private List<Registry> registries = new ArrayList<>();
 
     public void addRegistry(Registry registry) {
         this.registries.add(registry);
@@ -122,6 +97,11 @@ public class User implements UserDetails {
             registry.addUser(this);
         }
     }
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<Comment> comments = new ArrayList<>();
 
     public void addComment(Comment comment) {
         this.comments.add(comment);
