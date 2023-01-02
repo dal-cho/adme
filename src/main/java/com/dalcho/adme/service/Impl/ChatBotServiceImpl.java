@@ -1,4 +1,4 @@
-package com.dalcho.adme.Impl;
+package com.dalcho.adme.service.Impl;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +75,7 @@ public class ChatBotServiceImpl extends TextWebSocketHandler {
 
     // 채팅 내용을 파일로 부터 읽어온다.
     private String readFile() {
-        File file = new File("C:\\Users\\cjera\\Desktop\\달코\\chat\\chat.txt");
+        File file = new File("${part4.upload.path}");
         // 파일 있는지 검사
         if (!file.exists()) {
             return "";
@@ -94,7 +94,7 @@ public class ChatBotServiceImpl extends TextWebSocketHandler {
         // 메시지 내용
         String msg = id + ":  " + message + "\n";
         // 파일을 저장한다.
-        try (FileOutputStream stream = new FileOutputStream("C:\\Users\\cjera\\Desktop\\달코\\chat\\chat.txt", true)) {
+        try (FileOutputStream stream = new FileOutputStream("${part4.upload.path}", true)) {
             stream.write(msg.getBytes("UTF-8"));
         } catch (Throwable e) {
             e.printStackTrace();
