@@ -1,6 +1,6 @@
 package com.dalcho.adme.config.security;
 
-import com.dalcho.adme.service.UserDetailsService;
+import com.dalcho.adme.service.UserDetailService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -25,11 +25,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final UserDetailsService userDetailsService;
+    private final UserDetailService userDetailsService;
 
     @Value("${springboot.jwt.secret}")
     private String secretKey; // 토큰 생성에 필요한 key
-    private final long tokenValidMillisecond = 24 * 60 * 60; // token 유효시간
+    private final long tokenValidMillisecond = 24 * 60 * 60 * 1000; // token 유효시간
 
     // SecretKey 초기화
     @PostConstruct // Bean 객체로 주입된 후 수행

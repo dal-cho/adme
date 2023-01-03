@@ -1,7 +1,6 @@
 package com.dalcho.adme.config.security;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,29 +17,23 @@ public class SecurityConfiguration {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public static final String[] WHITE_LIST = {
-            "/sign-api/sign-in",
-            "/sign-api/sign-up",
-            "/sign-api/exception",
-            "**exception**"
-    };
-
     public static final String[] GET_WHITE_LIST = {
             "/tenSeconds/**"
     };
 
     public static final String[] USER_ENABLE = {
             "/tenSeconds/video",
-            "/sign-api/cookie"
+            "/sign-api/cookie",
+            "/registry/**"
     };
 
     public static final String[] VIEW_LIST = {
             "/static/**",
             "/js/**",
             "/favicon.ico/**",
-            "/user/login",
+            "/user/**",
+            "/taste",
             "/tenSeconds",
-            "/user/login",
             "/adme",
             "/"
     };
@@ -58,11 +51,9 @@ public class SecurityConfiguration {
                 .disable()
                 .and() // 접근설정
                 .authorizeRequests() // 요청에 의한 보안검사 시작
-                .antMatchers(WHITE_LIST).permitAll() // 권한 허용 URL 설정
                 .antMatchers(VIEW_LIST).permitAll()
                 .antMatchers(HttpMethod.GET, GET_WHITE_LIST).permitAll() // GET 요청 허용
                 .antMatchers(USER_ENABLE).hasAnyRole("USER","ADMIN") // USER 접근 가능
-                .anyRequest().hasRole("ADMIN") // 기타 요청은 인증 권한을 가진 사용자에게 허용
                 .and() // 로그아웃 처리
                 .logout()
                 .logoutUrl("/user/logout") // 로그아웃 처리 URL
