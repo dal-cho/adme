@@ -8,7 +8,8 @@ import com.dalcho.adme.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,11 +20,11 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(locations = "/application.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PagingH2Test {
-    @Autowired
+    @Mock
     RegistryRepository registryRepository;
-    @Autowired
+    @Mock
     UserRepository userRepository;
-    @Autowired
+    @InjectMocks
     RegistryServiceImpl registryService;
 
     @Test

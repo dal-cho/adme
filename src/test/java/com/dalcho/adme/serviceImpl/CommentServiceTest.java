@@ -1,6 +1,5 @@
 package com.dalcho.adme.serviceImpl;
 
-import com.dalcho.adme.service.Impl.CommentServiceImpl;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
@@ -8,37 +7,46 @@ import com.dalcho.adme.dto.CommentDto;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
-import com.dalcho.adme.service.RegistryService;
+import com.dalcho.adme.service.Impl.CommentServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @DisplayName("H2를 이용한 Comment TEST")
-@TestPropertySource(locations = "/application.properties")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
+//@TestPropertySource(locations = "/application.properties")
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@Transactional
+@ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
-    @Autowired
-    CommentServiceImpl commentService;
-    @Autowired
+    @Mock
     CommentRepository commentRepository;
-    @Autowired
-    RegistryService registryService;
-    @Autowired
+    @Mock
     RegistryRepository registryRepository;
-    @Autowired
+    @Mock
     UserRepository userRepository;
-
+    @InjectMocks
+    CommentServiceImpl commentService;
+    OngoingStubbing<User> saveUser;
     User user;
     CommentDto commentDto;
     Registry registry;
@@ -46,31 +54,38 @@ public class CommentServiceTest {
     @Test
     @DisplayName("beforeEach 작성 전에 작성한 post test")
     void save1Comment() throws IOException {
-        User user = User.builder()
+        List<String> role = Collections.singletonList("ROLE_USER");
+        user = User.builder()
+                .name("username")
                 .nickname("hh")
                 .password("password")
+               // .email("email")
+                .roles(role)
                 .build();
 
-        User saveUser = userRepository.save(user);
+        //saveUser = userRepository.save(user);
+        //when(userRepository.save(any(User.class))).then(AdditionalAnswers.returnsFirstArg());
 
         //given
         Registry registry1 = Registry.builder()
                 .title("안녕하세요")
                 .main("hi")
-                .user(saveUser)
+                .user(user)
                 .build();
-        Registry saveRegistry1 = registryRepository.save(registry1);
+        Registry saveRegistry = registryRepository.save(registry1);
 
         CommentDto commentDto = new CommentDto();
         commentDto.setComment("funfun");
         commentDto.setNickname("hh");
-        commentDto.setRegistryIdx(saveRegistry1.getIdx());
+        commentDto.setRegistryIdx(saveRegistry.getIdx());
 
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
         Comment comment = commentDto.toEntity(registry, user);
 
         //when
         Comment saveComment = commentService.postComment(commentDto);
+        when(commentRepository.save(any(Comment.class))).thenReturn(saveComment);
+        verify(commentRepository).save(saveComment);
 
         //then
         Assertions.assertThat(comment.getComment()).isEqualTo(saveComment.getComment());
@@ -80,21 +95,26 @@ public class CommentServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        User user = User.builder()
+        List<String> role = Collections.singletonList("ROLE_USER");
+        user = User.builder()
+                .name("username")
                 .nickname("nickname")
                 .password("password")
+//                .email("email")
+                .roles(role)
                 .build();
 
-        User saveUser = userRepository.save(user);
+        //saveUser = userRepository.save(user);
+        //when(userRepository.save(any(User.class))).then(AdditionalAnswers.returnsFirstArg());
 
         // 게시글
-        Registry saveRegistry = new Registry("타이틀", "본문", saveUser);
+        Registry saveRegistry = new Registry("타이틀", "본문", user);
         this.registry = registryRepository.save(saveRegistry);
 
         // 댓글
         this.commentDto = new CommentDto();
         this.commentDto.setComment("comment");
-        this.commentDto.setNickname(saveUser.getNickname());
+        this.commentDto.setNickname((user.getNickname()));
         this.commentDto.setRegistryIdx(saveRegistry.getIdx());
     }
 

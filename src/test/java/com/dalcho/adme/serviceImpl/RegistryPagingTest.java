@@ -1,25 +1,26 @@
 package com.dalcho.adme.serviceImpl;
 
-import com.dalcho.adme.service.Impl.RegistryServiceImpl;
 import com.dalcho.adme.repository.RegistryRepository;
+import com.dalcho.adme.service.Impl.RegistryServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import static org.assertj.core.api.Assertions.*;
-//import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 public class RegistryPagingTest {
     // db를 불러와서 curpage가 x일때 보여지는 페이지
-    @Autowired
+    @Mock
     RegistryRepository registryRepository;
-    @Autowired
+    @InjectMocks
     RegistryServiceImpl registryService;
 
     @DisplayName("MySql을 이용한 TEST")
