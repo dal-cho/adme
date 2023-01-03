@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -58,6 +59,12 @@ public class SecurityConfiguration {
                 .disable()
                 .and() // 접근설정
                 .authorizeRequests() // 요청에 의한 보안검사 시작
+                .antMatchers("/taste").permitAll()
+                .antMatchers("/img/**").permitAll()
+                .antMatchers("/css/**").permitAll()
+                .antMatchers("/js/**").permitAll()
+                .antMatchers("/user/**").permitAll()
+                .antMatchers("/").permitAll() // adme 페이지
                 .antMatchers(WHITE_LIST).permitAll() // 권한 허용 URL 설정
                 .antMatchers(VIEW_LIST).permitAll()
                 .antMatchers(HttpMethod.GET, GET_WHITE_LIST).permitAll() // GET 요청 허용
@@ -75,5 +82,10 @@ public class SecurityConfiguration {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
+    }
+
+
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**");
     }
 }
