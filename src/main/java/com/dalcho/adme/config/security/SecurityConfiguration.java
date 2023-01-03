@@ -23,8 +23,8 @@ public class SecurityConfiguration {
 
     public static final String[] USER_ENABLE = {
             "/tenSeconds/video",
-            "/sign-api/cookie",
-            "/registry/**"
+            "/registry/**",
+            "/comment**"
     };
 
     public static final String[] VIEW_LIST = {

@@ -9,16 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Slf4j
 @RestController
-@RequestMapping("/sign-api")
 public class SignController {
 
     private final SignService signService;
@@ -40,7 +37,7 @@ public class SignController {
     }
 
     @PostMapping(value = "/sign-in")
-    public SignInResultDto signIn(@RequestBody SignInRequestDto signInRequestDto, HttpServletResponse response) throws RuntimeException, IOException {
+    public SignInResultDto signIn(@RequestBody SignInRequestDto signInRequestDto, HttpServletResponse response) throws RuntimeException {
         log.info("[signIn] 로그인을 시도하고 있습니다. id : {}, pw : ****", signInRequestDto.getNickname());
 
         SignInResultDto signInResultDto = signService.signIn(signInRequestDto);
