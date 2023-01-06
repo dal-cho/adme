@@ -19,6 +19,10 @@ public class UserDetailServiceImpl implements UserDetailService {
     @Override
     public UserDetails loadUserByUsername(String username){
         log.info("[loadUserByUsername] loadUserByUsername 수행. username : {}", username);
-        return userRepository.findByNickname(username);
+
+        return userRepository.findByNickname(username).orElseThrow(() -> {
+            log.info("[loadUserByUsername] username이 존재하지 않습니다.");
+            throw new RuntimeException(); // 새로 만들어서 해줘야 좋다. (log 는 핸들러에서 처리)
+        });
     }
 }

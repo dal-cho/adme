@@ -87,6 +87,11 @@ public class User implements UserDetails {
     @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @ToString.Exclude
+    private List<VideoFile> video = new ArrayList<>();
+
     public void addRegistry(Registry registry) {
         this.registries.add(registry);
         if (registry.getUser() != this) {
@@ -98,6 +103,13 @@ public class User implements UserDetails {
         this.comments.add(comment);
         if (comment.getUser() != this) {
             comment.addUser(this);
+        }
+    }
+
+    public void addVideo(VideoFile video) {
+        this.video.add(video);
+        if (video.getUser() != this) {
+            video.setUser(this);
         }
     }
 

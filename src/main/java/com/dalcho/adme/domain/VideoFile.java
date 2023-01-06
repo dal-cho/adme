@@ -1,19 +1,21 @@
 package com.dalcho.adme.domain;
 
 import com.dalcho.adme.dto.VideoDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VideoFile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)// id 자동 카운트
+    @GeneratedValue(strategy = GenerationType.IDENTITY)// id 자동 카운트
     private Long id;
 
     @Column(nullable = false)
@@ -36,6 +38,22 @@ public class VideoFile {
 
     @Column(nullable = false)
     private String videoDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public void setUser(User user) {
+        if (this.user != null) {
+            this.user.getVideo().remove(this);
+        }
+        this.user = user;
+        if (!user.getVideo().contains(this)) {
+            user.addVideo(this);
+        }
+    }
 
     public VideoFile(VideoDto videoDto) {
         this.uuid = videoDto.getUuid();
