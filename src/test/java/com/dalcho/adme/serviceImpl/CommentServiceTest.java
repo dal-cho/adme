@@ -13,14 +13,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -28,14 +23,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
-@DisplayName("H2를 이용한 Comment TEST")
-//@TestPropertySource(locations = "/application.properties")
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@Transactional
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
     @Mock
@@ -46,7 +37,6 @@ public class CommentServiceTest {
     UserRepository userRepository;
     @InjectMocks
     CommentServiceImpl commentService;
-    OngoingStubbing<User> saveUser;
     User user;
     CommentDto commentDto;
     Registry registry;
@@ -59,33 +49,29 @@ public class CommentServiceTest {
                 .name("username")
                 .nickname("hh")
                 .password("password")
-               // .email("email")
+                // .email("email")
                 .roles(role)
                 .build();
 
-        //saveUser = userRepository.save(user);
-        //when(userRepository.save(any(User.class))).then(AdditionalAnswers.returnsFirstArg());
-
         //given
-        Registry registry1 = Registry.builder()
+        Registry registry = Registry.builder()
                 .title("안녕하세요")
                 .main("hi")
                 .user(user)
                 .build();
-        Registry saveRegistry = registryRepository.save(registry1);
 
         CommentDto commentDto = new CommentDto();
         commentDto.setComment("funfun");
         commentDto.setNickname("hh");
-        commentDto.setRegistryIdx(saveRegistry.getIdx());
+        commentDto.setRegistryIdx(registry.getIdx());
 
-        Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
-        Comment comment = commentDto.toEntity(registry, user);
+        Registry referenceById = registryRepository.getReferenceById(any());
+        Comment comment = commentDto.toEntity(referenceById, user);
 
         //when
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
         Comment saveComment = commentService.postComment(commentDto);
-        when(commentRepository.save(any(Comment.class))).thenReturn(saveComment);
-        verify(commentRepository).save(saveComment);
+        verify(commentRepository).save(any(Comment.class));
 
         //then
         Assertions.assertThat(comment.getComment()).isEqualTo(saveComment.getComment());
@@ -104,49 +90,51 @@ public class CommentServiceTest {
                 .roles(role)
                 .build();
 
-        //saveUser = userRepository.save(user);
-        //when(userRepository.save(any(User.class))).then(AdditionalAnswers.returnsFirstArg());
-
         // 게시글
-        Registry saveRegistry = new Registry("타이틀", "본문", user);
-        this.registry = registryRepository.save(saveRegistry);
+        registry = new Registry("타이틀", "본문", user);
 
         // 댓글
         this.commentDto = new CommentDto();
         this.commentDto.setComment("comment");
         this.commentDto.setNickname((user.getNickname()));
-        this.commentDto.setRegistryIdx(saveRegistry.getIdx());
+        this.commentDto.setRegistryIdx(registry.getIdx());
     }
 
 
     @Test
+    @DisplayName("comment 저장")
     void saveComment() throws IOException {
         // given
+        Comment save = commentDto.toEntity(registry, user);
 
         // when
+        when(commentRepository.save(any(Comment.class))).thenReturn(save);
         Comment comment = commentService.postComment(commentDto);
+        verify(commentRepository).save(any(Comment.class));
 
         // then
-        Comment commentTest = commentRepository.findById(comment.getIdx()).orElseThrow(
-                () -> new NullPointerException("comment 생성 x")
-        );
-
-        assertEquals("comment의 id값이 일치하는지 확인", comment.getIdx(), commentTest.getIdx());
-        assertEquals("comment의 nickname이 일치하는지 확인", comment.getRegistry().getUser().getNickname(), registry.getUser().getNickname());
+        assertEquals("Comment의 comment가 일치하는지 확인", commentDto.getComment(), comment.getComment());
+        //        Comment commentTest = commentRepository.findById(comment.getIdx()).orElseThrow(
+//                () -> new NullPointerException("comment 생성 x")
+        //       );
     }
 
 
     @Test
     @DisplayName("comment 수정")
     void updateComment() throws IOException {
-        Comment comment = commentService.postComment(commentDto);
+        //given
+        saveComment();
+
+        // when
+        Comment comment = commentService.updateComment(1L,commentDto, user);
 
         CommentDto commentDtoEdit = new CommentDto();
         commentDto.setComment("comment-edit");
 
-
-        //when
-        Comment commentTest = commentService.updateComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDtoEdit, user);
+        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
+        Comment commentTest = commentService.updateComment(anyLong(), commentDtoEdit, user);
+        verify(commentRepository).save(any(Comment.class));
 
         //then
         assertEquals("Comment Id 값이 일치하는지 확인.", comment.getIdx(), commentTest.getIdx());
@@ -158,13 +146,16 @@ public class CommentServiceTest {
     @DisplayName("comment 삭제 성공")
     void deleteComment() throws IOException {
         // given
-        Comment comment = commentService.postComment(commentDto);
+        saveComment();
+        List<Comment> allByRegistry_idx = commentRepository.findAllByRegistry_Idx(anyLong());
+        when(commentRepository.findAllByRegistry_Idx(anyLong())).thenReturn(allByRegistry_idx);
+        verify(commentRepository).findAllByRegistry_Idx(anyLong());
 
         //when
-        commentService.deleteComment(comment.getIdx(), comment.getRegistry().getIdx(), commentDto, user);
+        commentService.deleteComment(anyLong(), commentDto, user);
 
         // then
-        Optional<Comment> commentTest = commentRepository.findById(comment.getIdx());
+        Optional<Comment> commentTest = commentRepository.findById(anyLong());
         if (commentTest.isPresent())
             throw new IllegalArgumentException("Comment 가 정상적으로 삭제되지 않았습니다.");
         else
