@@ -36,19 +36,19 @@ public class CommentController {
     }
 
     // AuthenticationPrincipal : 로그인한 사용자의 정보를 파라메터로 받고 싶을때
-    @PutMapping("/comment/{commentId}/registry/{registryId}")
-    public Comment updateComment(@PathVariable Long commentId, @PathVariable Long registryId,
+    @PutMapping("/comment/{commentId}")
+    public Comment updateComment(@PathVariable Long commentId,
                                  @RequestBody CommentDto commentDto,
                                  @AuthenticationPrincipal User user) throws AccessDeniedException {
-        return commentService.updateComment(commentId, registryId, commentDto, user);
+        return commentService.updateComment(commentId, commentDto, user);
     }
 
     // 댓글 삭제
-    @DeleteMapping("/comment/{commentId}/registry/{registryId}")
-    public void deleteComment(@PathVariable Long commentId, @PathVariable Long registryId,
+    @DeleteMapping("/comment/{commentId}")
+    public void deleteComment(@PathVariable Long commentId,
                               @RequestBody CommentDto commentDto,
                               @AuthenticationPrincipal User user)throws AccessDeniedException {
-        commentService.deleteComment(commentId, registryId, commentDto, user);
+        commentService.deleteComment(commentId, commentDto, user);
     }
 
     @GetMapping("/finduser")  // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
