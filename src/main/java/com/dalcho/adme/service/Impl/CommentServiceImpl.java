@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public Comment postComment(CommentDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
-        User user = userRepository.findByNickname(commentDto.getNickname());
+        User user = userRepository.findByNickname(commentDto.getNickname()).orElseThrow(() -> {throw new RuntimeException();});
         Comment comment = commentDto.toEntity(registry, user);
         Comment save = commentRepository.save(comment);
         return save;
