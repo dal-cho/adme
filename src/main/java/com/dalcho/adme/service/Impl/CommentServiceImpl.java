@@ -66,9 +66,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, User user) throws
+    public Comment updateComment(Long commentId, CommentDto commentDto, User user) throws
             AccessDeniedException {
-        registryRepository.findById(registryId).orElseThrow(
+        registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(
                 () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
         );
 
@@ -86,8 +86,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Long registryId, CommentDto commentDto, User user) throws AccessDeniedException {
-        registryRepository.findById(registryId).orElseThrow(
+    public void deleteComment(Long commentId, CommentDto commentDto, User user) throws AccessDeniedException {
+        registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(
                 () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
         );
 

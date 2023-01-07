@@ -18,9 +18,9 @@ public interface CommentService {
 
     ResCommentDto getCountComment(Long idx);
 
-    Comment updateComment(Long commentId, Long registryId, CommentDto commentDto, User user) throws AccessDeniedException;
+    Comment updateComment(Long commentId, CommentDto commentDto, User user) throws AccessDeniedException;
 
-    void deleteComment(Long commentId, Long registryId, CommentDto commentDto, User user) throws AccessDeniedException;
+    void deleteComment(Long commentId, CommentDto commentDto, User user) throws AccessDeniedException;
 
     String findUser(User user);
 
