@@ -3,6 +3,7 @@ package com.dalcho.adme.controller;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
+import com.dalcho.adme.dto.response.ResRegistryDto;
 import com.dalcho.adme.service.RegistryService;
 import com.dalcho.adme.utils.PagingResult;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class RegistryController {
 
     // 게시글 상세 보기
     @GetMapping("/registry")
-    public List getIdxRegistry(@RequestParam Long idx) {
+    public ResRegistryDto getIdxRegistry(@RequestParam Long idx) {
         return registryService.getIdxRegistry(idx);
     }
 }

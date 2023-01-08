@@ -3,6 +3,7 @@ package com.dalcho.adme.service;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
+import com.dalcho.adme.dto.response.ResRegistryDto;
 import com.dalcho.adme.utils.PagingResult;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,6 @@ public interface RegistryService {
     PagingResult getBoards(int curPage);
 
     // 게시글 상세 보기
-    List getIdxRegistry(Long idx);
+    ResRegistryDto getIdxRegistry(Long idx);
 
 }
