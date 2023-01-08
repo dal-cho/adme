@@ -1,4 +1,4 @@
-package com.dalcho.adme.utils.videoUtils;
+package com.dalcho.adme.utils.video;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;

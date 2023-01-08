@@ -1,6 +1,6 @@
-package com.dalcho.adme.utils.videoUtils;
+package com.dalcho.adme.utils.video;
 
-import com.dalcho.adme.dto.VideoDto;
+import com.dalcho.adme.domain.VideoFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
@@ -21,25 +21,25 @@ public class MultipartFileUtils {
     /**
      * 파일을 저장합니다.
      */
-    public static void saveFile(MultipartFile file, VideoDto videoDto) {
+    public static void saveFile(MultipartFile file, VideoFile videoFile) {
 
-        Path path = Paths.get(videoDto.getUploadPath());
+        Path path = Paths.get(videoFile.getUploadPath());
 
         log.info("MultipartFileUtils");
         Assert.notNull( file , "file can't be null" );
         try {
             if ( file.isEmpty()) {
-                throw new IllegalArgumentException( "cloud not save empty file. " + videoDto.getUuid() );
+                throw new IllegalArgumentException( "cloud not save empty file. " + videoFile.getUuid() );
             }
 
             // 디렉토리가 없으면 작성
             FileDirectoryUtils.createDirectories(path);
 
             // 입력 스트림을 파일로 내보내기 location+filename 경로로 파일 내보내기
-            Files.copy( file.getInputStream(), path.resolve(videoDto.getUuid()+".mp4") );
+            Files.copy( file.getInputStream(), path.resolve(videoFile.getUuid()+".mp4") );
 
         } catch( IOException e ) {
-            throw new IllegalStateException( "failed to save file. " + videoDto.getUuid(), e );
+            throw new IllegalStateException( "failed to save file. " + videoFile.getUuid(), e );
         }
 
     }

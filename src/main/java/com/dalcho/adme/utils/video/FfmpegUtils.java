@@ -1,6 +1,6 @@
-package com.dalcho.adme.utils.videoUtils;
+package com.dalcho.adme.utils.video;
 
-import com.dalcho.adme.dto.VideoDto;
+import com.dalcho.adme.domain.VideoFile;
 import lombok.extern.slf4j.Slf4j;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
@@ -12,7 +12,7 @@ import java.io.IOException;
 @Slf4j
 public class FfmpegUtils {
 
-    public static void createThumbnail(String ffmpegPath, String ffprobePath, VideoDto videoDto) throws IOException {
+    public static void createThumbnail(String ffmpegPath, String ffprobePath, VideoFile videoFile) throws IOException {
 
         log.info("FfmpegUtils");
 
@@ -21,9 +21,9 @@ public class FfmpegUtils {
 
         FFmpegBuilder builder = new FFmpegBuilder()
                 .overrideOutputFiles(true) // 출력이 있는경우 덮어쓰기
-                .setInput(videoDto.getUploadPath() + videoDto.getUuid() + videoDto.getExt()) // 썸네일 생성대상 파일
+                .setInput(videoFile.getUploadPath() + videoFile.getUuid() + ".mp4") // 썸네일 생성대상 파일
                 .addExtraArgs("-ss", "00:00:03") // 썸네일 추출 시작점
-                .addOutput(videoDto.getUploadPath() + "thumb_" + videoDto.getUuid() + ".jpg") // 썸네일 파일을 저장할 위치
+                .addOutput(videoFile.getUploadPath() + "thumb_" + videoFile.getUuid() + ".jpg") // 썸네일 파일을 저장할 위치
                 .setFrames(1) // 프레임 수
                 .done();
 
