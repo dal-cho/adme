@@ -13,5 +13,4 @@ public class ResCommentDto {
     private String registryNickname;
     private Long commentId;
     private String comment;
-    private int size;
 }

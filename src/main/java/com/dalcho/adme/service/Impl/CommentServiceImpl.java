@@ -58,11 +58,9 @@ public class CommentServiceImpl implements CommentService {
         return resCommentDtoList;
     }
 
-    public ResCommentDto getCountComment(Long idx) {
+    public Integer getCountComment(Long idx) {
         List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
-        ResCommentDto resCommentDto = new ResCommentDto();
-        resCommentDto.setSize(commentList.size());
-        return resCommentDto;
+        return commentList.size();
     }
 
     @Transactional

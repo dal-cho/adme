@@ -16,7 +16,7 @@ public interface CommentService {
 
     List<ResCommentDto> getComment(Long idx);
 
-    ResCommentDto getCountComment(Long idx);
+    Integer getCountComment(Long idx);
 
     Comment updateComment(Long commentId, CommentDto commentDto, User user) throws AccessDeniedException;
 
