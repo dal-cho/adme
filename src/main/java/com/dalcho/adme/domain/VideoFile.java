@@ -1,13 +1,10 @@
 package com.dalcho.adme.domain;
 
-import com.dalcho.adme.dto.VideoDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,25 +16,19 @@ public class VideoFile {
     private Long id;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String content;
+
+    @Column(nullable = false)
     private String uuid;
 
     @Column(nullable = false)
     private String uploadPath;
 
     @Column(nullable = false)
-    private String ext;
-
-    @Column(nullable = false)
-    private Long fileSize; // 파일 사이즈 바이트 수
-
-    @Column(nullable = false)
-    private String fileType; // 파일 확장자
-
-    @Column(nullable = false)
-    private byte[] fileData; // 실제 파일 데티어
-
-    @Column(nullable = false)
-    private String videoDate;
+    private LocalDateTime videoDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
@@ -55,13 +46,12 @@ public class VideoFile {
         }
     }
 
-    public VideoFile(VideoDto videoDto) {
-        this.uuid = videoDto.getUuid();
-        this.uploadPath = String.valueOf(videoDto.getUploadPath());
-        this.ext = videoDto.getExt();
-        this.fileSize = videoDto.getFileSize();
-        this.fileType = videoDto.getFileType();
-        this.fileData = videoDto.getFileData();
-        this.videoDate = String.valueOf(videoDto.getVideoDate());
+    @Builder
+    public VideoFile(String title, String content, String uuid, String uploadPath, LocalDateTime videoDate) {
+        this.title = title;
+        this.content = content;
+        this.uuid = uuid;
+        this.uploadPath = uploadPath;
+        this.videoDate = videoDate;
     }
 }

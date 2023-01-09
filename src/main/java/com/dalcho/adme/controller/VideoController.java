@@ -1,34 +1,39 @@
 package com.dalcho.adme.controller;
 
-import com.dalcho.adme.domain.VideoFile;
-import com.dalcho.adme.dto.VideoDto;
+import com.dalcho.adme.domain.User;
+import com.dalcho.adme.dto.video.VideoRequestDto;
+import com.dalcho.adme.dto.video.VideoResponseDto;
+import com.dalcho.adme.dto.video.VideoResultDto;
 import com.dalcho.adme.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-@Controller("/tenSeconds")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
 public class VideoController {
 
     public final VideoService videoService;
 
-    @GetMapping( "/list" )
-    public List<VideoFile> listFiles() throws Exception {
+    @GetMapping( "/tenSeconds/list" )
+    public List<VideoResponseDto> listFiles() throws Exception {
         log.info("VideoController GetList");
         return videoService.getList();
     }
 
-    @PostMapping(value = "/videos")
-    public VideoFile uploadFile(@RequestParam("uploadFile") MultipartFile file) throws Exception {
-        log.info("VideoController Post");
-        return videoService.uploadFile(file);
+    @PostMapping("/tenSeconds/videos")
+    public VideoResultDto uploadFile(@AuthenticationPrincipal User user, @RequestPart(name = "sideData") VideoRequestDto requestDto,
+                                     @RequestPart(name = "videoFile") MultipartFile file) throws Exception {
+        log.info("[VideoController] uploadFile() ");
+        return videoService.uploadFile(user, requestDto, file);
     }
 }
+

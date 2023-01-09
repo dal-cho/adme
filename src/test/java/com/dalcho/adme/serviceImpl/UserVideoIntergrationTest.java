@@ -29,7 +29,7 @@ public class UserVideoIntergrationTest {
 //        String comment = "곧 동영상파일로 변환해 보겠습니다.";
 //        String tag = "#강아지";
 //
-//        VideoDto videoDto = new VideoDto(
+//        VideoResponseDto videoResponseDto = new VideoResponseDto(
 //                video,
 //                title,
 //                comment,
@@ -38,7 +38,7 @@ public class UserVideoIntergrationTest {
 //
 //        // when
 //        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-//            tenSecondsService.createVideo(videoDto, userId);
+//            tenSecondsService.createVideo(videoResponseDto, userId);
 //        });
 //
 //        //then
@@ -86,7 +86,7 @@ public class UserVideoIntergrationTest {
 //        String comment = "곧 동영상파일로 변환해 보겠습니다.";
 //        String tag = "#강아지";
 //
-//        VideoDto videoDto = new VideoDto(
+//        VideoResponseDto videoResponseDto = new VideoResponseDto(
 //                video,
 //                title,
 //                comment,
@@ -94,7 +94,7 @@ public class UserVideoIntergrationTest {
 //        );
 //
 //        // when
-//        TenSeconds tenSeconds = tenSecondsService.createVideo(videoDto, userId);
+//        TenSeconds tenSeconds = tenSecondsService.createVideo(videoResponseDto, userId);
 //
 //        // then
 //        assertNotNull(tenSeconds.getId());

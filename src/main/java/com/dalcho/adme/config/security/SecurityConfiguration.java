@@ -18,11 +18,11 @@ public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
 
     public static final String[] GET_WHITE_LIST = {
-            "/tenSeconds/**"
+            "/tenSeconds/list"
     };
 
     public static final String[] USER_ENABLE = {
-            "/tenSeconds/video",
+            "/tenSeconds/videos",
             "/registry/**",
             "/comment**"
     };
@@ -51,8 +51,8 @@ public class SecurityConfiguration {
                 .disable()
                 .and() // 접근설정
                 .authorizeRequests() // 요청에 의한 보안검사 시작
-                .antMatchers(VIEW_LIST).permitAll()
                 .antMatchers(HttpMethod.GET, GET_WHITE_LIST).permitAll() // GET 요청 허용
+                .antMatchers(VIEW_LIST).permitAll()
                 .antMatchers(USER_ENABLE).hasAnyRole("USER","ADMIN") // USER 접근 가능
                 .and() // 로그아웃 처리
                 .logout()

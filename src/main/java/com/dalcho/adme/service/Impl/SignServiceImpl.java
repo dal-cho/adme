@@ -87,7 +87,6 @@ public class SignServiceImpl implements SignService {
     @Override
     public SignInResultDto signIn(SignInRequestDto signInRequestDto) throws RuntimeException {
         log.info("[getSignInResult] signDataHandler 로 회원 정보 요청");
-
         User user = userRepository.findByNickname(signInRequestDto.getNickname()).orElseThrow(() -> {
             log.info("[getSignInResult] 아이디가 존재하지 않습니다.");
             throw new RuntimeException(); // 새로 만들어서 해줘야 좋다. (log 는 핸들러에서 처리)
@@ -114,9 +113,6 @@ public class SignServiceImpl implements SignService {
                 .role_check(authority)
                 .token(jwtTokenProvider.createToken(user.getNickname(), user.getRoles()))
                 .build();
-//
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add("AUTHORIZATION_HEADER","Bearer" + token);
 
         log.info("[getSignInResult] SignInResultDto 객체에 값 주입");
         setSuccessResult(signInResultDto);
