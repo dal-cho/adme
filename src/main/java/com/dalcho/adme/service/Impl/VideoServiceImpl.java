@@ -15,6 +15,8 @@ import com.dalcho.adme.utils.video.MultipartFileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,8 +80,8 @@ public class VideoServiceImpl implements VideoService {
         return videoResultDto;
     }
 
-    public List<VideoResponseDto> getList() {
-        List<VideoFile> videoFiles = videoRepository.findAll();
+    public List<VideoResponseDto> getList(Pageable pageable) {
+        Page<VideoFile> videoFiles = videoRepository.findAll(pageable);
         return videoFiles.stream()
                 .map(VideoResponseDto::of)
                 .collect(Collectors.toList());
