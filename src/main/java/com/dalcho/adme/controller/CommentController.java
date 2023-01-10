@@ -31,7 +31,7 @@ public class CommentController {
     }
 
     @GetMapping("comment-count")
-    public ResCommentDto getCountComment(@RequestParam Long idx){
+    public Integer getCountComment(@RequestParam Long idx){
         return commentService.getCountComment(idx);
     }
 
