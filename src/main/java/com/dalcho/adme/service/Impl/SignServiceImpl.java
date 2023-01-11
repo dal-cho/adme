@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service("SignService")
@@ -41,14 +43,18 @@ public class SignServiceImpl implements SignService {
         String nickname = signUpRequestDto.getNickname();
         String password = signUpRequestDto.getPassword();
         String name = signUpRequestDto.getName();
+        String email = signUpRequestDto.getEmail();
 
         log.info("[getSignUpResult] 회원 정보 유무 확인");
-
         if (userRepository.existsByNickname(nickname)) {
             throw new IllegalArgumentException("[getSignUpResult] 중복된 사용자 ID 가 존재합니다.");
         }
-
         log.info("[getSignUpResult] 회원 정보 유무 확인 완료");
+
+        log.info("[getSignUpResult] email,password 패턴 확인");
+        patternCheck("\\w+@\\w+\\.\\w+(\\.\\w+)?", email, "email"); // ex) abcd@add.com
+        patternCheck("(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}", password, "password"); // 영문과 특수문자 숫자를 포함하며 8자 이상
+        log.info("[getSignUpResult] email,password 패턴 확인 완료");
 
         List<String> role = Collections.singletonList("ROLE_USER"); // 변경 불가능한 요소("ROLE_USER") 생성
 
@@ -65,6 +71,7 @@ public class SignServiceImpl implements SignService {
                 .nickname(nickname)
                 .name(name)
                 .password(passwordEncoder.encode(password))
+                .email(email)
                 .roles(role)
                 .build();
 
@@ -132,5 +139,13 @@ public class SignServiceImpl implements SignService {
         result.setSuccess(false);
         result.setCode(CommonResponse.FAIL.getCode());
         result.setMsg(CommonResponse.FAIL.getMsg());
+    }
+
+    private void patternCheck(String regex, String checkStr, String msg){
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(checkStr);
+        if (!matcher.find()) {
+            throw new IllegalArgumentException(msg + "형식이 옳바르지 않습니다.");
+        }
     }
 }
