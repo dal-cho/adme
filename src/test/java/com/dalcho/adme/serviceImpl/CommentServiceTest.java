@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
@@ -123,19 +124,17 @@ public class CommentServiceTest {
     void updateComment() throws IOException {
         //given
         saveComment();
+        Comment comment = new Comment(commentDto.getComment(), registry, user);
+        when(registryRepository.findById(any())).thenReturn(Optional.ofNullable(registry));
+        when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
 
         // when
-        when(registryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(registry));
-        Comment comment = new Comment(commentDto.getComment(), registry, user);
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
-
         CommentDto commentDtoEdit = new CommentDto();
         commentDtoEdit.setComment("comment-edit");
-        Comment savecomment = commentService.updateComment(1L,commentDtoEdit, user);
 
-        when(commentRepository.save(any(Comment.class))).thenReturn(savecomment);
+        Comment savecomment = commentService.updateComment(1L,commentDtoEdit, user);
         comment.updateComment(commentDtoEdit.getComment());
-        verify(commentRepository, times(2)).save(any(Comment.class));
+        verify(commentRepository).save(savecomment);
 
         //then
         assertEquals("Comment Id 값이 일치하는지 확인.", savecomment.getIdx(), comment.getIdx());
@@ -148,18 +147,14 @@ public class CommentServiceTest {
     void deleteComment() throws IOException {
         // given
         saveComment();
-        List<Comment> allByRegistry_idx = commentRepository.findAllByRegistry_Idx(anyLong());
-        when(commentRepository.findAllByRegistry_Idx(anyLong())).thenReturn(allByRegistry_idx);
-        verify(commentRepository).findAllByRegistry_Idx(anyLong());
+        Comment comment = new Comment(commentDto.getComment(), registry, user);
+        when(registryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(registry));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
 
         //when
-        commentService.deleteComment(anyLong(), commentDto, user);
+        commentService.deleteComment(1L, commentDto, user);
 
         // then
-        Optional<Comment> commentTest = commentRepository.findById(anyLong());
-        if (commentTest.isPresent())
-            throw new IllegalArgumentException("Comment 가 정상적으로 삭제되지 않았습니다.");
-        else
-            assertEquals("Comment 가 비어있다.", Optional.empty(), commentTest);
+        verify(commentRepository).delete(comment);
     }
 }
