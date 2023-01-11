@@ -1,10 +1,7 @@
 package com.dalcho.adme.serviceImpl;
 
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.dto.sign.SignInRequestDto;
-import com.dalcho.adme.dto.sign.SignInResultDto;
 import com.dalcho.adme.dto.sign.SignUpRequestDto;
-import com.dalcho.adme.dto.sign.SignUpResultDto;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.service.Impl.SignServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -12,19 +9,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

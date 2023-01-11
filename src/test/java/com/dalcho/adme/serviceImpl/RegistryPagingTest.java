@@ -3,7 +3,6 @@ package com.dalcho.adme.serviceImpl;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.service.Impl.RegistryServiceImpl;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
