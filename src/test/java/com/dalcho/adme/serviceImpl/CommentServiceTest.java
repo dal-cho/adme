@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -63,12 +64,11 @@ public class CommentServiceTest {
         CommentDto commentDto = new CommentDto();
         commentDto.setComment("funfun");
         commentDto.setNickname("hh");
-        commentDto.setRegistryIdx(registry.getIdx());
-
-        Registry referenceById = registryRepository.getReferenceById(any());
-        Comment comment = commentDto.toEntity(referenceById, user);
+        commentDto.setRegistryIdx(1L);
+        Comment comment = commentDto.toEntity(registry, user);
 
         //when
+        when(userRepository.findByNickname(anyString())).thenReturn(Optional.ofNullable(user));
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
         Comment saveComment = commentService.postComment(commentDto);
         verify(commentRepository).save(any(Comment.class));
@@ -97,7 +97,7 @@ public class CommentServiceTest {
         this.commentDto = new CommentDto();
         this.commentDto.setComment("comment");
         this.commentDto.setNickname((user.getNickname()));
-        this.commentDto.setRegistryIdx(registry.getIdx());
+        this.commentDto.setRegistryIdx(1L);
     }
 
 
@@ -106,6 +106,7 @@ public class CommentServiceTest {
     void saveComment() throws IOException {
         // given
         Comment save = commentDto.toEntity(registry, user);
+        when(userRepository.findByNickname(commentDto.getNickname())).thenReturn(Optional.ofNullable(user));
 
         // when
         when(commentRepository.save(any(Comment.class))).thenReturn(save);
@@ -114,9 +115,6 @@ public class CommentServiceTest {
 
         // then
         assertEquals("Comment의 comment가 일치하는지 확인", commentDto.getComment(), comment.getComment());
-        //        Comment commentTest = commentRepository.findById(comment.getIdx()).orElseThrow(
-//                () -> new NullPointerException("comment 생성 x")
-        //       );
     }
 
 
@@ -127,18 +125,21 @@ public class CommentServiceTest {
         saveComment();
 
         // when
-        Comment comment = commentService.updateComment(1L,commentDto, user);
+        when(registryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(registry));
+        Comment comment = new Comment(commentDto.getComment(), registry, user);
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
 
         CommentDto commentDtoEdit = new CommentDto();
-        commentDto.setComment("comment-edit");
+        commentDtoEdit.setComment("comment-edit");
+        Comment savecomment = commentService.updateComment(1L,commentDtoEdit, user);
 
-        when(commentRepository.save(any(Comment.class))).thenReturn(comment);
-        Comment commentTest = commentService.updateComment(anyLong(), commentDtoEdit, user);
-        verify(commentRepository).save(any(Comment.class));
+        when(commentRepository.save(any(Comment.class))).thenReturn(savecomment);
+        comment.updateComment(commentDtoEdit.getComment());
+        verify(commentRepository, times(2)).save(any(Comment.class));
 
         //then
-        assertEquals("Comment Id 값이 일치하는지 확인.", comment.getIdx(), commentTest.getIdx());
-        assertEquals("Comment 내용이 업데이트 되었는지 확인", commentDtoEdit.getComment(), commentTest.getComment());
+        assertEquals("Comment Id 값이 일치하는지 확인.", savecomment.getIdx(), comment.getIdx());
+        assertEquals("Comment 내용이 업데이트 되었는지 확인", commentDtoEdit.getComment(), comment.getComment());
     }
 
 
