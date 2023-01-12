@@ -5,6 +5,10 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.CommentDto;
 import com.dalcho.adme.dto.response.ResCommentDto;
+import com.dalcho.adme.exception.invalid.InvalidPermissionException;
+import com.dalcho.adme.exception.notfound.CommentNotFoundException;
+import com.dalcho.adme.exception.notfound.RegistryNotFoundException;
+import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
@@ -16,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,20 +27,22 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final RegistryRepository registryRepository;
     private final UserRepository userRepository;
 
-    @Transactional
+    @Override
     public Comment postComment(CommentDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
-        User user = userRepository.findByNickname(commentDto.getNickname()).orElseThrow(() -> {throw new RuntimeException();});
+        User user = userRepository.findByNickname(commentDto.getNickname()).orElseThrow(UserNotFoundException::new);
         Comment comment = commentDto.toEntity(registry, user);
         Comment save = commentRepository.save(comment);
         return save;
     }
 
+    @Override
     public List<ResCommentDto> getComment(Long idx) throws NullPointerException {
         List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
         ResCommentDto resCommentDto;
@@ -58,54 +63,40 @@ public class CommentServiceImpl implements CommentService {
         return resCommentDtoList;
     }
 
+    @Override
     public Integer getCountComment(Long idx) {
         List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
         return commentList.size();
     }
 
-    @Transactional
-    public Comment updateComment(Long commentId, CommentDto commentDto, User user) throws
-            AccessDeniedException {
-        registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(
-                () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
-        );
-
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
-        );
-
+    @Override
+    public Comment updateComment(Long commentId, CommentDto commentDto, User user){
+        registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!user.getNickname().equals(comment.getUser().getNickname())) {
-            throw new AccessDeniedException("권한이 없습니다.");
+            throw new InvalidPermissionException();
         }
-
         comment.updateComment(commentDto.getComment());
         commentRepository.save(comment);
         return comment;
     }
 
-    @Transactional
-    public void deleteComment(Long commentId, CommentDto commentDto, User user) throws AccessDeniedException {
-        registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(
-                () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
-        );
-
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
-        );
-
+    @Override
+    public void deleteComment(Long commentId, CommentDto commentDto, User user) {
+        registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!user.getNickname().equals(comment.getUser().getNickname())) {
-            throw new AccessDeniedException("권한이 없습니다.");
+            throw new InvalidPermissionException();
         }
-
         commentRepository.delete(comment);
     }
 
-    // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
-    public String findUser(User user) {
+    @Override
+    public String findUser(User user) {// sessionStorage에 닉네임 값이 저장 안되어 있는 경우
         return user.getNickname();
     }
 
-
+    @Override
     public List<Optional<Registry>> needComments() {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "idx");
         List<Long> temp = commentRepository.findTop10By(pageable);
