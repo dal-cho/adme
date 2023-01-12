@@ -13,9 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,81 +29,42 @@ public class PagingH2Test {
     UserRepository userRepository;
     @InjectMocks
     RegistryServiceImpl registryService;
-    @Mock
-    Page<Registry> registryPage;
     int curPage = 1;
 
     @Test
     @DisplayName("실제 로직이 잘 동작하는지 test")
     public void paging() {
+        //given
         User user = User.builder()
                 .nickname("nickname")
                 .password("123456")
                 .build();
-        Registry registry = Registry.builder()
-                .title("test")
-                .main("main")
-                .user(user)
-                .build();
+        List<Registry> registryList = new ArrayList<>();
+        Registry registry = new Registry("title", "main", user);
+        Registry registry1 = new Registry("title", "main", user);
+        Registry registry2 = new Registry("title", "main", user);
+        Registry registry3 = new Registry("title", "main", user);
+        Registry registry4 = new Registry("title", "main", user);
+        Registry registry5 = new Registry("title", "main", user);
+        registryList.add(registry);
+        registryList.add(registry1);
+        registryList.add(registry2);
+        registryList.add(registry3);
+        registryList.add(registry4);
+        registryList.add(registry5);
+        Page<Registry> responsePage = new PageImpl<>(registryList);
+        when(registryRepository.findAllByOrderByCreatedAtDesc(any(Pageable.class))).thenReturn(responsePage);
 
-        when(registryRepository.findAllByOrderByCreatedAtDesc(any(Pageable.class))).thenReturn(registryPage);
+        // when
         registryService.getBoards(curPage);
         verify(registryRepository).findAllByOrderByCreatedAtDesc(any(Pageable.class));
 
-        Assertions.assertThat(registryPage.getNumber() + 1).isEqualTo(curPage);
+        // then
+        Assertions.assertThat(responsePage.getNumber() + 1).isEqualTo(curPage);
         Assertions.assertThat(registryService.getBoards(1).getStartPage()).isEqualTo(1);
-        Assertions.assertThat(registryService.getBoards(1).getEndPage()).isEqualTo(0);
+        Assertions.assertThat(registryService.getBoards(1).getEndPage()).isEqualTo(1);
         Assertions.assertThat(registryService.getBoards(1).isPrev()).isEqualTo(false);
         Assertions.assertThat(registryService.getBoards(1).isNext()).isEqualTo(false);
 
     }
-
-
-    @Test
-    @DisplayName("test2")
-    public void paging2() {
-        int size = 1;
-        int startPage;
-        int endPage;
-        boolean prev;
-        boolean next;
-        int nowPage;
-        int displayPageNum = 1;
-
-        User user = User.builder()
-                .name("username")
-                .nickname("nickname")
-                .password("123456")
-                .build();
-        Registry registry = Registry.builder()
-                .title("test")
-                .main("main")
-                .user(user)
-                .build();
-        Registry registry1 = Registry.builder()
-                .title("test")
-                .main("main")
-                .user(user)
-                .build();
-
-        when(registryRepository.findAllByOrderByCreatedAtDesc(any(Pageable.class))).thenReturn(registryPage);
-        registryService.getBoards(curPage);
-        verify(registryRepository).findAllByOrderByCreatedAtDesc(any(Pageable.class));
-
-        nowPage = (registryPage.getNumber() + 1);
-        startPage = (((int) Math.ceil(nowPage / (double) displayPageNum)) - 1) * 5 + 1;
-        endPage = startPage + 4;
-        prev = startPage == 1 ? false : true;
-        next = endPage < registryPage.getTotalPages() ? true : false;
-        if (endPage >= registryPage.getTotalPages()) {
-            endPage = registryPage.getTotalPages();
-            next = false;
-        }
-
-        Assertions.assertThat(startPage).isEqualTo(1);
-        Assertions.assertThat(endPage).isEqualTo(0);
-        Assertions.assertThat(prev).isEqualTo(false);
-        Assertions.assertThat(next).isEqualTo(false);
-    }
-
 }
