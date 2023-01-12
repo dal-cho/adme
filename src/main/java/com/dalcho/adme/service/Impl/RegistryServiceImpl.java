@@ -25,7 +25,7 @@ import java.util.List;
 public class RegistryServiceImpl implements RegistryService {
     private final RegistryRepository registryRepository;
     private final UserRepository userRepository;
-    private static final int PAGE_POST_COUNT = 5; // 한 페이지에 존재하는 게시글 수
+    private static final int PAGE_POST_COUNT = 9; // 한 페이지에 존재하는 게시글 수
     private int displayPageNum = 5;
     private int startPage;
     private int endPage;
