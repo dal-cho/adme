@@ -1,4 +1,4 @@
-package com.dalcho.adme.exception;
+package com.dalcho.adme.exception.notfound;
 
 /**
  * 파일 부재 중 오류

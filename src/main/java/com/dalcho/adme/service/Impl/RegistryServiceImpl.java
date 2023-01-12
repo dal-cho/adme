@@ -4,6 +4,8 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
 import com.dalcho.adme.dto.response.ResRegistryDto;
+import com.dalcho.adme.exception.CustomException;
+import com.dalcho.adme.exception.notfound.RegistryNotFoundException;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.service.RegistryService;
@@ -17,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -60,10 +61,8 @@ public class RegistryServiceImpl implements RegistryService {
 
 
     // 게시글 상세 보기
-    public ResRegistryDto getIdxRegistry(Long idx) throws NullPointerException {
-        Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(
-                () -> new NullPointerException("해당 게시글 없음")
-        );
+    public ResRegistryDto getIdxRegistry(Long idx) throws CustomException {
+        Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(RegistryNotFoundException::new);
         return ResRegistryDto.of(getIdxRegistry);
     }
 }
