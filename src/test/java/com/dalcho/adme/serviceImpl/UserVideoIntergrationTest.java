@@ -1,21 +1,18 @@
 package com.dalcho.adme.serviceImpl;
 
-import com.dalcho.adme.service.UserService;
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // @Order로 순서 정하는 방법
+@ExtendWith(MockitoExtension.class)
 public class UserVideoIntergrationTest {
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
+    @Mock
     PasswordEncoder passwordEncoder;
 
 
@@ -31,7 +28,7 @@ public class UserVideoIntergrationTest {
 //        String comment = "곧 동영상파일로 변환해 보겠습니다.";
 //        String tag = "#강아지";
 //
-//        VideoDto videoDto = new VideoDto(
+//        VideoResponseDto videoResponseDto = new VideoResponseDto(
 //                video,
 //                title,
 //                comment,
@@ -40,7 +37,7 @@ public class UserVideoIntergrationTest {
 //
 //        // when
 //        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-//            tenSecondsService.createVideo(videoDto, userId);
+//            tenSecondsService.createVideo(videoResponseDto, userId);
 //        });
 //
 //        //then
@@ -58,7 +55,7 @@ public class UserVideoIntergrationTest {
 //        String email = "pinkpig@gmail.com";
 //        boolean admin = false;
 //
-//        SignupRequestDto signupRequestDto = new SignupRequestDto();
+//        signupRequestDto signupRequestDto = new signupRequestDto();
 //        signupRequestDto.setUsername(username);
 //        signupRequestDto.setNickname(nickname);
 //        signupRequestDto.setPassword(password);
@@ -88,7 +85,7 @@ public class UserVideoIntergrationTest {
 //        String comment = "곧 동영상파일로 변환해 보겠습니다.";
 //        String tag = "#강아지";
 //
-//        VideoDto videoDto = new VideoDto(
+//        VideoResponseDto videoResponseDto = new VideoResponseDto(
 //                video,
 //                title,
 //                comment,
@@ -96,7 +93,7 @@ public class UserVideoIntergrationTest {
 //        );
 //
 //        // when
-//        TenSeconds tenSeconds = tenSecondsService.createVideo(videoDto, userId);
+//        TenSeconds tenSeconds = tenSecondsService.createVideo(videoResponseDto, userId);
 //
 //        // then
 //        assertNotNull(tenSeconds.getId());

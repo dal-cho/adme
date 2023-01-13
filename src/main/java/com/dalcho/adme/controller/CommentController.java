@@ -2,9 +2,9 @@ package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.CommentDto;
 import com.dalcho.adme.dto.response.ResCommentDto;
-import com.dalcho.adme.security.UserDetailsImpl;
 import com.dalcho.adme.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,29 +31,29 @@ public class CommentController {
     }
 
     @GetMapping("comment-count")
-    public ResCommentDto getCountComment(@RequestParam Long idx){
+    public Integer getCountComment(@RequestParam Long idx){
         return commentService.getCountComment(idx);
     }
 
     // AuthenticationPrincipal : 로그인한 사용자의 정보를 파라메터로 받고 싶을때
-    @PutMapping("/comment/{commentId}/registry/{registryId}")
-    public Comment updateComment(@PathVariable Long commentId, @PathVariable Long registryId,
+    @PutMapping("/comment/{commentId}")
+    public Comment updateComment(@PathVariable Long commentId,
                                  @RequestBody CommentDto commentDto,
-                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws AccessDeniedException {
-        return commentService.updateComment(commentId, registryId, commentDto, userDetails);
+                                 @AuthenticationPrincipal User user) throws AccessDeniedException {
+        return commentService.updateComment(commentId, commentDto, user);
     }
 
     // 댓글 삭제
-    @DeleteMapping("/comment/{commentId}/registry/{registryId}")
-    public void deleteComment(@PathVariable Long commentId, @PathVariable Long registryId,
+    @DeleteMapping("/comment/{commentId}")
+    public void deleteComment(@PathVariable Long commentId,
                               @RequestBody CommentDto commentDto,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails)throws AccessDeniedException {
-        commentService.deleteComment(commentId, registryId, commentDto, userDetails);
+                              @AuthenticationPrincipal User user)throws AccessDeniedException {
+        commentService.deleteComment(commentId, commentDto, user);
     }
 
     @GetMapping("/finduser")  // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
-    public String findUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.findUser(userDetails);
+    public String findUser(@AuthenticationPrincipal User user) {
+        return commentService.findUser(user);
     }
 
     @GetMapping("/needComment")

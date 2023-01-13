@@ -1,8 +1,9 @@
 package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.Registry;
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.RegistryDto;
-import com.dalcho.adme.security.UserDetailsImpl;
+import com.dalcho.adme.dto.response.ResRegistryDto;
 import com.dalcho.adme.service.RegistryService;
 import com.dalcho.adme.utils.PagingResult;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class RegistryController {
 
     // 게시글 등록
     @PostMapping("/registry") //@RequestParam이 여러개 있다. -> @ModelAttribute
-    public Registry postUpload(@ModelAttribute RegistryDto registryDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return registryService.postUpload(registryDto, userDetails);
+    public Registry postUpload(@ModelAttribute RegistryDto registryDto, @AuthenticationPrincipal User user) throws IOException {
+        return registryService.postUpload(registryDto, user);
     }
 
 
@@ -33,7 +34,7 @@ public class RegistryController {
 
     // 게시글 상세 보기
     @GetMapping("/registry")
-    public List getIdxRegistry(@RequestParam Long idx) {
+    public ResRegistryDto getIdxRegistry(@RequestParam Long idx) {
         return registryService.getIdxRegistry(idx);
     }
 }

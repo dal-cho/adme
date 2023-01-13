@@ -1,20 +1,25 @@
 package com.dalcho.adme.domain;
 
-import com.dalcho.adme.dto.VideoDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VideoFile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)// id 자동 카운트
+    @GeneratedValue(strategy = GenerationType.IDENTITY)// id 자동 카운트
     private Long id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String content;
 
     @Column(nullable = false)
     private String uuid;
@@ -23,27 +28,30 @@ public class VideoFile {
     private String uploadPath;
 
     @Column(nullable = false)
-    private String ext;
+    private LocalDateTime videoDate;
 
-    @Column(nullable = false)
-    private Long fileSize; // 파일 사이즈 바이트 수
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ToString.Exclude
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false)
-    private String fileType; // 파일 확장자
+    public void setUser(User user) {
+        if (this.user != null) {
+            this.user.getVideo().remove(this);
+        }
+        this.user = user;
+        if (!user.getVideo().contains(this)) {
+            user.addVideo(this);
+        }
+    }
 
-    @Column(nullable = false)
-    private byte[] fileData; // 실제 파일 데티어
-
-    @Column(nullable = false)
-    private String videoDate;
-
-    public VideoFile(VideoDto videoDto) {
-        this.uuid = videoDto.getUuid();
-        this.uploadPath = String.valueOf(videoDto.getUploadPath());
-        this.ext = videoDto.getExt();
-        this.fileSize = videoDto.getFileSize();
-        this.fileType = videoDto.getFileType();
-        this.fileData = videoDto.getFileData();
-        this.videoDate = String.valueOf(videoDto.getVideoDate());
+    @Builder
+    public VideoFile(String title, String content, String uuid, String uploadPath, LocalDateTime videoDate) {
+        this.title = title;
+        this.content = content;
+        this.uuid = uuid;
+        this.uploadPath = uploadPath;
+        this.videoDate = videoDate;
     }
 }
