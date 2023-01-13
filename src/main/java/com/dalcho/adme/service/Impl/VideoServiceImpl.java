@@ -6,6 +6,9 @@ import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
+import com.dalcho.adme.exception.notfound.FileNameNotFoundException;
+import com.dalcho.adme.exception.notfound.FileNotFoundException;
+import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.repository.VideoRepository;
 import com.dalcho.adme.service.VideoService;
@@ -43,15 +46,14 @@ public class VideoServiceImpl implements VideoService {
     public VideoResultDto uploadFile(User user, VideoRequestDto videoRequestDto, MultipartFile file) throws IOException {
 
         if (file.isEmpty()) {
-            throw new IllegalArgumentException("cloud not save empty file. " + file.getOriginalFilename());
+            throw new FileNotFoundException();
         }
 
         if (file.getOriginalFilename() == null) {
-            throw new IllegalArgumentException("파일 이름을 찾을 수 없습니다.");
+            throw new FileNameNotFoundException();
         }
         user = userRepository.findByNickname(user.getNickname()).orElseThrow(() -> {
-            log.info("[getSignInResult] 아이디가 존재하지 않습니다.");
-            throw new RuntimeException(); // 새로 만들어서 해줘야 좋다. (log 는 핸들러에서 처리)
+            throw new UserNotFoundException();
         });
 
         String uuid = UUID.randomUUID().toString();
