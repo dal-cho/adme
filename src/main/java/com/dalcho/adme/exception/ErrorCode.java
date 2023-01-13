@@ -21,7 +21,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "잘못된 패스워드입니다."),
     INVALID_PATTERN(HttpStatus.UNAUTHORIZED, "잘못된 형식의 패턴입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."),
-    USER_DUPLICATE_ID(HttpStatus.CONFLICT, "중복된 사용자 아이디가 존재합니다.");
+    USER_DUPLICATE_ID(HttpStatus.CONFLICT, "중복된 Nickname 이 존재합니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
