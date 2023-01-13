@@ -1,24 +1,15 @@
 package com.dalcho.adme.exception.notfound;
 
-/**
- * 파일 부재 중 오류
- */
-public class FileNotFoundException extends  RuntimeException {
+import com.dalcho.adme.exception.CustomException;
+import com.dalcho.adme.exception.ErrorCode;
 
-    private static final long serialVersionUID= -6212475941372852475L;
+public class FileNotFoundException extends CustomException {
 
-    /**
-     * 생성자
-     */
-    public FileNotFoundException(String message) {
-        super(message);
+//    private static final long serialVersionUID= -6212475941372852475L;
+
+    public FileNotFoundException() {
+        super(ErrorCode.FILE_NOT_FOUND);
     }
 
-    /**
-     * 생성자
-     */
-    public FileNotFoundException(Exception e) {
-        super(e);
-    }
 }
 
