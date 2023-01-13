@@ -5,6 +5,7 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.CommentDto;
 import com.dalcho.adme.dto.response.ResCommentDto;
+import com.dalcho.adme.exception.db.DatabaseErrorException;
 import com.dalcho.adme.exception.invalid.InvalidPermissionException;
 import com.dalcho.adme.exception.notfound.CommentNotFoundException;
 import com.dalcho.adme.exception.notfound.RegistryNotFoundException;
@@ -45,11 +46,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<ResCommentDto> getComment(Long idx) throws NullPointerException {
         List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
-        ResCommentDto resCommentDto;
         List<ResCommentDto> resCommentDtoList = new LinkedList<>();
         try {
             for (int i = 0; i < commentList.size(); i++) {
-                resCommentDto = ResCommentDto.builder()
+                ResCommentDto resCommentDto = ResCommentDto.builder()
                         .registryNickname(commentList.get(0).getRegistry().getUser().getNickname())
                         .commentName(commentList.get(i).getUser().getNickname())
                         .comment(commentList.get(i).getComment())
@@ -58,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
                 resCommentDtoList.add(resCommentDto);
             }
         } catch (NullPointerException e) {
-            throw new NullPointerException("[error] CommentServiceImpl의 getComment()에서 null이 포함 ↓  \n" + e.getMessage() + "\n");
+            throw new DatabaseErrorException();
         }
         return resCommentDtoList;
     }

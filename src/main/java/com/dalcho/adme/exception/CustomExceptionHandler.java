@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
-    private final Logger LOGGER = LoggerFactory.getLogger(CustomExceptionHandler.class); // Logger를 등록
+    //private final Logger LOGGER = LoggerFactory.getLogger(CustomExceptionHandler.class); // Logger를 등록
 
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorResponseEntity> handleCustomException(CustomException e) {
