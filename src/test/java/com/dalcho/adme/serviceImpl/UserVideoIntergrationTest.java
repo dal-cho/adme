@@ -1,23 +1,71 @@
 package com.dalcho.adme.serviceImpl;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
+import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.VideoFile;
+import com.dalcho.adme.dto.video.VideoRequestDto;
+import com.dalcho.adme.repository.VideoRepository;
+import com.dalcho.adme.service.Impl.VideoServiceImpl;
+import com.dalcho.adme.system.OSValidator;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
 public class UserVideoIntergrationTest {
     @Mock
-    PasswordEncoder passwordEncoder;
+    VideoRepository videoRepository;
+    @InjectMocks
+    VideoServiceImpl videoService;
 
+    @Mock MultipartFile multipartFile;
+    @Mock OSValidator osValidator;
 
-    Long userId = null;
+    @Test
+    @DisplayName("파일 업로드 test")
+    void uploadFileTest() throws Exception{
+        // given
+        List<String> role = Collections.singletonList("ROLE_USER");
+        User user = User.builder()
+                .nickname("nickname")
+                .password("good night")
+                .name("coco")
+                .roles(role)
+                .build();
 
+        VideoFile videoFile = VideoFile.builder()
+                .title("title")
+                .content("content")
+                .uuid("uuid")
+                .uploadPath("uploadPath")
+                .videoDate(LocalDateTime.now())
+                .build();
+        String uuid = UUID.randomUUID().toString();
+        String uploadPath = osValidator.checkOs();
+        VideoRequestDto videoRequestDto = new VideoRequestDto("title", "content");
+
+        // when
+        videoService.uploadFile(user, videoRequestDto, multipartFile);
+        VideoFile videoFile1 = videoRequestDto.toEntity(uuid, uploadPath);
+        videoFile1.setUser(user);
+
+        when(videoRepository.save(any())).thenReturn(videoFile1);
+
+        verify(videoRepository).save(any());
+    }
 //    @Test
 //    @Order(1)
 //    @DisplayName("회원가입 정보 없이 동영상 등록 시 에러 발생")
