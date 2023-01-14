@@ -11,6 +11,10 @@ public class VideoRequestDto {
 
     public VideoRequestDto() {
     }
+    public VideoRequestDto(String title, String content){
+        this.title = title;
+        this.content = content;
+    }
 
     public VideoFile toEntity(String uuid, String uploadPath){
         return VideoFile.builder()
