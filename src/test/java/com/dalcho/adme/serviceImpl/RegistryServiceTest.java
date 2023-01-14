@@ -2,7 +2,7 @@ package com.dalcho.adme.serviceImpl;
 
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.dto.RegistryDto;
+import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.service.Impl.RegistryServiceImpl;
 import org.assertj.core.api.Assertions;
@@ -44,7 +44,7 @@ class RegistryServiceTest {
                 .roles(role)
                 .build();
 
-        RegistryDto registryDto = new RegistryDto();
+        RegistryRequestDto registryDto = new RegistryRequestDto();
         registryDto.setTitle("첫 번째");
         registryDto.setMain("1");
 

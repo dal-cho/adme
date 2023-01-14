@@ -2,16 +2,15 @@ package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.dto.RegistryDto;
-import com.dalcho.adme.dto.response.ResRegistryDto;
+import com.dalcho.adme.dto.registry.RegistryRequestDto;
+import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.service.RegistryService;
-import com.dalcho.adme.utils.PagingResult;
+import com.dalcho.adme.dto.registry.PagingResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,7 +19,7 @@ public class RegistryController {
 
     // 게시글 등록
     @PostMapping("/registry") //@RequestParam이 여러개 있다. -> @ModelAttribute
-    public Registry postUpload(@ModelAttribute RegistryDto registryDto, @AuthenticationPrincipal User user) throws IOException {
+    public Registry postUpload(@ModelAttribute RegistryRequestDto registryDto, @AuthenticationPrincipal User user) throws IOException {
         return registryService.postUpload(registryDto, user);
     }
 
@@ -34,7 +33,7 @@ public class RegistryController {
 
     // 게시글 상세 보기
     @GetMapping("/registry")
-    public ResRegistryDto getIdxRegistry(@RequestParam Long idx) {
+    public RegistryResponseDto getIdxRegistry(@RequestParam Long idx) {
         return registryService.getIdxRegistry(idx);
     }
 }

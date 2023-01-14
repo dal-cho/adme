@@ -1,7 +1,6 @@
-package com.dalcho.adme.dto.response;
+package com.dalcho.adme.dto.registry;
 
 import com.dalcho.adme.domain.Registry;
-import com.dalcho.adme.domain.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResRegistryDto {
+public class RegistryResponseDto {
     private Long idx;
     private String title;
     private String main;
@@ -19,8 +18,8 @@ public class ResRegistryDto {
     private LocalDateTime modifiedAt;
     private String nickname;
 
-    public static ResRegistryDto of(Registry registry){
-        return ResRegistryDto.builder()
+    public static RegistryResponseDto of(Registry registry){
+        return RegistryResponseDto.builder()
                 .idx(registry.getIdx())
                 .title(registry.getTitle())
                 .main(registry.getMain())
