@@ -1,4 +1,4 @@
-package com.dalcho.adme.dto;
+package com.dalcho.adme.dto.comment;
 
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentDto {
+public class CommentRequestDto {
     private String nickname;
     private String comment;
     private Long registryIdx;

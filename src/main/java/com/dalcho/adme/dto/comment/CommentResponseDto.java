@@ -1,4 +1,4 @@
-package com.dalcho.adme.dto.response;
+package com.dalcho.adme.dto.comment;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @ToString
-public class ResCommentDto {
+public class CommentResponseDto {
     private String commentName;
     private String registryNickname;
     private Long commentId;

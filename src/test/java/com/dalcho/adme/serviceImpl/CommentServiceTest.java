@@ -3,7 +3,9 @@ package com.dalcho.adme.serviceImpl;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.dto.CommentDto;
+import com.dalcho.adme.dto.comment.CommentRequestDto;
+import com.dalcho.adme.exception.CustomException;
+import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
@@ -22,10 +24,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.dalcho.adme.exception.ErrorCode.USER_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
@@ -38,7 +42,7 @@ public class CommentServiceTest {
     @InjectMocks
     CommentServiceImpl commentService;
     User user;
-    CommentDto commentDto;
+    CommentRequestDto commentDto;
     Registry registry;
 
     @Test
@@ -60,7 +64,7 @@ public class CommentServiceTest {
                 .user(user)
                 .build();
 
-        CommentDto commentDto = new CommentDto();
+        CommentRequestDto commentDto = new CommentRequestDto();
         commentDto.setComment("funfun");
         commentDto.setNickname("hh");
         commentDto.setRegistryIdx(1L);
@@ -93,7 +97,7 @@ public class CommentServiceTest {
         registry = new Registry("타이틀", "본문", user);
 
         // 댓글
-        this.commentDto = new CommentDto();
+        this.commentDto = new CommentRequestDto();
         this.commentDto.setComment("comment");
         this.commentDto.setNickname((user.getNickname()));
         this.commentDto.setRegistryIdx(1L);
@@ -113,7 +117,7 @@ public class CommentServiceTest {
         verify(commentRepository).save(any(Comment.class));
 
         // then
-        assertEquals("Comment의 comment가 일치하는지 확인", commentDto.getComment(), comment.getComment());
+        assertEquals(commentDto.getComment(), comment.getComment()); // Comment의 comment가 일치하는지 확인
     }
 
 
@@ -127,16 +131,16 @@ public class CommentServiceTest {
         when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
 
         // when
-        CommentDto commentDtoEdit = new CommentDto();
+        CommentRequestDto commentDtoEdit = new CommentRequestDto();
         commentDtoEdit.setComment("comment-edit");
 
-        Comment savecomment = commentService.updateComment(1L,commentDtoEdit, user);
+        Comment saveComment = commentService.updateComment(1L,commentDtoEdit, user);
         comment.updateComment(commentDtoEdit.getComment());
-        verify(commentRepository).save(savecomment);
+        verify(commentRepository).save(saveComment);
 
         //then
-        assertEquals("Comment Id 값이 일치하는지 확인.", savecomment.getIdx(), comment.getIdx());
-        assertEquals("Comment 내용이 업데이트 되었는지 확인", commentDtoEdit.getComment(), comment.getComment());
+        assertEquals(saveComment.getIdx(), comment.getIdx());
+        assertEquals(commentDtoEdit.getComment(), comment.getComment()); // Comment 내용이 업데이트 되었는지 확인
     }
 
 

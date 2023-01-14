@@ -3,8 +3,8 @@ package com.dalcho.adme.service.Impl;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.dto.CommentDto;
-import com.dalcho.adme.dto.response.ResCommentDto;
+import com.dalcho.adme.dto.comment.CommentRequestDto;
+import com.dalcho.adme.dto.comment.CommentResponseDto;
 import com.dalcho.adme.exception.db.DatabaseErrorException;
 import com.dalcho.adme.exception.invalid.InvalidPermissionException;
 import com.dalcho.adme.exception.notfound.CommentNotFoundException;
@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
 
     @Override
-    public Comment postComment(CommentDto commentDto) {
+    public Comment postComment(CommentRequestDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
         User user = userRepository.findByNickname(commentDto.getNickname()).orElseThrow(UserNotFoundException::new);
         Comment comment = commentDto.toEntity(registry, user);
@@ -44,12 +44,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<ResCommentDto> getComment(Long idx) throws NullPointerException {
+    public List<CommentResponseDto> getComment(Long idx) throws NullPointerException {
         List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
-        List<ResCommentDto> resCommentDtoList = new LinkedList<>();
+        List<CommentResponseDto> resCommentDtoList = new LinkedList<>();
         try {
             for (int i = 0; i < commentList.size(); i++) {
-                ResCommentDto resCommentDto = ResCommentDto.builder()
+                CommentResponseDto resCommentDto = CommentResponseDto.builder()
                         .registryNickname(commentList.get(0).getRegistry().getUser().getNickname())
                         .commentName(commentList.get(i).getUser().getNickname())
                         .comment(commentList.get(i).getComment())
@@ -70,7 +70,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(Long commentId, CommentDto commentDto, User user){
+    public Comment updateComment(Long commentId, CommentRequestDto commentDto, User user){
         registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!user.getNickname().equals(comment.getUser().getNickname())) {
@@ -82,7 +82,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long commentId, CommentDto commentDto, User user) {
+    public void deleteComment(Long commentId, CommentRequestDto commentDto, User user) {
         registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!user.getNickname().equals(comment.getUser().getNickname())) {

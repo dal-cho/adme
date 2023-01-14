@@ -3,8 +3,8 @@ package com.dalcho.adme.repository;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.dto.CommentDto;
-import com.dalcho.adme.dto.RegistryDto;
+import com.dalcho.adme.dto.comment.CommentRequestDto;
+import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class CommentRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-    CommentDto commentDto;
+    CommentRequestDto commentDto;
     User saveUser;
 
 
@@ -46,7 +46,7 @@ public class CommentRepositoryTest {
                 .build();
         Registry saveRegistry = registryRepository.save(registry);
 
-        commentDto = new CommentDto("commentNickname", "comment", saveRegistry.getIdx());
+        commentDto = new CommentRequestDto("commentNickname", "comment", saveRegistry.getIdx());
     }
 
 
@@ -65,15 +65,15 @@ public class CommentRepositoryTest {
     @DisplayName("id가 1인 댓글")
     void showComment() throws IOException {
         //given
-        RegistryDto registry = new RegistryDto();
+        RegistryRequestDto registry = new RegistryRequestDto();
         registry.setTitle("첫 번째");
         registry.setMain("1");
 
-        CommentDto comment = new CommentDto();
+        CommentRequestDto comment = new CommentRequestDto();
         comment.setComment("funfun");
         comment.setNickname("hh");
 
-        CommentDto comment1 = new CommentDto();
+        CommentRequestDto comment1 = new CommentRequestDto();
         comment1.setComment("wow");
         comment1.setNickname("hh");
 

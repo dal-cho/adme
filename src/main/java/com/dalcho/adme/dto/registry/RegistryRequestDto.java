@@ -1,4 +1,4 @@
-package com.dalcho.adme.dto;
+package com.dalcho.adme.dto.registry;
 
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistryDto {
+public class RegistryRequestDto {
     private String title;
     private String main;
     private Long userIdx;

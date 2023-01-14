@@ -2,14 +2,14 @@ package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.dto.RegistryDto;
-import com.dalcho.adme.dto.response.ResRegistryDto;
+import com.dalcho.adme.dto.registry.RegistryRequestDto;
+import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.exception.CustomException;
 import com.dalcho.adme.exception.notfound.RegistryNotFoundException;
 import com.dalcho.adme.repository.RegistryRepository;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.service.RegistryService;
-import com.dalcho.adme.utils.PagingResult;
+import com.dalcho.adme.dto.registry.PagingResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +35,7 @@ public class RegistryServiceImpl implements RegistryService {
 
     // 게시글 등록
     @Transactional
-    public Registry postUpload(RegistryDto registryDto, User user) throws IOException {
+    public Registry postUpload(RegistryRequestDto registryDto, User user) throws IOException {
         Registry registry = registryDto.toEntity(user);
         return registryRepository.save(registry);
     }
@@ -61,8 +61,8 @@ public class RegistryServiceImpl implements RegistryService {
 
 
     // 게시글 상세 보기
-    public ResRegistryDto getIdxRegistry(Long idx) throws CustomException {
+    public RegistryResponseDto getIdxRegistry(Long idx) throws CustomException {
         Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(RegistryNotFoundException::new);
-        return ResRegistryDto.of(getIdxRegistry);
+        return RegistryResponseDto.of(getIdxRegistry);
     }
 }
