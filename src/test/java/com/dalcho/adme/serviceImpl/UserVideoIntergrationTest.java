@@ -43,6 +43,7 @@ public class UserVideoIntergrationTest {
                 .nickname("nickname")
                 .password("good night")
                 .name("coco")
+                .email("email@naver.com")
                 .roles(role)
                 .build();
 

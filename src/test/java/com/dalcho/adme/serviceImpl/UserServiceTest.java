@@ -2,6 +2,8 @@ package com.dalcho.adme.serviceImpl;
 
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.sign.SignUpRequestDto;
+import com.dalcho.adme.exception.CustomException;
+import com.dalcho.adme.exception.duplicate.UserDuplicateIdException;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.service.Impl.SignServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -16,9 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static com.dalcho.adme.exception.ErrorCode.USER_DUPLICATE_ID;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,23 +41,23 @@ class UserServiceTest {
         requestDto1.setNickname("dkj");
         requestDto1.setName("dkj");
         requestDto1.setPassword("dkj");
-        //requestDto1.setEmail("dkj");
+        requestDto1.setEmail("email@naver.com");
         //requestDto1.setPasswordConfirm("dkj");
 
         SignUpRequestDto requestDto2 = new SignUpRequestDto();
         requestDto2.setNickname("dkj");
         requestDto2.setName("dkj");
         requestDto2.setPassword("dkj");
-        //requestDto2.setEmail("dkj");
+        requestDto2.setEmail("email@naver.com");
         //requestDto2.setPasswordConfirm("dkj");
 
         //when
         when(userRepository.existsByNickname(any())).thenReturn(true);
 
         //then
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                () -> userService.signUp(requestDto2));//예외가 발생해야 한다.
-        assertThat(e.getMessage()).isEqualTo("[getSignUpResult] 중복된 사용자 ID 가 존재합니다.");
+        CustomException e = assertThrows(UserDuplicateIdException.class,
+                () -> userService.signUp(requestDto2));
+        assertEquals(USER_DUPLICATE_ID, e.getErrorCode());
         verify(userRepository).existsByNickname(any());
     }
 
@@ -67,14 +68,16 @@ class UserServiceTest {
         PasswordEncoder passEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder(); // 실제 객체
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto();
         signUpRequestDto.setNickname("끼까꿍");
-        signUpRequestDto.setPassword("뮤뮤");
+        signUpRequestDto.setPassword("Hell0 coco!!");
         signUpRequestDto.setName("김철수");
+        signUpRequestDto.setEmail("email@naver.com");
 
         List<String> role = Collections.singletonList("ROLE_USER");
         String pw = passEncoder.encode(signUpRequestDto.getPassword());
         user = User.builder()
                 .nickname(signUpRequestDto.getNickname())
                 .name(signUpRequestDto.getName())
+                .email(signUpRequestDto.getEmail())
                 .password(pw)
                 .roles(role)
                 .build();

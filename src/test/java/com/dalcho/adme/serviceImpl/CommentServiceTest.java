@@ -55,7 +55,7 @@ public class CommentServiceTest {
                 .name("username")
                 .nickname("hh")
                 .password("password")
-                // .email("email")
+                .email("email@naver.com")
                 .roles(role)
                 .build();
 
@@ -91,7 +91,7 @@ public class CommentServiceTest {
                 .name("username")
                 .nickname("nickname")
                 .password("password")
-//                .email("email")
+                .email("email@naver.com")
                 .roles(role)
                 .build();
 

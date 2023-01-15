@@ -48,7 +48,7 @@ class RegistryServiceTest {
                 .name("username")
                 .nickname("nickname")
                 .password("password")
-                //.email("email")
+                .email("email@naver.com")
                 .roles(role)
                 .build();
 
@@ -60,7 +60,7 @@ class RegistryServiceTest {
 
     @Test
     @DisplayName("게시글 저장")
-    void post_Registry() throws Exception { // 검증 x
+    void post_Registry() throws Exception {
         //given
         saveRegistry = registryDto.toEntity(user);
         when(registryRepository.save(any(Registry.class))).thenReturn(saveRegistry);
