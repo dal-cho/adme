@@ -5,6 +5,8 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.exception.CustomException;
+import com.dalcho.adme.exception.notfound.CommentNotFoundException;
+import com.dalcho.adme.exception.notfound.RegistryNotFoundException;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.CommentRepository;
 import com.dalcho.adme.repository.RegistryRepository;
@@ -24,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.dalcho.adme.exception.ErrorCode.USER_NOT_FOUND;
+import static com.dalcho.adme.exception.ErrorCode.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -119,6 +121,15 @@ public class CommentServiceTest {
         // then
         assertEquals(commentDto.getComment(), comment.getComment()); // Comment의 comment가 일치하는지 확인
     }
+    
+    @Test
+    @DisplayName("저장 실패 _ user not found")
+    void save_user_not_found() {
+        when(userRepository.findByNickname(anyString())).thenReturn(Optional.empty());
+        CustomException e = assertThrows(UserNotFoundException.class, () ->
+                commentService.postComment(commentDto));
+        assertEquals(USER_NOT_FOUND, e.getErrorCode());
+    }
 
 
     @Test
@@ -143,6 +154,23 @@ public class CommentServiceTest {
         assertEquals(commentDtoEdit.getComment(), comment.getComment()); // Comment 내용이 업데이트 되었는지 확인
     }
 
+    @Test
+    @DisplayName("수정 실패 _ registry not found")
+    void update_registry_not_found(){
+        when(registryRepository.findById(anyLong())).thenReturn(Optional.empty());
+        CustomException e = assertThrows(RegistryNotFoundException.class, () ->
+                commentService.updateComment(1L, commentDto, user));
+        assertEquals(REGISTRY_NOT_FOUND, e.getErrorCode());
+    }
+    @Test
+    @DisplayName("수정 실패 _ comment not found")
+    void update_comment_not_found(){
+        when(registryRepository.findById(any())).thenReturn(Optional.ofNullable(registry));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
+        CustomException e = assertThrows(CommentNotFoundException.class, () ->
+                commentService.updateComment(1L, commentDto, user));
+        assertEquals(COMMENT_NOT_FOUND, e.getErrorCode());
+    }
 
     @Test
     @DisplayName("comment 삭제 성공")
@@ -158,5 +186,24 @@ public class CommentServiceTest {
 
         // then
         verify(commentRepository).delete(comment);
+    }
+
+    @Test
+    @DisplayName("삭제 실패 _ registry not found")
+    void delete_registry_not_found(){
+        when(registryRepository.findById(anyLong())).thenReturn(Optional.empty());
+        CustomException e = assertThrows(RegistryNotFoundException.class, ()->
+                commentService.deleteComment(1L, commentDto, user));
+        assertEquals(REGISTRY_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("삭제 실패 _ comment not found")
+    void delete_comment_not_found(){
+        when(registryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(registry));
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
+        CustomException e = assertThrows(CommentNotFoundException.class, () ->
+                commentService.deleteComment(1L, commentDto, user));
+        assertEquals(COMMENT_NOT_FOUND, e.getErrorCode());
     }
 }
