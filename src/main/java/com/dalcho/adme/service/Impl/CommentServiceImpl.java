@@ -5,6 +5,7 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.dto.comment.CommentResponseDto;
+import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.exception.db.DatabaseErrorException;
 import com.dalcho.adme.exception.invalid.InvalidPermissionException;
 import com.dalcho.adme.exception.notfound.CommentNotFoundException;
@@ -35,12 +36,12 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
 
     @Override
-    public Comment postComment(CommentRequestDto commentDto) {
+    public CommentResponseDto postComment(CommentRequestDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
         User user = userRepository.findByNickname(commentDto.getNickname()).orElseThrow(UserNotFoundException::new);
         Comment comment = commentDto.toEntity(registry, user);
-        Comment save = commentRepository.save(comment);
-        return save;
+        commentRepository.save(comment);
+        return CommentResponseDto.of(comment);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(Long commentId, CommentRequestDto commentDto, User user){
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, User user) {
         registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!user.getNickname().equals(comment.getUser().getNickname())) {
@@ -78,7 +79,7 @@ public class CommentServiceImpl implements CommentService {
         }
         comment.updateComment(commentDto.getComment());
         commentRepository.save(comment);
-        return comment;
+        return CommentResponseDto.of(comment);
     }
 
     @Override

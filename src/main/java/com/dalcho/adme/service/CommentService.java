@@ -12,13 +12,13 @@ import java.util.Optional;
 
 public interface CommentService {
 
-    Comment postComment(CommentRequestDto commentDto);
+    CommentResponseDto postComment(CommentRequestDto commentDto);
 
     List<CommentResponseDto> getComment(Long idx);
 
     Integer getCountComment(Long idx);
 
-    Comment updateComment(Long commentId, CommentRequestDto commentDto, User user) throws AccessDeniedException;
+    CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, User user) throws AccessDeniedException;
 
     void deleteComment(Long commentId, CommentRequestDto commentDto, User user) throws AccessDeniedException;
 
