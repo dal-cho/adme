@@ -23,6 +23,7 @@ public class SecurityConfiguration {
 
     public static final String[] USER_ENABLE = {
             "/tenSeconds/videos",
+            "/tenSeconds/video/**",
             "/registry/**",
             "/comment**"
     };

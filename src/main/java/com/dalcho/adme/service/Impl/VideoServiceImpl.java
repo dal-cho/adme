@@ -6,7 +6,6 @@ import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
-import com.dalcho.adme.exception.notfound.FileNameNotFoundException;
 import com.dalcho.adme.exception.notfound.FileNotFoundException;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.UserRepository;
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VideoServiceImpl implements VideoService {
     private final UserRepository userRepository;
-
     private final VideoRepository videoRepository;
     private final OSValidator osValidator;
 
@@ -49,12 +47,7 @@ public class VideoServiceImpl implements VideoService {
             throw new FileNotFoundException();
         }
 
-        if (file.getOriginalFilename() == null) {
-            throw new FileNameNotFoundException();
-        }
-        user = userRepository.findByNickname(user.getNickname()).orElseThrow(() -> {
-            throw new UserNotFoundException();
-        });
+        user = userRepository.findByNickname(user.getNickname()).orElseThrow(UserNotFoundException::new);
 
         String uuid = UUID.randomUUID().toString();
         String uploadPath = osValidator.checkOs();
@@ -82,11 +75,36 @@ public class VideoServiceImpl implements VideoService {
         return videoResultDto;
     }
 
+    @Override
     public List<VideoResponseDto> getList(Pageable pageable) {
         Page<VideoFile> videoFiles = videoRepository.findAll(pageable);
         return videoFiles.stream()
                 .map(VideoResponseDto::of)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile file) {
+        VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
+//        if (!file.isEmpty()) {
+//
+//        }
+        videoFile.update(videoRequestDto.toEntity(videoFile));
+
+        VideoResultDto videoResultDto = VideoResultDto.builder()
+                .title(videoRequestDto.getTitle())
+                .build();
+
+        setSuccessResult(videoResultDto);
+
+        return videoResultDto;
+    }
+
+    @Override
+    public void delete(Long id) {
+        VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
+        MultipartFileUtils.deleteFile(videoFile);
+        videoRepository.deleteById(id);
     }
 
     private void setSuccessResult(VideoResultDto result) {
