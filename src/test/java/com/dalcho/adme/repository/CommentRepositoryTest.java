@@ -34,8 +34,10 @@ public class CommentRepositoryTest {
     @BeforeEach
     void beforeEach() {
         User user = User.builder()
+                .name("name")
                 .nickname("nickname")
                 .password("password")
+                .email("email@naver.com")
                 .build();
         saveUser = userRepository.save(user);
 
@@ -58,6 +60,16 @@ public class CommentRepositoryTest {
 
         assertThat(registry).isSameAs(saveComment.getRegistry());
         assertThat("comment").isEqualTo(saveComment.getComment());
+    }
+
+    @Test
+    @DisplayName("comment 저장")
+    void saveComment1() {
+        Registry registry = registryRepository.getReferenceById(1L);
+        System.out.println("registry :  " + registry);
+        System.out.println(registry.getUser());
+        Comment saveComment = commentRepository.save(commentDto.toEntity(registry, saveUser));
+
     }
 
 
