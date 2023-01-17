@@ -26,13 +26,4 @@ public class VideoRequestDto {
                 .videoDate(LocalDateTime.now())
                 .build();
     }
-
-    public VideoFile toEntity(VideoFile videoFile) {
-        return VideoFile.builder()
-                .title(videoFile.getTitle())
-                .content(videoFile.getContent())
-                .uploadPath(videoFile.getUploadPath())
-                .videoDate(LocalDateTime.now())
-                .build();
-    }
 }

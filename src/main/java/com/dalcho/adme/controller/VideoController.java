@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -37,9 +38,12 @@ public class VideoController {
     }
 
     @PutMapping("/tenSeconds/video/{id}")
-    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "sideData") VideoRequestDto requestDto,
-                                 @RequestPart(name = "videoFile") MultipartFile file) {
+    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateSideData") VideoRequestDto requestDto,
+                                 @RequestPart(name = "updateVideoFile") MultipartFile file) throws IOException {
         log.info("[VideoController] update");
+        log.info("[VideoController] update---------------------");
+        log.info("title:" + requestDto.getTitle());
+        log.info("content:" + requestDto.getContent());
         return videoService.update(id, requestDto, file);
     }
 

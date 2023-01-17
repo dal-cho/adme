@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +42,7 @@ public class VideoServiceImpl implements VideoService {
     private String ffprobePath;
 
     @Override
+    @Transactional
     public VideoResultDto uploadFile(User user, VideoRequestDto videoRequestDto, MultipartFile file) throws IOException {
 
         if (file.isEmpty()) {
@@ -58,11 +60,9 @@ public class VideoServiceImpl implements VideoService {
         log.info("[uploadFile] data 저장 수행");
         // Static 폴더에 파일 저장 -> 추후 Server 에 저장
         MultipartFileUtils.saveFile(file, videoFile);
-        log.info("[uploadFile] data 저장 수행 완료");
 
         log.info("[uploadFile] Thumbnail 생성 및 저장 수행");
         FfmpegUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile);
-        log.info("[uploadFile] Thumbnail 생성 및 저장 수행 완료");
 
         videoRepository.save(videoFile);
 
@@ -84,12 +84,22 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile file) {
+    @Transactional
+    public VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile file) throws IOException {
+
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
-//        if (!file.isEmpty()) {
-//
-//        }
-        videoFile.update(videoRequestDto.toEntity(videoFile));
+        if (!file.isEmpty()) {
+            MultipartFileUtils.deleteFile(videoFile);
+        }
+
+        String uuid = UUID.randomUUID().toString();
+        String uploadPath = osValidator.checkOs();
+
+        videoFile.update(videoRequestDto.toEntity(uuid, uploadPath));
+
+        MultipartFileUtils.saveFile(file, videoFile);
+
+        FfmpegUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile);
 
         VideoResultDto videoResultDto = VideoResultDto.builder()
                 .title(videoRequestDto.getTitle())
@@ -101,6 +111,7 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
         MultipartFileUtils.deleteFile(videoFile);
