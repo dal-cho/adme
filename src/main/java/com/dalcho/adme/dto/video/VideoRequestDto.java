@@ -11,12 +11,13 @@ public class VideoRequestDto {
 
     public VideoRequestDto() {
     }
-    public VideoRequestDto(String title, String content){
+
+    public VideoRequestDto(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
-    public VideoFile toEntity(String uuid, String uploadPath){
+    public VideoFile toEntity(String uuid, String uploadPath) {
         return VideoFile.builder()
                 .title(title)
                 .content(content)

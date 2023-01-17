@@ -11,12 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -28,7 +26,7 @@ public class VideoController {
 
     @GetMapping( "/tenSeconds/list" )
     public List<VideoResponseDto> listFiles(@PageableDefault(size = 12, sort = "videoDate", direction = Sort.Direction.ASC) Pageable pageable) throws Exception {
-        log.info("VideoController GetList");
+        log.info("[VideoController] GetList");
         return videoService.getList(pageable);
     }
 
@@ -37,6 +35,18 @@ public class VideoController {
                                      @RequestPart(name = "videoFile") MultipartFile file) throws Exception {
         log.info("[VideoController] uploadFile() ");
         return videoService.uploadFile(user, requestDto, file);
+    }
+
+    @PutMapping("/tenSeconds/video/{id}")
+    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateSideData") VideoRequestDto requestDto,
+                                 @RequestPart(name = "updateVideoFile") MultipartFile file) throws IOException {
+        log.info("[VideoController] update");
+        return videoService.update(id, requestDto, file);
+    }
+
+    @DeleteMapping("/tenSeconds/video/{id}")
+    public void delete(@PathVariable Long id){
+        videoService.delete(id);
     }
 }
 

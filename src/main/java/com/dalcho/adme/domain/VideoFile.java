@@ -54,4 +54,43 @@ public class VideoFile {
         this.uploadPath = uploadPath;
         this.videoDate = videoDate;
     }
+
+    public void update(VideoFile updateVideoFile) {
+        updateTitle(updateVideoFile.getTitle());
+        updateContent(updateVideoFile.getContent());
+        updateUuid(updateVideoFile.getUuid());
+        updateUploadPath(updateVideoFile.getUploadPath());
+        updateVideoDate(updateVideoFile.getVideoDate());
+    }
+
+    public void updateTitle(String title) {
+        if (title != null) {
+            this.title = title;
+        }
+    }
+
+    public void updateContent(String content) {
+        if (content != null) {
+            this.content = content;
+        }
+    }
+    public void updateUuid(String uuid) {
+        if (uuid != null) {
+            this.uuid = uuid;
+        }
+    }
+
+    public void updateUploadPath(String uploadPath) {
+        if (uploadPath != null) {
+            this.uploadPath = uploadPath;
+        }
+    }
+
+    public void updateVideoDate(LocalDateTime videoDate) {
+        if (videoDate != null) {
+            this.videoDate = videoDate;
+        }
+    }
+
+
 }
