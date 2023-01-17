@@ -21,7 +21,7 @@ public class CommentController {
 
     // 댓글 저장
     @PostMapping("/comment")
-    public Comment postComment(@ModelAttribute CommentRequestDto commentDto) {
+    public CommentResponseDto postComment(@ModelAttribute CommentRequestDto commentDto) {
         return commentService.postComment(commentDto);
     }
 
@@ -37,7 +37,7 @@ public class CommentController {
 
     // AuthenticationPrincipal : 로그인한 사용자의 정보를 파라메터로 받고 싶을때
     @PutMapping("/comment/{commentId}")
-    public Comment updateComment(@PathVariable Long commentId,
+    public CommentResponseDto updateComment(@PathVariable Long commentId,
                                  @RequestBody CommentRequestDto commentDto,
                                  @AuthenticationPrincipal User user) throws AccessDeniedException {
         return commentService.updateComment(commentId, commentDto, user);

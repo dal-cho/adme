@@ -4,6 +4,7 @@ import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
+import com.dalcho.adme.dto.comment.CommentResponseDto;
 import com.dalcho.adme.exception.CustomException;
 import com.dalcho.adme.exception.notfound.CommentNotFoundException;
 import com.dalcho.adme.exception.notfound.RegistryNotFoundException;
@@ -73,14 +74,16 @@ public class CommentServiceTest {
         Comment comment = commentDto.toEntity(registry, user);
 
         //when
+        when(registryRepository.getReferenceById(anyLong())).thenReturn(registry);
         when(userRepository.findByNickname(anyString())).thenReturn(Optional.ofNullable(user));
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
-        Comment saveComment = commentService.postComment(commentDto);
+
+        CommentResponseDto saveComment = commentService.postComment(commentDto);
         verify(commentRepository).save(any(Comment.class));
 
         //then
         Assertions.assertThat(comment.getComment()).isEqualTo(saveComment.getComment());
-        Assertions.assertThat(comment.getUser().getNickname()).isEqualTo(saveComment.getUser().getNickname());
+        Assertions.assertThat(comment.getUser().getNickname()).isEqualTo(saveComment.getCommentName());
     }
 
 
@@ -114,8 +117,9 @@ public class CommentServiceTest {
         when(userRepository.findByNickname(commentDto.getNickname())).thenReturn(Optional.ofNullable(user));
 
         // when
+        when(registryRepository.getReferenceById(anyLong())).thenReturn(registry);
         when(commentRepository.save(any(Comment.class))).thenReturn(save);
-        Comment comment = commentService.postComment(commentDto);
+        CommentResponseDto comment = commentService.postComment(commentDto);
         verify(commentRepository).save(any(Comment.class));
 
         // then
@@ -145,12 +149,12 @@ public class CommentServiceTest {
         CommentRequestDto commentDtoEdit = new CommentRequestDto();
         commentDtoEdit.setComment("comment-edit");
 
-        Comment saveComment = commentService.updateComment(1L,commentDtoEdit, user);
+        CommentResponseDto saveComment = commentService.updateComment(1L,commentDtoEdit, user);
         comment.updateComment(commentDtoEdit.getComment());
-        verify(commentRepository).save(saveComment);
+        verify(commentRepository).save(comment);
 
         //then
-        assertEquals(saveComment.getIdx(), comment.getIdx());
+        assertEquals(saveComment.getCommentId(), comment.getIdx());
         assertEquals(commentDtoEdit.getComment(), comment.getComment()); // Comment 내용이 업데이트 되었는지 확인
     }
 

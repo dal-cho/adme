@@ -21,27 +21,22 @@ import java.util.List;
 @Service
 @Slf4j
 @ServerEndpoint("/websocket")
-//websocket 핸들러를 구현하기 위해서 기본적으로 TextWebSocketHandler를 상속
-public class WebSocketServiceImpl extends TextWebSocketHandler implements WebSocketService {
+public class FreeChatServiceImpl extends TextWebSocketHandler implements WebSocketService {
     private static List<Session> sessionUsers = Collections.synchronizedList(new ArrayList<>());
-
-    //private static final List<Session> session = new ArrayList<Session>();
 
     public int userCount() {
         return sessionUsers.size();
     }
 
-
-    @OnOpen // 사용자가 페이지에 접속할 때 실행되는 @OnOpen메서드에서 세션 리스트에 담아준다.
+    @OnOpen
     public void open(Session newUser) throws IOException {
-        //session.add(newUser);
         sessionUsers.add(newUser);
-        System.out.println("현재 접속자 수 : " + sessionUsers.size());
+        log.info("현재 접속자 수 : " + sessionUsers.size());
         userCount();
-    }     // 사용자가 증가할 때마다 세션의 getId()는 1씩 증가하며 문자열 형태로 지정된다.
+    }
 
 
-    @OnMessage // 사용자로부터 메시지를 받았을 때, 실행된다.
+    @OnMessage
     public void onMessage(Session receiveSession, String msg) throws IOException {
         for (int i = 0; i < sessionUsers.size(); i++) {
             if (!receiveSession.getId().equals(sessionUsers.get(i).getId())) {
@@ -60,7 +55,6 @@ public class WebSocketServiceImpl extends TextWebSocketHandler implements WebSoc
         }
     }
 
-
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
@@ -70,8 +64,7 @@ public class WebSocketServiceImpl extends TextWebSocketHandler implements WebSoc
     @OnClose
     public void onClose(Session nowUser, CloseReason closeReason) {
         sessionUsers.remove(nowUser);
-        System.out.println("remove : " + nowUser);
-        System.out.println("sessionUsers.size() = " + sessionUsers.size());
+        log.info("sessionUsers.size() = " + sessionUsers.size());
         log.info(String.format("Session %s closed because of %s", nowUser.getId(), closeReason));
     }
 
@@ -82,10 +75,7 @@ public class WebSocketServiceImpl extends TextWebSocketHandler implements WebSoc
         e.printStackTrace();
     }
 
-    @Override//웹소켓 클라이언트가 언결을 직접 끊거나 서버에서 타임아웃이 발생해서 연결을 끊을때 호출된다.
+    @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-
     }
 }
-
-
