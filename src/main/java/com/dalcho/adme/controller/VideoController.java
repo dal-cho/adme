@@ -41,9 +41,6 @@ public class VideoController {
     public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateSideData") VideoRequestDto requestDto,
                                  @RequestPart(name = "updateVideoFile") MultipartFile file) throws IOException {
         log.info("[VideoController] update");
-        log.info("[VideoController] update---------------------");
-        log.info("title:" + requestDto.getTitle());
-        log.info("content:" + requestDto.getContent());
         return videoService.update(id, requestDto, file);
     }
 

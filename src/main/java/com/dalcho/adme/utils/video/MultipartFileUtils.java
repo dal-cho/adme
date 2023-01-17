@@ -1,10 +1,8 @@
 package com.dalcho.adme.utils.video;
 
 import com.dalcho.adme.domain.VideoFile;
-import com.dalcho.adme.exception.notfound.FileNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -42,8 +40,7 @@ public class MultipartFileUtils {
 
         Path path = Paths.get(videoFile.getUploadPath() + File.separator + videoFile.getUuid() + ".mp4");
         Path thumb = Paths.get(videoFile.getUploadPath() + File.separator + "thumb_" + videoFile.getUuid() + ".jpg");
-//        path = path.resolve(File.separator + videoFile.getUuid() + ".mp4" );
-        System.out.println("aaaaaaaaaaaaaaaa : "+path);
+
         try {
             Files.delete(path);
             Files.delete(thumb);
