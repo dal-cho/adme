@@ -66,7 +66,7 @@ class RegistryServiceTest {
         when(registryRepository.save(any(Registry.class))).thenReturn(saveRegistry);
 
         //when
-        Registry registry = registryService.postUpload(registryDto, user);
+        RegistryResponseDto registry = registryService.postUpload(registryDto, user);
         verify(registryRepository).save(any(Registry.class));
 
         //then

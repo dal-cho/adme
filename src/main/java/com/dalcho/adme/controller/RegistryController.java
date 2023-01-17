@@ -19,7 +19,7 @@ public class RegistryController {
 
     // 게시글 등록
     @PostMapping("/registry") //@RequestParam이 여러개 있다. -> @ModelAttribute
-    public Registry postUpload(@ModelAttribute RegistryRequestDto registryDto, @AuthenticationPrincipal User user) throws IOException {
+    public RegistryResponseDto postUpload(@ModelAttribute RegistryRequestDto registryDto, @AuthenticationPrincipal User user) throws IOException {
         return registryService.postUpload(registryDto, user);
     }
 
