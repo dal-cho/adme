@@ -5,7 +5,6 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.dto.comment.CommentResponseDto;
-import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.exception.db.DatabaseErrorException;
 import com.dalcho.adme.exception.invalid.InvalidPermissionException;
 import com.dalcho.adme.exception.notfound.CommentNotFoundException;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,16 +45,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentResponseDto> getComment(Long idx) throws NullPointerException {
         List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
-        List<CommentResponseDto> resCommentDtoList = new LinkedList<>();
+        List<CommentResponseDto> resCommentDtoList = new ArrayList<>();
         try {
             for (int i = 0; i < commentList.size(); i++) {
-                CommentResponseDto resCommentDto = CommentResponseDto.builder()
-                        .registryNickname(commentList.get(0).getRegistry().getUser().getNickname())
-                        .commentName(commentList.get(i).getUser().getNickname())
-                        .comment(commentList.get(i).getComment())
-                        .commentId(commentList.get(i).getIdx())
-                        .build();
-                resCommentDtoList.add(resCommentDto);
+                resCommentDtoList.add(CommentResponseDto.of(commentList.get(i)));
             }
         } catch (NullPointerException e) {
             throw new DatabaseErrorException();

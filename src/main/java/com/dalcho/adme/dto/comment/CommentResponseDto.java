@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 @ToString
 public class CommentResponseDto {
-    private String commentName;
+    private String commentNickname;
     private String registryNickname;
     private Long commentId;
     private String comment;
@@ -19,7 +19,7 @@ public class CommentResponseDto {
         return CommentResponseDto.builder()
                 .commentId(comment.getIdx())
                 .comment(comment.getComment())
-                .commentName(comment.getUser().getNickname())
+                .commentNickname(comment.getUser().getNickname())
                 .registryNickname(comment.getRegistry().getUser().getNickname())
                 .build();
     }
