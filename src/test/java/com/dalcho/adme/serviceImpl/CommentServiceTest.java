@@ -83,7 +83,7 @@ public class CommentServiceTest {
 
         //then
         Assertions.assertThat(comment.getComment()).isEqualTo(saveComment.getComment());
-        Assertions.assertThat(comment.getUser().getNickname()).isEqualTo(saveComment.getCommentName());
+        Assertions.assertThat(comment.getUser().getNickname()).isEqualTo(saveComment.getCommentNickname());
     }
 
 
