@@ -35,9 +35,10 @@ public class RegistryServiceImpl implements RegistryService {
 
     // 게시글 등록
     @Transactional
-    public Registry postUpload(RegistryRequestDto registryDto, User user) throws IOException {
+    public RegistryResponseDto postUpload(RegistryRequestDto registryDto, User user) throws IOException {
         Registry registry = registryDto.toEntity(user);
-        return registryRepository.save(registry);
+        registryRepository.save(registry);
+        return RegistryResponseDto.of(registry);
     }
 
 
