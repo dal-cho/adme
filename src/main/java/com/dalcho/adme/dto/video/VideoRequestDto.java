@@ -8,13 +8,15 @@ import java.time.LocalDateTime;
 public class VideoRequestDto {
     private String title;
     private String content;
+    private int setTime;
 
     public VideoRequestDto() {
     }
 
-    public VideoRequestDto(String title, String content) {
+    public VideoRequestDto(String title, String content, int setTime) {
         this.title = title;
         this.content = content;
+        this.setTime = setTime;
     }
 
     public VideoFile toEntity(String uuid, String uploadPath) {

@@ -56,7 +56,7 @@ public class UserVideoIntergrationTest {
                 .build();
         String uuid = UUID.randomUUID().toString();
         String uploadPath = osValidator.checkOs();
-        VideoRequestDto videoRequestDto = new VideoRequestDto("title", "content");
+        VideoRequestDto videoRequestDto = new VideoRequestDto("title", "content", 6);
 
         // when
         videoService.uploadFile(user, videoRequestDto, multipartFile);

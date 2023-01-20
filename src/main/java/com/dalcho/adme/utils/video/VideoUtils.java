@@ -38,15 +38,33 @@ public class VideoUtils {
     public static void deleteFile(VideoFile videoFile) {
         log.info("[VideoUtils] deleteFile 수행");
 
-        Path path = Paths.get(videoFile.getUploadPath() + File.separator + videoFile.getUuid() + ".mp4");
+        Path ten = Paths.get(videoFile.getUploadPath() + File.separator + "ten_" + videoFile.getUuid() + ".mp4");
         Path thumb = Paths.get(videoFile.getUploadPath() + File.separator + "thumb_" + videoFile.getUuid() + ".jpg");
 
         try {
-            Files.delete(path);
+            Files.delete(ten);
             Files.delete(thumb);
         } catch (IOException e) {
             throw new IllegalStateException("failed to delete file. " + videoFile.getUuid(), e);
         }
+    }
+
+    public static void createVideo(String ffmpegPath, String ffprobePath, VideoFile videoFile , int setTime) throws IOException {
+        log.info("[VideoUtils] createVideo");
+
+        FFmpeg ffmpeg = new FFmpeg(ffmpegPath);
+        FFprobe ffprobe = new FFprobe(ffprobePath);
+
+        FFmpegBuilder fFmpegBuilder = new FFmpegBuilder()
+                .overrideOutputFiles(true)
+                .addInput(videoFile.getUploadPath() + videoFile.getUuid() + ".mp4")
+                .addExtraArgs("-ss", String.valueOf(setTime))
+                .addExtraArgs("-t", String.valueOf(setTime+10))
+                .addOutput(videoFile.getUploadPath() + "ten_" + videoFile.getUuid() + ".mp4")
+                .done();
+
+        FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
+        executor.createJob(fFmpegBuilder).run();
     }
 
     public static void createThumbnail(String ffmpegPath, String ffprobePath, VideoFile videoFile) throws IOException {
@@ -66,5 +84,17 @@ public class VideoUtils {
 
         FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
         executor.createJob(builder).run();
+    }
+
+    public static void deleteVideo(VideoFile videoFile) {
+        log.info("[VideoUtils] deleteVideo 수행");
+
+        Path path = Paths.get(videoFile.getUploadPath() + File.separator + videoFile.getUuid() + ".mp4");
+
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new IllegalStateException("failed to delete file. " + videoFile.getUuid(), e);
+        }
     }
 }

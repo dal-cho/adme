@@ -6,6 +6,7 @@ import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
+import com.dalcho.adme.event.VideoRevisionDeadlineEvent;
 import com.dalcho.adme.exception.notfound.FileNotFoundException;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.UserRepository;
@@ -16,20 +17,14 @@ import com.dalcho.adme.utils.video.VideoUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,6 +36,7 @@ public class VideoServiceImpl implements VideoService {
     private final UserRepository userRepository;
     private final VideoRepository videoRepository;
     private final OSValidator osValidator;
+    private final ApplicationEventPublisher publisher;
 
     @Value("${ffmpeg.path}")
     private String ffmpegPath;
@@ -57,22 +53,6 @@ public class VideoServiceImpl implements VideoService {
 
         user = userRepository.findByNickname(user.getNickname()).orElseThrow(UserNotFoundException::new);
 
-        String resultcontent = "";
-        InputStream inputStream = file.getInputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        String a = br.readLine();
-//        StringBuilder builder = new StringBuilder();
-//        while (true) {
-//            String line = br.readLine();
-//            if(line == null ) break;
-//            builder.append(line);
-//        }
-//        resultcontent = builder.toString();
-
-        log.info("##-###-#-###-###-### file input Stream :"+ inputStream);
-        log.info("##-###-#-###-###-### file path :"+ a);
-
-
         String uuid = UUID.randomUUID().toString();
         String uploadPath = osValidator.checkOs();
 
@@ -80,11 +60,15 @@ public class VideoServiceImpl implements VideoService {
         videoFile.setUser(user);
 
         log.info("[uploadFile] data 저장 수행");
-        // Static 폴더에 파일 저장 -> 추후 Server 에 저장
         VideoUtils.saveFile(file, videoFile);
+
+        log.info("[uploadFile] 10초 비디오 생성 및 저장 수행");
+        VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
 
         log.info("[uploadFile] Thumbnail 생성 및 저장 수행");
         VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile);
+
+        publisher.publishEvent(new VideoRevisionDeadlineEvent(videoFile));
 
         videoRepository.save(videoFile);
 
@@ -119,8 +103,13 @@ public class VideoServiceImpl implements VideoService {
 
         videoFile.update(videoRequestDto.toEntity(uuid, uploadPath));
 
+        log.info("[uploadFile] data 저장 수행");
         VideoUtils.saveFile(file, videoFile);
 
+        log.info("[update] 10초 비디오 생성 및 저장 수행");
+        VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
+
+        log.info("[update] Thumbnail 생성 및 저장 수행");
         VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile);
 
         VideoResultDto videoResultDto = VideoResultDto.builder()
