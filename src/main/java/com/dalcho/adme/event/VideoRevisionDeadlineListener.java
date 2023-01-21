@@ -12,7 +12,7 @@ public class VideoRevisionDeadlineListener {
     @Async
     @EventListener
     public void deleteVideoEvent(VideoRevisionDeadlineEvent event) throws InterruptedException {
-        Thread.sleep(300 * 1000); // 5분 시간 설정 *내부 시스템에서는 삭제 후에도 1분뒤에 반영된다.
+        Thread.sleep(600 * 1000); // 10분 시간 설정
         log.info("[VideoRevisionDeadlineListener] videoDeleteEvent 동작");
         VideoUtils.deleteVideo(event.getVideoFile());
     }

@@ -28,4 +28,12 @@ public class VideoRequestDto {
                 .videoDate(LocalDateTime.now())
                 .build();
     }
+
+    public VideoFile toUpdateEntity() {
+        return VideoFile.builder()
+                .title(title)
+                .content(content)
+                .videoDate(LocalDateTime.now())
+                .build();
+    }
 }

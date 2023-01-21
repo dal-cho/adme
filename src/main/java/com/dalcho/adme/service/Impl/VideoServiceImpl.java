@@ -24,7 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -91,26 +95,21 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     @Transactional
-    public VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile file) throws IOException {
+    public VideoResultDto update(Long id, VideoRequestDto videoRequestDto) throws IOException {
 
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
-        if (!file.isEmpty()) {
-            VideoUtils.deleteFile(videoFile);
+
+        videoFile.update(videoRequestDto.toUpdateEntity());
+
+        Path path = Paths.get(videoFile.getUploadPath() + File.separator + videoFile.getUuid() + ".mp4");
+
+        if (Files.exists(path)) {
+            log.info("[update] 10초 비디오 생성 및 저장 수행");
+            VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
+
+            log.info("[update] Thumbnail 생성 및 저장 수행");
+            VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile);
         }
-
-        String uuid = UUID.randomUUID().toString();
-        String uploadPath = osValidator.checkOs();
-
-        videoFile.update(videoRequestDto.toEntity(uuid, uploadPath));
-
-        log.info("[uploadFile] data 저장 수행");
-        VideoUtils.saveFile(file, videoFile);
-
-        log.info("[update] 10초 비디오 생성 및 저장 수행");
-        VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
-
-        log.info("[update] Thumbnail 생성 및 저장 수행");
-        VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile);
 
         VideoResultDto videoResultDto = VideoResultDto.builder()
                 .title(videoRequestDto.getTitle())

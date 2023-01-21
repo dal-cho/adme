@@ -37,11 +37,17 @@ public class VideoController {
         return videoService.uploadFile(user, requestDto, file);
     }
 
+//    @PutMapping("/tenSeconds/video/{id}")
+//    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateSideData") VideoRequestDto requestDto,
+//                                 @RequestPart(name = "updateVideoFile") MultipartFile file) throws IOException {
+//        log.info("[VideoController] update");
+//        return videoService.update(id, requestDto, file);
+//    }
+
     @PutMapping("/tenSeconds/video/{id}")
-    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateSideData") VideoRequestDto requestDto,
-                                 @RequestPart(name = "updateVideoFile") MultipartFile file) throws IOException {
+    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateData") VideoRequestDto requestDto) throws IOException {
         log.info("[VideoController] update");
-        return videoService.update(id, requestDto, file);
+        return videoService.update(id, requestDto);
     }
 
     @DeleteMapping("/tenSeconds/video/{id}")

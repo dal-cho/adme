@@ -58,8 +58,6 @@ public class VideoFile {
     public void update(VideoFile updateVideoFile) {
         updateTitle(updateVideoFile.getTitle());
         updateContent(updateVideoFile.getContent());
-        updateUuid(updateVideoFile.getUuid());
-        updateUploadPath(updateVideoFile.getUploadPath());
         updateVideoDate(updateVideoFile.getVideoDate());
     }
 
@@ -74,23 +72,11 @@ public class VideoFile {
             this.content = content;
         }
     }
-    public void updateUuid(String uuid) {
-        if (uuid != null) {
-            this.uuid = uuid;
-        }
-    }
-
-    public void updateUploadPath(String uploadPath) {
-        if (uploadPath != null) {
-            this.uploadPath = uploadPath;
-        }
-    }
 
     public void updateVideoDate(LocalDateTime videoDate) {
         if (videoDate != null) {
             this.videoDate = videoDate;
         }
     }
-
 
 }
