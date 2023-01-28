@@ -49,7 +49,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     @Transactional
-    public VideoResultDto uploadFile(User user, VideoRequestDto videoRequestDto, MultipartFile file) throws IOException {
+    public VideoResultDto uploadFile(User user, VideoRequestDto videoRequestDto, MultipartFile file, MultipartFile thumbnail) throws IOException {
 
         if (file.isEmpty()) {
             throw new FileNotFoundException();
@@ -66,11 +66,16 @@ public class VideoServiceImpl implements VideoService {
         log.info("[uploadFile] data 저장 수행");
         VideoUtils.saveFile(file, videoFile);
 
+        if (thumbnail.isEmpty()) {
+            log.info("[uploadFile] Thumbnail 생성 및 저장 수행");
+            VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
+        } else {
+            log.info("[uploadFile] thumbnail 저장 수행");
+            VideoUtils.saveThumbnail(videoFile, thumbnail);
+        }
+
         log.info("[uploadFile] 10초 비디오 생성 및 저장 수행");
         VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
-
-        log.info("[uploadFile] Thumbnail 생성 및 저장 수행");
-        VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile);
 
         publisher.publishEvent(new VideoRevisionDeadlineEvent(videoFile));
 
@@ -108,7 +113,7 @@ public class VideoServiceImpl implements VideoService {
             VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
 
             log.info("[update] Thumbnail 생성 및 저장 수행");
-            VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile);
+            VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
         }
 
         VideoResultDto videoResultDto = VideoResultDto.builder()

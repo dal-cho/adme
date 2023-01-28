@@ -32,17 +32,10 @@ public class VideoController {
 
     @PostMapping("/tenSeconds/videos")
     public VideoResultDto uploadFile(@AuthenticationPrincipal User user, @RequestPart(name = "sideData") VideoRequestDto requestDto,
-                                     @RequestPart(name = "videoFile") MultipartFile file) throws Exception {
+                                     @RequestPart(name = "videoFile") MultipartFile file, @RequestPart(name = "thumbnail") MultipartFile thumbnail) throws Exception {
         log.info("[VideoController] uploadFile() ");
-        return videoService.uploadFile(user, requestDto, file);
+        return videoService.uploadFile(user, requestDto, file, thumbnail);
     }
-
-//    @PutMapping("/tenSeconds/video/{id}")
-//    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateSideData") VideoRequestDto requestDto,
-//                                 @RequestPart(name = "updateVideoFile") MultipartFile file) throws IOException {
-//        log.info("[VideoController] update");
-//        return videoService.update(id, requestDto, file);
-//    }
 
     @PutMapping("/tenSeconds/video/{id}")
     public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateData") VideoRequestDto requestDto) throws IOException {
