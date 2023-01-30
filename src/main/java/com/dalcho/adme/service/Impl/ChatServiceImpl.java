@@ -3,25 +3,24 @@ package com.dalcho.adme.service.Impl;
 import com.dalcho.adme.domain.Socket;
 import com.dalcho.adme.dto.socket.ChatRoomDto;
 import com.dalcho.adme.dto.socket.ChatRoomMap;
-import com.dalcho.adme.repository.SocketRepository;
+import com.dalcho.adme.exception.CustomException;
+import com.dalcho.adme.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ChatServiceImpl {
-	private final SocketRepository socketRepository;
+	private final ChatRepository chatRepository;
 
 	//채팅방 불러오기
 	public List<ChatRoomDto> findAllRoom() {
 		List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
-		List<Socket> all = socketRepository.findAll();
+		List<Socket> all = chatRepository.findAll();
 		try {
 			for(int i=0; i<all.size(); i++){
 				chatRoomDtos.add(ChatRoomDto.of(all.get(i)));
@@ -34,33 +33,35 @@ public class ChatServiceImpl {
 
 	//채팅방 하나 불러오기
 	public boolean getRoomInfo(String roomId) {
-		return socketRepository.existsByRoomId(roomId);
+		return chatRepository.existsByRoomId(roomId);
 	}
 
 	//채팅방 생성
 	public ChatRoomDto createRoom(String nickname) {
 		ChatRoomDto chatRoom = new ChatRoomDto();
-		if (!socketRepository.existsByNickname(nickname)) {
+		if (!chatRepository.existsByNickname(nickname)) {
 			chatRoom = ChatRoomDto.create(nickname);
 			ChatRoomMap.getInstance().getChatRooms().put(chatRoom.getRoomId(), chatRoom);
 			Socket socket = new Socket(chatRoom.getRoomId(), nickname);
 			log.info("Service socket :  " + socket);
-			socketRepository.save(socket);
+			chatRepository.save(socket);
 			return chatRoom;
 		}
 		else{
-			Optional<Socket> byNickname = socketRepository.findByNickname(nickname);
+			Optional<Socket> byNickname = chatRepository.findByNickname(nickname);
 			return ChatRoomDto.of(byNickname.get());
 		}
 	}
 
-	public ChatRoomDto roomOne(String nickname){
-		Optional<Socket> byNickname = socketRepository.findByNickname(nickname);
-		return ChatRoomDto.of(byNickname.get());
+	public ChatRoomDto roomOne(String nickname) throws CustomException {
+		Socket socket = chatRepository.findByNickname(nickname).orElseThrow();
+		return ChatRoomDto.of(socket);
 	}
 
 	public void deleteRoom(String roomId){
-		Socket socket = socketRepository.findByRoomId(roomId).orElseThrow(NullPointerException :: new);
-		socketRepository.delete(socket);
+		Timer t = new Timer(true);
+		TimerTask task = new MyTimeTask(chatRepository, roomId);
+		t.schedule(task,300000);
+		log.info("5분뒤에 삭제 됩니다.");
 	}
 }
