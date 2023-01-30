@@ -24,7 +24,7 @@ public class VideoController {
 
     public final VideoService videoService;
 
-    @GetMapping( "/tenSeconds/list" )
+    @GetMapping("/tenSeconds/list")
     public List<VideoResponseDto> listFiles(@PageableDefault(size = 12, sort = "videoDate", direction = Sort.Direction.ASC) Pageable pageable) throws Exception {
         log.info("[VideoController] GetList");
         return videoService.getList(pageable);
@@ -44,7 +44,7 @@ public class VideoController {
     }
 
     @DeleteMapping("/tenSeconds/video/{id}")
-    public void delete(@PathVariable Long id){
+    public void delete(@PathVariable Long id) {
         videoService.delete(id);
     }
 }
