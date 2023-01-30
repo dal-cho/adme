@@ -1,14 +1,15 @@
 package com.dalcho.adme.event;
 
-import com.dalcho.adme.domain.VideoFile;
 import lombok.Getter;
+
+import java.nio.file.Path;
 
 @Getter
 public class VideoRevisionDeadlineEvent {
 
-    private final VideoFile videoFile;
+    private final Path path;
 
-    public VideoRevisionDeadlineEvent(VideoFile videoFile) {
-        this.videoFile = videoFile;
+    public VideoRevisionDeadlineEvent(Path path) {
+        this.path = path;
     }
 }

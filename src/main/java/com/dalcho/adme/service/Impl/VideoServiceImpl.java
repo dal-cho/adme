@@ -79,7 +79,9 @@ public class VideoServiceImpl implements VideoService {
         log.info("[uploadFile] 10초 비디오 생성 및 저장 수행");
         VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
 
-        publisher.publishEvent(new VideoRevisionDeadlineEvent(videoFile));
+        Path path = Paths.get(videoFile.getUploadPath() + File.separator + videoFile.getUuid() + ".mp4");
+
+        publisher.publishEvent(new VideoRevisionDeadlineEvent(path));
 
         videoRepository.save(videoFile);
 
@@ -115,13 +117,16 @@ public class VideoServiceImpl implements VideoService {
         boolean setTimeCheck = videoRequestDto.getSetTime() > 0;
 
         if (setTimeCheck && originVideoCheck) {
-            VideoUtils.deleteTen(videoFile);
+            Path ten = Paths.get(videoFile.getUploadPath() + File.separator + "ten_" + videoFile.getUuid() + ".mp4");
+            VideoUtils.deleteFile(ten);
+
             log.info("[update] 10초 비디오 생성 및 저장 수행");
             VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
         }
 
         if (!thumbnailCheck) {
-            VideoUtils.deleteThumb(videoFile);
+            Path thumb = Paths.get(videoFile.getUploadPath() + File.separator + "thumb_" + videoFile.getUuid() + "." + videoFile.getThumbnailExt());
+            VideoUtils.deleteFile(thumb);
 
             String ext = ExtCheckUtils.extractionExt(thumbnail);
             videoFile.setThumbnailExt(ext);

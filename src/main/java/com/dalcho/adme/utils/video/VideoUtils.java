@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 @Slf4j
 @RequiredArgsConstructor
 public class VideoUtils {
@@ -42,14 +43,18 @@ public class VideoUtils {
     public static void saveThumbnail(VideoFile videoFile, MultipartFile thumbnail) throws IOException {
         log.info("[VideoUtils] saveThumbnail");
 
+        // 가로 세로 비율 16:9 설정
+        int xRatio = 16;
+        int yRatio = 9;
+
         BufferedImage thumbImage = ImageIO.read(thumbnail.getInputStream());
         int width = thumbImage.getWidth();
         int height = thumbImage.getHeight();
 
-        // 이미지 16:9 로 편집
-        BufferedImage croppedImage = thumbImage.getHeight() >= thumbImage.getWidth()  ?
-                thumbImage.getSubimage(0, (height/2)-((width/32)*9), width, (width/16)*9) :
-                thumbImage.getSubimage((width/2)-((height/18)*16), 0, (height/9)*16, height);
+        // 이미지 편집
+        BufferedImage croppedImage = thumbImage.getHeight() >= thumbImage.getWidth() ?
+                thumbImage.getSubimage(0, (height / 2) - ((width / (xRatio * 2)) * yRatio), width, (width / xRatio) * yRatio) :
+                thumbImage.getSubimage((width / 2) - ((height / (yRatio * 2)) * xRatio), 0, (height / yRatio) * xRatio, height);
 
         File outputFile = new File(videoFile.getUploadPath() + File.separator + "thumb_" + videoFile.getUuid() + "." + videoFile.getThumbnailExt());
         ImageIO.write(croppedImage, videoFile.getThumbnailExt(), outputFile);
@@ -57,7 +62,7 @@ public class VideoUtils {
         log.info("[VideoUtils] saveThumbnail Completed!");
     }
 
-    public static void createVideo(String ffmpegPath, String ffprobePath, VideoFile videoFile , int setTime) throws IOException {
+    public static void createVideo(String ffmpegPath, String ffprobePath, VideoFile videoFile, int setTime) throws IOException {
         log.info("[VideoUtils] createVideo");
 
         FFmpeg ffmpeg = new FFmpeg(ffmpegPath);
@@ -75,7 +80,7 @@ public class VideoUtils {
                 .setVideoBitRate(3000 * 1000) // 비트 레이트 설정 (화질 설정)
                 .done();
 
-        FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
+        FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe); // ffmpeg: 동영상편집, ffprobe: 음성편집
         executor.createJob(fFmpegBuilder).run();
 
         log.info("[VideoUtils] createVideo Completed!");
@@ -101,43 +106,14 @@ public class VideoUtils {
         log.info("[VideoUtils] createThumbnail Completed!");
     }
 
-    public static void deleteVideo(VideoFile videoFile) {
-        log.info("[VideoUtils] deleteVideo");
-
-        Path path = Paths.get(videoFile.getUploadPath() + File.separator + videoFile.getUuid() + ".mp4");
-
+    public static void deleteFile(Path path) {
+        log.info("[VideoUtils] deleteFile");
         try {
             Files.delete(path);
-            log.info("[VideoUtils] deleteVideo Completed!");
+            log.info("[VideoUtils] deleteFile Completed!");
         } catch (IOException e) {
-            throw new IllegalStateException("failed to delete file. " + videoFile.getUuid(), e);
+            throw new IllegalStateException("failed to delete File.");
         }
-    }
-
-    public static void deleteTen(VideoFile videoFile) {
-        log.info("[VideoUtils] deleteTen");
-
-        Path ten = Paths.get(videoFile.getUploadPath() + File.separator + "ten_" + videoFile.getUuid() + ".mp4");
-
-        try {
-            Files.delete(ten);
-        } catch (IOException e) {
-            throw new IllegalStateException("failed to delete file. " + videoFile.getUuid(), e);
-        }
-        log.info("[VideoUtils] deleteTen Completed!");
-    }
-
-    public static void deleteThumb(VideoFile videoFile) {
-        log.info("[VideoUtils] deleteThumb");
-
-        Path thumb = Paths.get(videoFile.getUploadPath() + File.separator + "thumb_" + videoFile.getUuid() + "." + videoFile.getThumbnailExt());
-
-        try {
-            Files.delete(thumb);
-        } catch (IOException e) {
-            throw new IllegalStateException("failed to delete file. " + videoFile.getUuid(), e);
-        }
-        log.info("[VideoUtils] deleteThumb Completed!");
     }
 
     public static void deleteFiles(VideoFile videoFile) {
@@ -149,10 +125,10 @@ public class VideoUtils {
         try {
             Files.delete(ten);
             Files.delete(thumb);
+            log.info("[VideoUtils] deleteFiles Completed!");
         } catch (IOException e) {
-            throw new IllegalStateException("failed to delete file. " + videoFile.getUuid(), e);
+            throw new IllegalStateException("failed to delete Files. " + videoFile.getUuid(), e);
         }
-        log.info("[VideoUtils] deleteFiles Completed!");
     }
 
 }
