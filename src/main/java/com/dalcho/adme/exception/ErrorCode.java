@@ -16,6 +16,7 @@ public enum ErrorCode {
     // Video
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
     FILE_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 파일의 이름이 존재하지 않습니다."),
+    INVALID_EXTENSION(HttpStatus.UNAUTHORIZED, "파일의 형식이 잘못되었습니다."),
 
     // Registry
     REGISTRY_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),

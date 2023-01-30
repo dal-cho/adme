@@ -38,9 +38,9 @@ public class VideoController {
     }
 
     @PutMapping("/tenSeconds/video/{id}")
-    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateData") VideoRequestDto requestDto) throws IOException {
+    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateData") VideoRequestDto requestDto, @RequestPart(name = "thumbnail") MultipartFile thumbnail) throws IOException {
         log.info("[VideoController] update");
-        return videoService.update(id, requestDto);
+        return videoService.update(id, requestDto, thumbnail);
     }
 
     @DeleteMapping("/tenSeconds/video/{id}")

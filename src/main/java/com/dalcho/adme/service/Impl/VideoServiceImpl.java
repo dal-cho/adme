@@ -13,6 +13,7 @@ import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.repository.VideoRepository;
 import com.dalcho.adme.service.VideoService;
 import com.dalcho.adme.system.OSValidator;
+import com.dalcho.adme.utils.video.ExtCheckUtils;
 import com.dalcho.adme.utils.video.VideoUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,12 +55,10 @@ public class VideoServiceImpl implements VideoService {
         if (file.isEmpty()) {
             throw new FileNotFoundException();
         }
-
         user = userRepository.findByNickname(user.getNickname()).orElseThrow(UserNotFoundException::new);
 
         String uuid = UUID.randomUUID().toString();
         String uploadPath = osValidator.checkOs();
-
         VideoFile videoFile = videoRequestDto.toEntity(uuid, uploadPath);
         videoFile.setUser(user);
 
@@ -70,9 +69,12 @@ public class VideoServiceImpl implements VideoService {
             log.info("[uploadFile] Thumbnail 생성 및 저장 수행");
             VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
         } else {
+            String ext = ExtCheckUtils.extractionExt(thumbnail);
+            videoFile.setThumbnailExt(ext);
             log.info("[uploadFile] thumbnail 저장 수행");
             VideoUtils.saveThumbnail(videoFile, thumbnail);
         }
+
 
         log.info("[uploadFile] 10초 비디오 생성 및 저장 수행");
         VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
@@ -100,7 +102,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     @Transactional
-    public VideoResultDto update(Long id, VideoRequestDto videoRequestDto) throws IOException {
+    public VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile thumbnail) throws IOException {
 
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
 
@@ -108,12 +110,23 @@ public class VideoServiceImpl implements VideoService {
 
         Path path = Paths.get(videoFile.getUploadPath() + File.separator + videoFile.getUuid() + ".mp4");
 
-        if (Files.exists(path)) {
+        boolean thumbnailCheck = thumbnail.isEmpty();
+        boolean originVideoCheck = Files.exists(path);
+        boolean setTimeCheck = videoRequestDto.getSetTime() > 0;
+
+        if (setTimeCheck && originVideoCheck) {
+            VideoUtils.deleteTen(videoFile);
             log.info("[update] 10초 비디오 생성 및 저장 수행");
             VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
+        }
 
-            log.info("[update] Thumbnail 생성 및 저장 수행");
-            VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
+        if (!thumbnailCheck) {
+            VideoUtils.deleteThumb(videoFile);
+
+            String ext = ExtCheckUtils.extractionExt(thumbnail);
+            videoFile.setThumbnailExt(ext);
+            log.info("[uploadFile] thumbnail 저장 수행");
+            VideoUtils.saveThumbnail(videoFile, thumbnail);
         }
 
         VideoResultDto videoResultDto = VideoResultDto.builder()
@@ -129,7 +142,7 @@ public class VideoServiceImpl implements VideoService {
     @Transactional
     public void delete(Long id) {
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
-        VideoUtils.deleteFile(videoFile);
+        VideoUtils.deleteFiles(videoFile);
         videoRepository.deleteById(id);
     }
 
