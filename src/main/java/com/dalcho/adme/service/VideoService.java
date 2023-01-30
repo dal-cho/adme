@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface VideoService {
-    VideoResultDto uploadFile(User user, VideoRequestDto videoRequestDto, MultipartFile file) throws Exception;
+    VideoResultDto uploadFile(User user, VideoRequestDto videoRequestDto, MultipartFile file, MultipartFile thumbnail) throws Exception;
     List<VideoResponseDto> getList(Pageable pageable) throws Exception;
-    VideoResultDto update(Long id, VideoRequestDto videoRequestDto) throws IOException;
+    VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile thumbnail) throws IOException;
     void delete(Long id);
 }

@@ -28,6 +28,9 @@ public class VideoFile {
     private String uploadPath;
 
     @Column(nullable = false)
+    private String thumbnailExt = "png";
+
+    @Column(nullable = false)
     private LocalDateTime videoDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,12 +49,17 @@ public class VideoFile {
         }
     }
 
+    public void setThumbnailExt(String thumbnailExt){
+        this.thumbnailExt = thumbnailExt;
+    }
+
     @Builder
-    public VideoFile(String title, String content, String uuid, String uploadPath, LocalDateTime videoDate) {
+    public VideoFile(String title, String content, String uuid, String uploadPath, String thumbnailExt, LocalDateTime videoDate) {
         this.title = title;
         this.content = content;
         this.uuid = uuid;
         this.uploadPath = uploadPath;
+        this.thumbnailExt = thumbnailExt;
         this.videoDate = videoDate;
     }
 
