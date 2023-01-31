@@ -24,6 +24,9 @@ public enum ErrorCode {
     // Comment
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글이 존재하지 않습니다."),
 
+    //Socket
+    SOCKET_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅방을 만들어주세요."),
+
     // db
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 에러");
 

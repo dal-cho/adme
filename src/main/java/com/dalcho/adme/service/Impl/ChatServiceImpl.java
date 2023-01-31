@@ -4,6 +4,7 @@ import com.dalcho.adme.domain.Socket;
 import com.dalcho.adme.dto.socket.ChatRoomDto;
 import com.dalcho.adme.dto.socket.ChatRoomMap;
 import com.dalcho.adme.exception.CustomException;
+import com.dalcho.adme.exception.notfound.SocketNotFoundException;
 import com.dalcho.adme.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,7 @@ public class ChatServiceImpl {
 	}
 
 	public ChatRoomDto roomOne(String nickname) throws CustomException {
-		Socket socket = chatRepository.findByNickname(nickname).orElseThrow();
+		Socket socket = chatRepository.findByNickname(nickname).orElseThrow(SocketNotFoundException::new);
 		return ChatRoomDto.of(socket);
 	}
 
