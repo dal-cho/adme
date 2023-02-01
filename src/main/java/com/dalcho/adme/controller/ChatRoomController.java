@@ -30,13 +30,13 @@ public class ChatRoomController {
     // 채팅방 생성
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoomDto createRoom(@RequestBody String nickname){
+    public ChatRoomDto createRoom(@RequestBody String nickname) {
         return chatService.createRoom(nickname);
     }
 
     // 채팅방 입장 화면
     @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId){
+    public String roomDetail(Model model, @PathVariable String roomId) {
         model.addAttribute("roomId", roomId);
         return "chat-room";
     }
@@ -58,8 +58,7 @@ public class ChatRoomController {
     // 완료된 채팅방 삭제하기
     @DeleteMapping("/room/one/{roomId}")
     @ResponseBody
-    public void deleteRoom(@PathVariable String roomId){
+    public void deleteRoom(@PathVariable String roomId) {
         chatService.deleteRoom(roomId);
     }
-
 }

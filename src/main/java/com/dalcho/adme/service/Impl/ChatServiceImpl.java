@@ -23,11 +23,11 @@ public class ChatServiceImpl {
 		List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
 		List<Socket> all = chatRepository.findAll();
 		try {
-			for(int i=0; i<all.size(); i++){
+			for (int i = 0; i < all.size(); i++) {
 				chatRoomDtos.add(ChatRoomDto.of(all.get(i)));
 			}
 		} catch (NullPointerException e) {
-			throw new RuntimeException("data 없음! ") ;
+			throw new RuntimeException("data 없음! ");
 		}
 		return chatRoomDtos;
 	}
@@ -47,8 +47,7 @@ public class ChatServiceImpl {
 			log.info("Service socket :  " + socket);
 			chatRepository.save(socket);
 			return chatRoom;
-		}
-		else{
+		} else {
 			Optional<Socket> byNickname = chatRepository.findByNickname(nickname);
 			return ChatRoomDto.of(byNickname.get());
 		}
@@ -59,10 +58,10 @@ public class ChatServiceImpl {
 		return ChatRoomDto.of(socket);
 	}
 
-	public void deleteRoom(String roomId){
+	public void deleteRoom(String roomId) {
 		Timer t = new Timer(true);
 		TimerTask task = new MyTimeTask(chatRepository, roomId);
-		t.schedule(task,300000);
+		t.schedule(task, 300000);
 		log.info("5분뒤에 삭제 됩니다.");
 	}
 }
