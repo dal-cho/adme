@@ -14,12 +14,6 @@ import java.util.List;
 public class ChatRoomController {
     private final ChatServiceImpl chatService;
 
-    // 채팅 리스트 화면
-    @GetMapping("/room")
-    public String rooms(Model model) {
-        return "chat-list";
-    }
-
     // 모든 채팅방 목록 반환
     @GetMapping("/rooms")
     @ResponseBody
@@ -32,13 +26,6 @@ public class ChatRoomController {
     @ResponseBody
     public ChatRoomDto createRoom(@RequestBody String nickname) {
         return chatService.createRoom(nickname);
-    }
-
-    // 채팅방 입장 화면
-    @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId) {
-        model.addAttribute("roomId", roomId);
-        return "chat-room";
     }
 
     // 삭제 후 채팅방 재 접속 막기
