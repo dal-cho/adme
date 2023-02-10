@@ -1,6 +1,6 @@
-package com.dalcho.adme.controller;
+package com.dalcho.adme.controller.chat;
 
-import com.dalcho.adme.dto.socket.ChatMessage;
+import com.dalcho.adme.dto.chat.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

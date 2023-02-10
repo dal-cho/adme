@@ -1,4 +1,4 @@
-package com.dalcho.adme.dto.socket;
+package com.dalcho.adme.dto.chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

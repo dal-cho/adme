@@ -14,9 +14,10 @@ public enum ErrorCode {
     PERMISSION_DENIED(HttpStatus.UNAUTHORIZED, "사용자 권한이 없습니다."),
 
     // Video
-    FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
     FILE_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 파일의 이름이 존재하지 않습니다."),
     INVALID_EXTENSION(HttpStatus.UNAUTHORIZED, "파일의 형식이 잘못되었습니다."),
+    // Video & Chat
+    FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
 
     // Registry
     REGISTRY_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
@@ -24,8 +25,8 @@ public enum ErrorCode {
     // Comment
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글이 존재하지 않습니다."),
 
-    //Socket
-    SOCKET_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅방을 만들어주세요."),
+    //Chat
+    CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "채팅방을 만들어주세요."),
 
     // db
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 에러");
