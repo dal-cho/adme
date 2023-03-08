@@ -36,10 +36,16 @@ dependencies {
 
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
 
-    // websocket
+    // chat
+    implementation 'org.webjars:webjars-locator-core'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.webjars:sockjs-client:1.1.2'
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
+    implementation 'org.webjars.bower:bootstrap:4.3.1'
+    implementation 'org.webjars:jquery:3.6.2'
+
+    // chat-file
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
     // Bzip2 파일 압축

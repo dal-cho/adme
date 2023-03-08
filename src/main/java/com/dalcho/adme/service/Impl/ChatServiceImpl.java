@@ -18,6 +18,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,8 +32,14 @@ import java.util.*;
 @Service
 public class ChatServiceImpl {
 	private final ChatRepository chatRepository;
+	private Map<String, Integer> connectUsers;
 	@Value("${spring.servlet.multipart.location}")
 	private String chatUploadLocation;
+
+	@PostConstruct
+	private void setUp() { // 안그러면 NullPointerException
+		this.connectUsers = new HashMap<>();
+	}
 
 	//채팅방 불러오기
 	public List<ChatRoomDto> findAllRoom() {
@@ -96,6 +103,7 @@ public class ChatServiceImpl {
 			File file1 = new File(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt");
 			if (file1.exists() && file1.length() == 0) {
 				file.write(json1);
+				chatAlarm(chatMessage.getSender(), chatMessage.getRoomId());
 			} else {
 				file.write("," + json1);
 			}
@@ -118,5 +126,20 @@ public class ChatServiceImpl {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public ChatMessage chatAlarm(String sender, String roomId){
+		ChatMessage chatMessage = new ChatMessage();
+		if (Objects.equals(sender, "admin") && connectUsers.get(roomId) ==1){
+			chatMessage.setRoomId(roomId);
+			chatMessage.setSender(sender);
+			chatMessage.setMessage("고객센터에 문의한 글에 답글이 달렸습니다.");
+		} else if (!Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
+			chatMessage.setRoomId(roomId);
+			chatMessage.setSender(sender);
+			chatMessage.setMessage(sender + " 님이 답을 기다리고 있습니다.");
+
+		}
+		return chatMessage;
 	}
 }
