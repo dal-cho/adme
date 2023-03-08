@@ -5,15 +5,25 @@ import com.dalcho.adme.dto.chat.ChatRoomDto;
 import com.dalcho.adme.service.Impl.ChatServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor
 @Slf4j
 public class ChatRoomController {
     private final ChatServiceImpl chatService;
+    private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
+    private static final Map<String, SseEmitter> CLIENTS = new ConcurrentHashMap<>();
 
     // 모든 채팅방 목록 반환(관리자)
     @GetMapping("/rooms")
@@ -55,5 +65,33 @@ public class ChatRoomController {
     @PostMapping("/room/enter/{roomId}/{roomName}")
     public void saveFile(@PathVariable String roomId, @PathVariable String roomName, @RequestBody ChatMessage chatMessage){
         chatService.saveFile(chatMessage);
+    }
+
+    @GetMapping("/room/subscribe")
+    public SseEmitter subscribe(String id) throws IOException {
+        SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
+        CLIENTS.put(id, emitter);
+        emitter.send(SseEmitter.event().name("connect") // 해당 이벤트의 이름 지정
+                .data("connected!")); // 503 에러 방지를 위한 더미 데이터
+        emitter.onTimeout(() -> CLIENTS.remove(id));
+        emitter.onCompletion(() -> CLIENTS.remove(id));
+        return emitter;
+    }
+
+    @GetMapping("/room/publish")
+    @Async // 비동기
+    public void publish(String sender, String roomId) {
+        Set<String> deadIds = new HashSet<>();
+        CLIENTS.forEach((id, emitter) -> {
+            try {
+                ChatMessage chatMessage = chatService.chatAlarm(sender, roomId);
+                emitter.send(chatMessage, MediaType.APPLICATION_JSON);
+            } catch (Exception e) {
+                log.error("[error]  " + e);
+                deadIds.add(id);
+                log.warn("disconnected id : {}", id);
+            }
+            deadIds.forEach(CLIENTS::remove);
+        });
     }
 }
