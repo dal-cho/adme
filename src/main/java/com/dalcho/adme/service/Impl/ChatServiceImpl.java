@@ -55,11 +55,6 @@ public class ChatServiceImpl {
 		return chatRoomDtos;
 	}
 
-	// 삭제 후 재 접속 막기
-	public boolean getRoomInfo(String roomId) {
-		return chatRepository.existsByRoomId(roomId);
-	}
-
 	//채팅방 생성
 	public ChatRoomDto createRoom(String nickname) {
 		ChatRoomDto chatRoom = new ChatRoomDto();
@@ -74,19 +69,6 @@ public class ChatServiceImpl {
 			Optional<Socket> byNickname = chatRepository.findByNickname(nickname);
 			return ChatRoomDto.of(byNickname.get());
 		}
-	}
-
-	//채팅방 하나 불러오기
-	public ChatRoomDto roomOne(String nickname) throws CustomException {
-		Socket socket = chatRepository.findByNickname(nickname).orElseThrow(ChatRoomNotFoundException::new);
-		return ChatRoomDto.of(socket);
-	}
-
-	public void deleteRoom(String roomId) {
-		Timer t = new Timer(true);
-		TimerTask task = new MyTimeTask(chatRepository, roomId, chatUploadLocation);
-		t.schedule(task, 300000);
-		log.info("5분뒤에 삭제 됩니다.");
 	}
 
 	// 파일 저장
