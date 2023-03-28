@@ -1,6 +1,7 @@
 package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
@@ -28,6 +29,12 @@ public class VideoController {
     public List<VideoResponseDto> listFiles(@PageableDefault(size = 12, sort = "videoDate", direction = Sort.Direction.ASC) Pageable pageable) throws Exception {
         log.info("[VideoController] GetList");
         return videoService.getList(pageable);
+    }
+
+    @GetMapping("/tenSeconds/video/{id}")
+    public VideoFile getFile(@PathVariable Long id) throws Exception{
+        log.info("[VideoController] GetFile");
+        return videoService.getFile(id);
     }
 
     @PostMapping("/tenSeconds/videos")

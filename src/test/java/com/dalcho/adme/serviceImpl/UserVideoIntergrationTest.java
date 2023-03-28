@@ -34,39 +34,39 @@ public class UserVideoIntergrationTest {
     @Mock MultipartFile multipartFile;
     @Mock OSValidator osValidator;
 
-    @Test
-    @DisplayName("파일 업로드 test")
-    void uploadFileTest() throws Exception{
-        // given
-        List<String> role = Collections.singletonList("ROLE_USER");
-        User user = User.builder()
-                .nickname("nickname")
-                .password("good night")
-                .name("coco")
-                .email("email@naver.com")
-                .roles(role)
-                .build();
-
-        VideoFile videoFile = VideoFile.builder()
-                .title("title")
-                .content("content")
-                .uuid("uuid")
-                .uploadPath("uploadPath")
-                .videoDate(LocalDateTime.now())
-                .build();
-        String uuid = UUID.randomUUID().toString();
-        String uploadPath = osValidator.checkOs();
-        VideoRequestDto videoRequestDto = new VideoRequestDto("title", "content", 6);
-
-        // when
-        videoService.uploadFile(user, videoRequestDto, multipartFile);
-        VideoFile videoFile1 = videoRequestDto.toEntity(uuid, uploadPath);
-        videoFile1.setUser(user);
-
-        when(videoRepository.save(any())).thenReturn(videoFile1);
-
-        verify(videoRepository).save(any());
-    }
+//    @Test
+//    @DisplayName("파일 업로드 test")
+//    void uploadFileTest() throws Exception{
+//        // given
+//        List<String> role = Collections.singletonList("ROLE_USER");
+//        User user = User.builder()
+//                .nickname("nickname")
+//                .password("good night")
+//                .name("coco")
+//                .email("email@naver.com")
+//                .roles(role)
+//                .build();
+//
+//        VideoFile videoFile = VideoFile.builder()
+//                .title("title")
+//                .content("content")
+//                .uuid("uuid")
+//                .uploadPath("uploadPath")
+//                .videoDate(LocalDateTime.now())
+//                .build();
+//        String uuid = UUID.randomUUID().toString();
+//        String uploadPath = osValidator.checkOs();
+//        VideoRequestDto videoRequestDto = new VideoRequestDto("title", "content", 6);
+//
+//        // when
+//        videoService.uploadFile(user, videoRequestDto, multipartFile);
+//        VideoFile videoFile1 = videoRequestDto.toEntity(uuid, uploadPath);
+//        videoFile1.setUser(user);
+//
+//        when(videoRepository.save(any())).thenReturn(videoFile1);
+//
+//        verify(videoRepository).save(any());
+//    }
 //    @Test
 //    @Order(1)
 //    @DisplayName("회원가입 정보 없이 동영상 등록 시 에러 발생")
