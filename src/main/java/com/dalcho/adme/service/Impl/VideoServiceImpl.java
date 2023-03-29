@@ -103,6 +103,11 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public VideoFile getFile(Long id) {
+        return videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
+    }
+
+    @Override
     @Transactional
     public VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile thumbnail) throws IOException {
 
