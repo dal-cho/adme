@@ -47,6 +47,7 @@ dependencies {
     // chat-file
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'commons-io:commons-io:2.11.0'
 
     // Bzip2 파일 압축
     implementation 'org.apache.commons:commons-compress:1.21'
