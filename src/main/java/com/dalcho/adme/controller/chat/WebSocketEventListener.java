@@ -1,6 +1,7 @@
 package com.dalcho.adme.controller.chat;
 
 import com.dalcho.adme.dto.chat.ChatMessage;
+import com.dalcho.adme.service.Impl.ChatServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Component
 public class WebSocketEventListener {
 	private final SimpMessageSendingOperations sendingOperations;
+	private final ChatServiceImpl chatService;
 	private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
 	@EventListener
@@ -33,6 +35,7 @@ public class WebSocketEventListener {
 			chatMessage.setType(ChatMessage.MessageType.LEAVE);
 			chatMessage.setSender(username);
 			chatMessage.setRoomId(roomId);
+			chatService.connectUser("Disconnect", roomId, chatMessage);
 			sendingOperations.convertAndSend("/topic/public/" + roomId, chatMessage);
 		}
 	}

@@ -45,6 +45,19 @@ public class ChatServiceImpl {
 		this.userChat = new HashMap<>();
 	}
 
+	public void connectUser(String status, String roomId, ChatMessage chatMessage) {
+		if (Objects.equals(status, "Connect")){
+			connectUsers.putIfAbsent(roomId, 0);
+			int num = connectUsers.get(roomId);
+			connectUsers.put(roomId, (num+1));
+			saveFile(chatMessage);
+		} else if (Objects.equals(status, "Disconnect")) {
+			int num = connectUsers.get(roomId);
+			connectUsers.put(roomId, (num-1));
+		}
+		log.info("현재 인원 : " + connectUsers.get(roomId));
+	}
+
 	//채팅방 불러오기
 	public List<ChatRoomDto> findAllRoom() {
 		List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
@@ -77,6 +90,13 @@ public class ChatServiceImpl {
 
 	// 파일 저장
 	public void saveFile(ChatMessage chatMessage) {
+		if (connectUsers.get(chatMessage.getRoomId())!=0){
+			if ((chatMessage.getType().toString()).equals("JOIN")){
+				reset(chatMessage.getSender(), chatMessage.getRoomId());
+			} else {
+				countChat(chatMessage.getSender(), chatMessage.getRoomId());
+			}
+		}
 		JSONObject json = new JSONObject();
 		json.put("roomId", chatMessage.getRoomId());
 		json.put("type", chatMessage.getType().toString());
@@ -116,6 +136,32 @@ public class ChatServiceImpl {
 		}
 	}
 
+	public void reset(String sender, String roomId){
+		if (sender.equals("admin")){
+			adminChat.putIfAbsent(roomId, 0);
+			userChat.putIfAbsent(roomId, 0);
+			adminChat.put(roomId,0);
+		} else {
+			userChat.putIfAbsent(roomId, 0);
+			adminChat.putIfAbsent(roomId, 0);
+			userChat.put(roomId,0);
+		}
+	}
+
+	public void countChat(String sender, String roomId){
+		if(sender.equals("admin")) {
+			userChat.putIfAbsent(roomId, 0);
+			int num = userChat.get(roomId);
+			userChat.put(roomId, num+1);
+			adminChat.put(roomId,0);
+		}
+		else {
+			adminChat.putIfAbsent(roomId, 0);
+			int num = adminChat.get(roomId);
+			adminChat.put(roomId, num+1);
+			userChat.put(roomId,0);
+		}
+	}
 	public List lastLine(String roomId) {
 		File file1 = new File(chatUploadLocation + "/" + roomId + ".txt");
 		try{
