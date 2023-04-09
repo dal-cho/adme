@@ -8,7 +8,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @ToString
-public class Socket {
+public class Chat {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "socket_id")
@@ -21,7 +21,7 @@ public class Socket {
 	private String roomId;
 
 	@Builder
-	public Socket(String roomId, String nickname) {
+	public Chat(String roomId, String nickname) {
 		this.roomId = roomId;
 		this.nickname = nickname;
 	}
