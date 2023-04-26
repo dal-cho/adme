@@ -1,5 +1,6 @@
 package com.dalcho.adme.controller;
 
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.sign.SignInRequestDto;
 import com.dalcho.adme.dto.sign.SignInResultDto;
 import com.dalcho.adme.dto.sign.SignUpRequestDto;
@@ -7,6 +8,8 @@ import com.dalcho.adme.dto.sign.SignUpResultDto;
 import com.dalcho.adme.service.SignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +30,7 @@ public class SignController {
 
     @PostMapping(value = "/sign-up")
     public SignUpResultDto signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+        log.info("[SignController]");
         log.info("[signUp] 회원가입을 수행합니다. id : {}, password : ****, name : {}", signUpRequestDto.getNickname(), signUpRequestDto.getName());
 
         SignUpResultDto signUpResultDto = signService.signUp(signUpRequestDto);
@@ -38,6 +42,7 @@ public class SignController {
 
     @PostMapping(value = "/sign-in")
     public SignInResultDto signIn(@RequestBody SignInRequestDto signInRequestDto, HttpServletResponse response) throws RuntimeException {
+        log.info("[SignController]");
         log.info("[signIn] 로그인을 시도하고 있습니다. id : {}, pw : ****", signInRequestDto.getNickname());
 
         SignInResultDto signInResultDto = signService.signIn(signInRequestDto);
@@ -50,12 +55,19 @@ public class SignController {
         Cookie idCookie = new Cookie("TokenCookie", signInResultDto.getToken());
         idCookie.setPath("/"); // 모든 경로에서 접근 가능
         idCookie.setDomain("localhost");
-        idCookie.setMaxAge(24 * 60 * 60);
+        idCookie.setMaxAge(24 * 60 * 60); // 1day
         idCookie.setSecure(true);
         response.addCookie(idCookie);
 
         log.info("[getSignInResult] 쿠키 생성 완료");
 
         return signInResultDto;
+    }
+
+    @GetMapping("/user")
+    public User userInfo(@AuthenticationPrincipal User user) {
+        log.info("[SignController]");
+        log.info("[userInfo] 유저정보 조회");
+        return user;
     }
 }

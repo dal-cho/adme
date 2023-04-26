@@ -1,7 +1,6 @@
 package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
@@ -32,20 +31,21 @@ public class VideoController {
     }
 
     @GetMapping("/tenSeconds/video/{id}")
-    public VideoFile getFile(@PathVariable Long id) throws Exception{
+    public VideoResponseDto getFile(@PathVariable long id) throws Exception {
         log.info("[VideoController] GetFile");
         return videoService.getFile(id);
     }
 
     @PostMapping("/tenSeconds/videos")
     public VideoResultDto uploadFile(@AuthenticationPrincipal User user, @RequestPart(name = "sideData") VideoRequestDto requestDto,
-                                     @RequestPart(name = "videoFile") MultipartFile file, @RequestPart(name = "thumbnail") MultipartFile thumbnail) throws Exception {
-        log.info("[VideoController] uploadFile() ");
+                                     @RequestPart(name = "videoFile") MultipartFile file, @RequestPart(name = "thumbnail", required = false) MultipartFile thumbnail) throws Exception {
+        log.info("[VideoController] uploadFile()");
         return videoService.uploadFile(user, requestDto, file, thumbnail);
     }
 
     @PutMapping("/tenSeconds/video/{id}")
-    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateData") VideoRequestDto requestDto, @RequestPart(name = "thumbnail") MultipartFile thumbnail) throws IOException {
+    public VideoResultDto update(@PathVariable Long id, @RequestPart(name = "updateData") VideoRequestDto requestDto,
+                                 @RequestPart(name = "thumbnail", required = false) MultipartFile thumbnail) throws IOException {
         log.info("[VideoController] update");
         return videoService.update(id, requestDto, thumbnail);
     }
