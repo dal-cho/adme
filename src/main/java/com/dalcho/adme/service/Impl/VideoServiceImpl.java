@@ -65,7 +65,7 @@ public class VideoServiceImpl implements VideoService {
         log.info("[uploadFile] data 저장 수행");
         VideoUtils.saveFile(file, videoFile);
 
-        if (thumbnail.isEmpty()) {
+        if (thumbnail == null) {
             log.info("[uploadFile] Thumbnail 생성 및 저장 수행");
             VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
         } else {
@@ -103,8 +103,10 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public VideoFile getFile(Long id) {
-        return videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
+    public VideoResponseDto getFile(long id) {
+        VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
+        String nickname = videoFile.getUser().getNickname();
+        return VideoResponseDto.toEntity(videoFile, nickname);
     }
 
     @Override

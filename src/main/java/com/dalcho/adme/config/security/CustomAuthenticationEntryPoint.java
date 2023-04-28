@@ -16,6 +16,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException {
         log.info("[commence] 인증 실패로 response.sendError 발생");
-        response.sendRedirect("/user/login");
+//        response.sendRedirect("/signin.html");
     }
 }

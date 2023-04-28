@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +64,7 @@ public class SignServiceImpl implements SignService {
 
         List<String> role = Collections.singletonList("ROLE_USER"); // 변경 불가능한 요소("ROLE_USER") 생성
 
-        if (signUpRequestDto.isAdmin()) {
+        if (!Objects.equals(signUpRequestDto.getAdminToken(), "")) {
             if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 throw new InvalidTokenException();
             }

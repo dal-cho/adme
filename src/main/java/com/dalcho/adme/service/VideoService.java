@@ -1,7 +1,6 @@
 package com.dalcho.adme.service;
 
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
@@ -16,7 +15,7 @@ public interface VideoService {
 
     List<VideoResponseDto> getList(Pageable pageable) throws Exception;
 
-    VideoFile getFile(Long id) throws Exception;
+    VideoResponseDto getFile(long id) throws Exception;
 
     VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile thumbnail) throws IOException;
 

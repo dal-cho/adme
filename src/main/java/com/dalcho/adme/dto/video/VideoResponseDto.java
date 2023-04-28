@@ -1,22 +1,27 @@
 package com.dalcho.adme.dto.video;
 
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.domain.VideoFile;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
 public class VideoResponseDto {
+    private long id;
     private String title;
     private String content;
     private String uuid;
     private String uploadPath;
     private LocalDateTime videoDate;
+    private String nickname;
 
     public VideoResponseDto() {
     }
 
-    public VideoResponseDto(String title, String content, String uuid, String uploadPath, LocalDateTime videoDate) {
+    public VideoResponseDto(long id, String title, String content, String uuid, String uploadPath, LocalDateTime videoDate) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.uuid = uuid;
@@ -24,8 +29,20 @@ public class VideoResponseDto {
         this.videoDate = videoDate;
     }
 
+    @Builder
+    public VideoResponseDto(long id, String title, String content, String uuid, String uploadPath, LocalDateTime videoDate, String nickname) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.uuid = uuid;
+        this.uploadPath = uploadPath;
+        this.videoDate = videoDate;
+        this.nickname = nickname;
+    }
+
     public static VideoResponseDto of(VideoFile videoFile) {
         return new VideoResponseDto(
+                videoFile.getId(),
                 videoFile.getTitle(),
                 videoFile.getContent(),
                 videoFile.getUuid(),
@@ -33,4 +50,27 @@ public class VideoResponseDto {
                 videoFile.getVideoDate()
         );
     }
+
+    public static VideoResponseDto toEntity(VideoFile videoFile, String nickname) {
+        return VideoResponseDto.builder()
+                .id(videoFile.getId())
+                .title(videoFile.getTitle())
+                .content(videoFile.getContent())
+                .uuid(videoFile.getUuid())
+                .uploadPath(videoFile.getUploadPath())
+                .videoDate(videoFile.getVideoDate())
+                .nickname(nickname)
+                .build();
+    }
+
+//        return new VideoResponseDto(
+//                videoFile.getId(),
+//                videoFile.getTitle(),
+//                videoFile.getContent(),
+//                videoFile.getUuid(),
+//                videoFile.getUploadPath(),
+//                videoFile.getVideoDate(),
+//                nickname
+//        );
+
 }
