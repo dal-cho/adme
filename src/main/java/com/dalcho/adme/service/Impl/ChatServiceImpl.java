@@ -7,25 +7,23 @@ import com.dalcho.adme.dto.chat.ChatRoomMap;
 import com.dalcho.adme.exception.notfound.FileNotFoundException;
 import com.dalcho.adme.repository.ChatRepository;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.input.ReversedLinesFileReader;
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -90,48 +88,54 @@ public class ChatServiceImpl {
 
 	// 파일 저장
 	public void saveFile(ChatMessage chatMessage) {
-		if (connectUsers.get(chatMessage.getRoomId())!=0){
-			if ((chatMessage.getType().toString()).equals("JOIN")){
+		if (connectUsers.get(chatMessage.getRoomId()) != 0) {
+			if (chatMessage.getType() == ChatMessage.MessageType.JOIN) {
 				reset(chatMessage.getSender(), chatMessage.getRoomId());
 			} else {
 				countChat(chatMessage.getSender(), chatMessage.getRoomId());
 			}
 		}
-		JSONObject json = new JSONObject();
-		json.put("roomId", chatMessage.getRoomId());
-		json.put("type", chatMessage.getType().toString());
-		json.put("sender", chatMessage.getSender());
-		json.put("message", chatMessage.getMessage());
-		json.put("adminChat", adminChat.get(chatMessage.getRoomId()));
-		json.put("userChat", userChat.get(chatMessage.getRoomId()));
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String json1 = gson.toJson(json);
-		try {
-			FileWriter file = new FileWriter(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt", true);
-			File file1 = new File(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt");
-			if (file1.exists() && file1.length() == 0) {
-				file.write(json1);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("roomId", chatMessage.getRoomId());
+		if (chatMessage.getType().toString().equals("JOIN")){
+			jsonObject.addProperty("type", "JOINED");
+		}else {
+			jsonObject.addProperty("type", chatMessage.getType().toString());
+		}
+		jsonObject.addProperty("sender", chatMessage.getSender());
+		jsonObject.addProperty("message", chatMessage.getMessage());
+		jsonObject.addProperty("adminChat", adminChat.get(chatMessage.getRoomId()));
+		jsonObject.addProperty("userChat", userChat.get(chatMessage.getRoomId()));
+
+		Gson gson = new Gson();
+		String json = gson.toJson(jsonObject);
+
+		try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt", true)))){
+			if (new File(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt").length() == 0) {
+				out.println("[" + json + "]");
 				chatAlarm(chatMessage.getSender(), chatMessage.getRoomId());
 			} else {
-				file.write("," + json1);
+				out.println("," + json);
 			}
-			file.flush();
-			file.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("[error] " + e);
 		}
 	}
 
 	public Object readFile(String roomId) {
+		long startTime = System.currentTimeMillis();
 		try {
-			String str = Files.readString(Paths.get(chatUploadLocation + "/" + roomId + ".txt"));
+			List<String> lines = Files.lines(Paths.get(chatUploadLocation, roomId + ".txt")).collect(Collectors.toList());
+			String jsonString = "[" + String.join(",", lines) + "]";
 			JSONParser parser = new JSONParser();
-			Object obj = parser.parse("[" + str + "]");
+			Object obj = parser.parse(jsonString);
+			long stopTime = System.currentTimeMillis();
+			log.info("readFile : " + (stopTime - startTime) + " 초");
 			return obj;
 		} catch (NoSuchFileException e) {
 			throw new FileNotFoundException();
 		} catch (IOException | ParseException e) {
-			e.printStackTrace();
+			log.error("[error] " + e);
 			return null;
 		}
 	}
@@ -162,25 +166,41 @@ public class ChatServiceImpl {
 			userChat.put(roomId,0);
 		}
 	}
-	public List lastLine(String roomId) {
-		File file1 = new File(chatUploadLocation + "/" + roomId + ".txt");
-		try{
-			ReversedLinesFileReader reader
-					= new ReversedLinesFileReader(file1, Charset.forName("UTF-8"));
-
-			List<String> lines = reader.readLines(7);
-
+	public List<String> lastLine(String roomId) {
+		try (RandomAccessFile file = new RandomAccessFile(chatUploadLocation + "/" + roomId + ".txt", "r")) {
+			long fileLength = file.length();
+			file.seek(fileLength);
+			long pointer = fileLength - 2;
+			while (pointer > 0) {
+				file.seek(pointer);
+				char c = (char) file.read();
+				if (c == '\n') {
+					break;
+				}
+				pointer--;
+			}
+			file.seek(pointer + 1);
+			String line = file.readLine();
+			if (line == null || line.trim().isEmpty()) {
+				return Collections.emptyList();
+			}
+			if (line.startsWith(",")) {
+				line = line.substring(1);
+			}
+			JSONObject json = new JSONObject(line);
+			int adminChat = json.getInt("adminChat");
+			int userChat = json.getInt("userChat");
+			String message = json.getString("message").trim();
+			String messages = new String(message.getBytes("iso-8859-1"), "utf-8");
 			List<String> chat = new ArrayList<>();
-			chat.add(lines.get(6).substring(15, lines.get(6).length()-1)); // adminChat
-			chat.add(lines.get(4).substring(14, lines.get(4).length()-1)); // userChat
-			chat.add(lines.get(2).substring(14, lines.get(2).length()-2)); // message
+			chat.add(Integer.toString(adminChat));
+			chat.add(Integer.toString(userChat));
+			chat.add(messages);
 			return chat;
-		}catch (FileNotFoundException e) {
+		} catch (IOException | JSONException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			return Collections.emptyList();
 		}
-		return new ArrayList<>();
 	}
 
 	public ChatMessage chatAlarm(String sender, String roomId){
