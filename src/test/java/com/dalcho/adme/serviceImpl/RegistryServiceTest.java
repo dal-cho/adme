@@ -2,6 +2,7 @@ package com.dalcho.adme.serviceImpl;
 
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.UserRole;
 import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.exception.CustomException;
@@ -43,13 +44,13 @@ class RegistryServiceTest {
     @Test
     @BeforeEach
     void settingTest(){
-        List<String> role = Collections.singletonList("ROLE_USER");
+        UserRole role = UserRole.of(UserRole.USER.name());
         user = User.builder()
-                .name("username")
+                .username("username")
                 .nickname("nickname")
                 .password("password")
                 .email("email@naver.com")
-                .roles(role)
+                .role(role)
                 .build();
 
         registryDto = new RegistryRequestDto();

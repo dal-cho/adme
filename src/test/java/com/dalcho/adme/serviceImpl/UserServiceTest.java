@@ -1,6 +1,7 @@
 package com.dalcho.adme.serviceImpl;
 
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.UserRole;
 import com.dalcho.adme.dto.sign.SignUpRequestDto;
 import com.dalcho.adme.exception.CustomException;
 import com.dalcho.adme.exception.duplicate.UserDuplicateIdException;
@@ -72,14 +73,14 @@ class UserServiceTest {
         signUpRequestDto.setName("김철수");
         signUpRequestDto.setEmail("email@naver.com");
 
-        List<String> role = Collections.singletonList("ROLE_USER");
+        UserRole role = UserRole.of(UserRole.USER.name());
         String pw = passEncoder.encode(signUpRequestDto.getPassword());
         user = User.builder()
                 .nickname(signUpRequestDto.getNickname())
-                .name(signUpRequestDto.getName())
+                .username(signUpRequestDto.getName())
                 .email(signUpRequestDto.getEmail())
                 .password(pw)
-                .roles(role)
+                .role(role)
                 .build();
 
         when(userRepository.save(any(User.class))).thenReturn(user);
@@ -89,7 +90,7 @@ class UserServiceTest {
         verify(userRepository).save(any(User.class));
 
         // then
-        assertFalse(user.getName().isEmpty());
+        assertFalse(user.getUsername().isEmpty());
     }
 
 //    @Test

@@ -51,11 +51,6 @@ public class CommentController {
         commentService.deleteComment(commentId, commentDto, user);
     }
 
-    @GetMapping("/finduser")  // sessionStorage에 닉네임 값이 저장 안되어 있는 경우
-    public String findUser(@AuthenticationPrincipal User user) {
-        return commentService.findUser(user);
-    }
-
     @GetMapping("/needComment")
     public List<Optional<Registry>> needComments() {
         return commentService.needComments();

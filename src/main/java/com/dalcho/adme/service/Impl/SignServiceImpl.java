@@ -3,6 +3,7 @@ package com.dalcho.adme.service.Impl;
 import com.dalcho.adme.common.CommonResponse;
 import com.dalcho.adme.config.security.JwtTokenProvider;
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.UserRole;
 import com.dalcho.adme.dto.sign.SignInRequestDto;
 import com.dalcho.adme.dto.sign.SignInResultDto;
 import com.dalcho.adme.dto.sign.SignUpRequestDto;
@@ -62,23 +63,24 @@ public class SignServiceImpl implements SignService {
         patternCheck("(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}", password); // 영문과 특수문자 숫자를 포함하며 8자 이상
         log.info("[getSignUpResult] email,password 패턴 확인 완료");
 
-        List<String> role = Collections.singletonList("ROLE_USER"); // 변경 불가능한 요소("ROLE_USER") 생성
+        UserRole role = UserRole.of(UserRole.USER.name());
+        //List<String> role = Collections.singletonList("ROLE_USER"); // 변경 불가능한 요소("ROLE_USER") 생성
 
         if (!Objects.equals(signUpRequestDto.getAdminToken(), "")) {
             if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 throw new InvalidTokenException();
             }
-            role = Collections.singletonList("ROLE_ADMIN");
+            role = UserRole.of(UserRole.ADMIN.name());
         }
         log.info("[getSignUpResult] 권한 확인 : " + role);
 
         log.info("[getSignUpResult] 회원 가입 정보 전달");
         User user = User.builder()
                 .nickname(nickname)
-                .name(name)
+                .username(name)
                 .password(passwordEncoder.encode(password))
                 .email(email)
-                .roles(role)
+                .role(role)
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -86,7 +88,7 @@ public class SignServiceImpl implements SignService {
         SignUpResultDto signUpResultDto = new SignInResultDto();
         log.info("[getSignUpResult] userEntity 값이 들어왔는지 확인 후 결과값 주입");
 
-        if (!savedUser.getName().isEmpty()) {
+        if (!savedUser.getUsername().isEmpty()) {
             log.info("[getSignUpResult] 정상 처리 완료");
             setSuccessResult(signUpResultDto);
         } else {
@@ -112,17 +114,17 @@ public class SignServiceImpl implements SignService {
         }
         log.info("[getSignInResult] 패스워드 일치");
 
-        log.info("[getSignUpResult] 권한 확인 : " + user.getRoles());
+        log.info("[getSignUpResult] 권한 확인 : " + user.getRole());
         String authority = "일반사용자";
 
-        if (user.getRoles().equals("ROLE_ADMIN")) {
+        if (user.getRole().name().equals(UserRole.ADMIN.name())) {
             authority = "관리자";
         }
 
         log.info("[getSignInResult] SignInResultDto 객체 생성");
         SignInResultDto signInResultDto = SignInResultDto.builder()
                 .role_check(authority)
-                .token(jwtTokenProvider.createToken(user.getNickname(), user.getRoles()))
+                .token(jwtTokenProvider.generateToken(user))
                 .build();
 
         log.info("[getSignInResult] SignInResultDto 객체에 값 주입");

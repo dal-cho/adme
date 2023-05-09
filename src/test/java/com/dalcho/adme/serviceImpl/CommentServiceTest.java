@@ -3,6 +3,7 @@ package com.dalcho.adme.serviceImpl;
 import com.dalcho.adme.domain.Comment;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.UserRole;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.dto.comment.CommentResponseDto;
 import com.dalcho.adme.exception.CustomException;
@@ -51,13 +52,13 @@ public class CommentServiceTest {
     @Test
     @DisplayName("beforeEach 작성 전에 작성한 post test")
     void save1Comment() throws IOException {
-        List<String> role = Collections.singletonList("ROLE_USER");
+        UserRole role = UserRole.of(UserRole.USER.name());
         user = User.builder()
-                .name("username")
+                .username("username")
                 .nickname("hh")
                 .password("password")
                 .email("email@naver.com")
-                .roles(role)
+                .role(role)
                 .build();
 
         //given
@@ -89,13 +90,13 @@ public class CommentServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        List<String> role = Collections.singletonList("ROLE_USER");
+        UserRole role = UserRole.of(UserRole.USER.name());
         user = User.builder()
-                .name("username")
+                .username("username")
                 .nickname("nickname")
                 .password("password")
                 .email("email@naver.com")
-                .roles(role)
+                .role(role)
                 .build();
 
         // 게시글

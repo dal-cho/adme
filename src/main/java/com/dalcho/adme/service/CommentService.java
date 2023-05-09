@@ -22,7 +22,5 @@ public interface CommentService {
 
     void deleteComment(Long commentId, CommentRequestDto commentDto, User user) throws AccessDeniedException;
 
-    String findUser(User user);
-
     List<Optional<Registry>> needComments();
 }
