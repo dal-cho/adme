@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User implements UserDetails {
+    public static final String DEFAULT_PROFILE_IMG_PATH = "images/default-profile.png";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -31,19 +32,27 @@ public class User implements UserDetails {
     private String password;
 
     @Column(nullable = false)
-    private String name;
+    private String username;
 
     @Column(nullable = false)
     private String email;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>(); // 권한을 List 로 저장
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRole role;
+
+    @Column(nullable = false)
+    private boolean enabled = true;
+
+    @Column(nullable = false)
+    private String socialId;
+    private String social;
+
+    private String profile = DEFAULT_PROFILE_IMG_PATH;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        return null;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -92,6 +101,11 @@ public class User implements UserDetails {
     @ToString.Exclude
     private List<VideoFile> video = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ToString.Exclude
+    private Chat chat;
+
     public void addRegistry(Registry registry) {
         this.registries.add(registry);
         if (registry.getUser() != this) {
@@ -113,13 +127,30 @@ public class User implements UserDetails {
         }
     }
 
+    public void addChat(Chat chat){
+        chat.addUser(this);
+        this.chat = chat;
+    }
+
     @Builder
-    public User(String nickname, String password, String name, String email, List<String> roles) {
+    public User(String nickname, String password, String username, String email, UserRole role) {
         this.nickname = nickname;
         this.password = password;
-        this.name = name;
+        this.username = username;
         this.email = email;
-        this.roles = roles;
+        this.role = role;
+    }
+
+    @Builder
+    public User(String socialId, String email, String password, UserRole role, String username, String nickname, String social) {
+        this.socialId = socialId;
+        this.email = email;
+        this.password = password;
+        this.username = username;
+        this.nickname = nickname;
+        this.role = role == null ? UserRole.USER : role;
+        this.profile = DEFAULT_PROFILE_IMG_PATH;
+        this.social = social;
     }
 }
 

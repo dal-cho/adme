@@ -1,11 +1,14 @@
 package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.domain.Chat;
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatRoomDto;
 import com.dalcho.adme.dto.chat.ChatRoomMap;
 import com.dalcho.adme.exception.notfound.FileNotFoundException;
+import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.ChatRepository;
+import com.dalcho.adme.repository.UserRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,7 @@ public class ChatServiceImpl {
 	private Map<String, Integer> userChat;
 	@Value("${spring.servlet.multipart.location}")
 	private String chatUploadLocation;
+	private final UserRepository userRepository;
 
 	@PostConstruct
 	private void setUp() {
@@ -62,27 +66,36 @@ public class ChatServiceImpl {
 		List<Chat> all = chatRepository.findAll();
 		try {
 			for (int i = 0; i < all.size(); i++) {
-				chatRoomDtos.add(ChatRoomDto.of(all.get(i), lastLine(all.get(i).getRoomId())));
+				User user = userRepository.findById(all.get(i).getUser().getId()).orElseThrow(UserNotFoundException::new);
+				chatRoomDtos.add(ChatRoomDto.of(all.get(i).getRoomId(), user.getNickname(), user, lastLine(all.get(i).getRoomId())));
 			}
 		} catch (NullPointerException e) {
-			throw new RuntimeException("data 없음! ");
+			log.info(" [현재 채팅방 db 없음!] " + e);
 		}
 		return chatRoomDtos;
 	}
 
 	//채팅방 생성
 	public ChatRoomDto createRoom(String nickname) {
+		User user = userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
+		long expireTimeInSeconds = 24 * 60 * 60;
+		long creationTimeInMillis = System.currentTimeMillis();
+		long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
 		ChatRoomDto chatRoom = new ChatRoomDto();
-		if (!chatRepository.existsByNickname(nickname)) {
+		if (!chatRepository.existsByUserId(user.getId())) {
 			chatRoom = ChatRoomDto.create(nickname);
 			ChatRoomMap.getInstance().getChatRooms().put(chatRoom.getRoomId(), chatRoom);
-			Chat chat = new Chat(chatRoom.getRoomId(), nickname);
-			log.info("Service socket :  " + chat);
+			Chat chat = new Chat(chatRoom.getRoomId(), user);
+			log.info("Service chat :  " + chat);
 			chatRepository.save(chat);
 			return chatRoom;
 		} else {
-			Optional<Chat> findChat = chatRepository.findByNickname(nickname);
-			return ChatRoomDto.of(findChat.get(), lastLine(findChat.get().getRoomId()));
+			ChatRoomDto chatRoomDto = null;
+			if (chatRoomDto == null) {
+				Optional<Chat> findChat = chatRepository.findByUserId(user.getId());
+				return ChatRoomDto.of(findChat.get().getRoomId(), nickname, user, lastLine(findChat.get().getRoomId()));
+			}
+			return ChatRoomDto.of(chatRoomDto.getRoomId(), chatRoomDto.getNickname(), user, lastLine(chatRoomDto.getRoomId()));
 		}
 	}
 

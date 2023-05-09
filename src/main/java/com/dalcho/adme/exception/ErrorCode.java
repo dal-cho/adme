@@ -12,6 +12,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."),
     USER_DUPLICATE_ID(HttpStatus.CONFLICT, "중복된 Nickname 이 존재합니다."),
     PERMISSION_DENIED(HttpStatus.UNAUTHORIZED, "사용자 권한이 없습니다."),
+    BAD_CONSTANT(HttpStatus.BAD_GATEWAY, "잘못된 인자입니다."),
 
     // Video
     FILE_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 파일의 이름이 존재하지 않습니다."),

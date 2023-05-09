@@ -1,10 +1,9 @@
 package com.dalcho.adme.config.security;
 
+import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.UserRole;
 import com.dalcho.adme.service.UserDetailService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,12 +41,12 @@ public class JwtTokenProvider {
         log.info("[init] JwtTokenProvider 내 secretKey 초기화 완료");
     }
 
-    public String createToken(String nickname, List<String> roles) {
+    public String generateToken(User user) {
         log.info("[createToken] 토큰 생성 시작");
 
         // Claims 객체에 담아 Jwt Token 의 내용에 값 넣기, sub 속정에 값 추가(Uid 사용)
-        Claims claims = Jwts.claims().setSubject(nickname);
-        claims.put("roles", roles); // 사용자 권한확인용 추가
+        Claims claims = Jwts.claims().setSubject(user.getNickname());
+        claims.put("roles", user.getRole().name()); // 사용자 권한확인용 추가
         Date now = new Date();
 
         // Token 생성
@@ -66,18 +65,18 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         log.info("[getAuthentication] 토큰 인증 정보 조회 시작");
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUsername(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getNickname(token));
 
         log.info("[getAuthentication] 토큰 인증 정보 조회 완료");
 
         return new UsernamePasswordAuthenticationToken(userDetails, " ", userDetails.getAuthorities());
     }
 
-    public String getUsername(String token) {
+    public String getNickname(String token) {
         log.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
 
         // 토큰을 생성할때 넣었던 sub 값 추출
-        String info = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        String info = getClaims(token).getBody().getSubject();
 
         log.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료");
 
@@ -103,5 +102,38 @@ public class JwtTokenProvider {
             log.info("[validateToken] 토큰 유효 체크 예외 발생");
             return false;
         }
+    }
+
+    private Jws<Claims> getClaims(String jwt){
+        try{
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwt);
+        }catch (SignatureException e){
+            log.error("Invalid JWT signature");
+            throw e;
+        } catch (MalformedJwtException e){
+            log.error("Invalid JWT token");
+            throw e;
+        } catch (ExpiredJwtException e){
+            log.error("Expired JWT token");
+            throw e;
+        } catch (UnsupportedJwtException e){
+            log.error("Unsupported JWT token");
+            throw e;
+        } catch (IllegalArgumentException e){
+            log.error("JWT claims string is empty");
+            throw e;
+        }
+    }
+
+    public User getUserFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        String nickname = claims.getSubject();
+        String role = claims.get("roles", String.class);
+        log.info("[chat] token - user 전체 정보 확인");
+        UserRole userRole = UserRole.of(role);
+        return User.builder()
+                .nickname(nickname)
+                .role(userRole)
+                .build();
     }
 }

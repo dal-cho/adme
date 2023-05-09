@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ChatRepository extends JpaRepository<Chat, Long> {
-	boolean existsByNickname(String nickname);
-	Optional<Chat> findByNickname(String nickname);
+	boolean existsByUserId(Long id);
+	Optional<Chat> findByUserId(Long id);
 	boolean existsByRoomId(String roomId);
 	Optional<Chat> findByRoomId(String roomId);
 }
