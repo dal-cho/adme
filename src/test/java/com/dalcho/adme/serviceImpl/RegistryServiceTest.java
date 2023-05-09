@@ -44,7 +44,7 @@ class RegistryServiceTest {
     @Test
     @BeforeEach
     void settingTest(){
-        UserRole role = UserRole.valueOf(UserRole.USER.name());
+        UserRole role = UserRole.of(UserRole.USER.name());
         user = User.builder()
                 .username("username")
                 .nickname("nickname")

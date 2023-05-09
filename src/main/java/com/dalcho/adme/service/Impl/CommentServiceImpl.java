@@ -85,11 +85,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public String findUser(User user) {// sessionStorage에 닉네임 값이 저장 안되어 있는 경우
-        return user.getNickname();
-    }
-
-    @Override
     public List<Optional<Registry>> needComments() {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "idx");
         List<Long> temp = commentRepository.findTop10By(pageable);

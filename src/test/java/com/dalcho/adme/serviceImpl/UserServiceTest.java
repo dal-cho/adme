@@ -73,7 +73,7 @@ class UserServiceTest {
         signUpRequestDto.setName("김철수");
         signUpRequestDto.setEmail("email@naver.com");
 
-        UserRole role = UserRole.valueOf(UserRole.USER.name());
+        UserRole role = UserRole.of(UserRole.USER.name());
         String pw = passEncoder.encode(signUpRequestDto.getPassword());
         user = User.builder()
                 .nickname(signUpRequestDto.getNickname())

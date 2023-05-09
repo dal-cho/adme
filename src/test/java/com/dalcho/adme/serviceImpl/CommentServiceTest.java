@@ -52,7 +52,7 @@ public class CommentServiceTest {
     @Test
     @DisplayName("beforeEach 작성 전에 작성한 post test")
     void save1Comment() throws IOException {
-        UserRole role = UserRole.valueOf(UserRole.USER.name());
+        UserRole role = UserRole.of(UserRole.USER.name());
         user = User.builder()
                 .username("username")
                 .nickname("hh")
@@ -90,7 +90,7 @@ public class CommentServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        UserRole role = UserRole.valueOf(UserRole.USER.name());
+        UserRole role = UserRole.of(UserRole.USER.name());
         user = User.builder()
                 .username("username")
                 .nickname("nickname")

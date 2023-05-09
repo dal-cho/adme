@@ -63,14 +63,14 @@ public class SignServiceImpl implements SignService {
         patternCheck("(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}", password); // 영문과 특수문자 숫자를 포함하며 8자 이상
         log.info("[getSignUpResult] email,password 패턴 확인 완료");
 
-        UserRole role = UserRole.valueOf(UserRole.USER.name());
+        UserRole role = UserRole.of(UserRole.USER.name());
         //List<String> role = Collections.singletonList("ROLE_USER"); // 변경 불가능한 요소("ROLE_USER") 생성
 
         if (!Objects.equals(signUpRequestDto.getAdminToken(), "")) {
             if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 throw new InvalidTokenException();
             }
-            role = UserRole.valueOf(UserRole.ADMIN.name());
+            role = UserRole.of(UserRole.ADMIN.name());
         }
         log.info("[getSignUpResult] 권한 확인 : " + role);
 
