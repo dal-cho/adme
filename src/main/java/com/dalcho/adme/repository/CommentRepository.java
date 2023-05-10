@@ -13,5 +13,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByRegistry_Idx(Long idx);
 
     @Query("SELECT r.idx FROM Registry r LEFT JOIN Comment c ON r.idx = c.registry.idx WHERE c.registry.idx is null")
-    List<Long> findTop10By(Pageable pageable);
+    List<Long> findTop15By(Pageable pageable);
 }

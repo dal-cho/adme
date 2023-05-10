@@ -5,6 +5,7 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.dto.comment.CommentResponseDto;
+import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.exception.db.DatabaseErrorException;
 import com.dalcho.adme.exception.invalid.InvalidPermissionException;
 import com.dalcho.adme.exception.notfound.CommentNotFoundException;
@@ -32,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final RegistryRepository registryRepository;
     private final UserRepository userRepository;
+    private static final int PAGE_POST_COUNT = 15;
 
     @Override
     public CommentResponseDto postComment(CommentRequestDto commentDto) {
@@ -85,12 +87,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Optional<Registry>> needComments() {
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "idx");
-        List<Long> temp = commentRepository.findTop10By(pageable);
-        List<Optional<Registry>> result = new ArrayList<>();
-        for (int i = 0; i < temp.toArray().length; i++) {
-            result.add(registryRepository.findById(temp.get(i)));
+    public List<RegistryResponseDto> needComments() {
+        Pageable pageable = PageRequest.of(0, PAGE_POST_COUNT, Sort.Direction.ASC, "idx");
+        List<Long> registryIds = commentRepository.findTop15By(pageable);
+        List<Registry> registries = registryRepository.findAllById(registryIds);
+        List<RegistryResponseDto> result = new ArrayList<>();
+        for (Registry registry : registries) {
+            result.add(RegistryResponseDto.of(registry));
         }
         return result;
     }
