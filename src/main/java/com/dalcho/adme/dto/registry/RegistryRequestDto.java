@@ -14,7 +14,6 @@ import lombok.Setter;
 public class RegistryRequestDto {
     private String title;
     private String main;
-    private Long userIdx;
 
     // dto → entity
     public Registry toEntity(User user){
