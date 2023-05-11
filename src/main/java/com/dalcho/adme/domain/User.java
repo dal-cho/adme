@@ -132,14 +132,6 @@ public class User implements UserDetails {
         this.chat = chat;
     }
 
-    @Builder
-    public User(String nickname, String password, String username, String email, UserRole role) {
-        this.nickname = nickname;
-        this.password = password;
-        this.username = username;
-        this.email = email;
-        this.role = role;
-    }
 
     @Builder
     public User(String socialId, String email, String password, UserRole role, String username, String nickname, String social) {
