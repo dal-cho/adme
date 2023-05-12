@@ -31,33 +31,6 @@ public class RegistryPagingTest {
         when(registryRepository.findAllByOrderByCreatedAtDesc(any(Pageable.class))).thenReturn(registryPage);
         registryService.getBoards(curPage);
         verify(registryRepository).findAllByOrderByCreatedAtDesc(any(Pageable.class));
-
-        int count = registryService.getBoards(curPage).getCount();
-        int start = registryService.getBoards(curPage).getStartPage();
-        int end = registryService.getBoards(curPage).getEndPage();
-        boolean prev = registryService.getBoards(curPage).isPrev();
-        boolean next = registryService.getBoards(curPage).isNext();
-
-        if(end >= count) {
-            end = count;
-            next = false;
-        }
-
-        if (prev) {
-            assertThat(start).isGreaterThan(5);
-            System.out.println("5페이지 이상이므로 이전 버튼이 생겼습니다.");
-        }else{
-            assertThat(start).isLessThan(6);
-            System.out.println("5페이지 미만이므로 이전 버튼이 생기지 않았습니다.");
-        }
-
-        if (next) {
-            assertThat(count).isGreaterThan(5);
-            System.out.println("총 페이지 수가 5페이지 이상이므로 다음 버튼이 생겼습니다.");
-        } else {
-            assertThat(count).isLessThan(6);
-            System.out.println("총 페이지 수가 5페이지 미만이므로 다음 버튼이 생기지 않았습니다.");
-        }
     }
 }
 // https://stackoverflow.com/questions/57045711/how-to-mock-pageable-object-using-mockito

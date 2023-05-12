@@ -5,6 +5,7 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.dto.comment.CommentResponseDto;
+import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -52,7 +53,7 @@ public class CommentController {
     }
 
     @GetMapping("/needComment")
-    public List<Optional<Registry>> needComments() {
+    public List<RegistryResponseDto> needComments() {
         return commentService.needComments();
     }
 }

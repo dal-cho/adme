@@ -5,6 +5,7 @@ import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.dto.comment.CommentResponseDto;
+import com.dalcho.adme.dto.registry.RegistryResponseDto;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -22,5 +23,5 @@ public interface CommentService {
 
     void deleteComment(Long commentId, CommentRequestDto commentDto, User user) throws AccessDeniedException;
 
-    List<Optional<Registry>> needComments();
+    List<RegistryResponseDto> needComments();
 }
