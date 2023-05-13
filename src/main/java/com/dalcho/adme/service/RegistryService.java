@@ -23,4 +23,6 @@ public interface RegistryService {
     // 게시글 상세 보기
     RegistryResponseDto getIdxRegistry(Long idx);
 
+    RegistryResponseDto myPage(int curPage);
+
 }
