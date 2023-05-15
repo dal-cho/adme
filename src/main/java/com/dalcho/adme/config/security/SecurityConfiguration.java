@@ -1,5 +1,8 @@
 package com.dalcho.adme.config.security;
 
+import com.dalcho.adme.oauth2.CustomOAuthService;
+import com.dalcho.adme.oauth2.OAuth2SuccessHandler;
+import com.dalcho.adme.oauth2.Oauth2FailureHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +24,9 @@ import java.util.Arrays;
 public class SecurityConfiguration {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomOAuthService customOAuth2UserService;
+    private final OAuth2SuccessHandler successHandler;
+    private final Oauth2FailureHandler failureHandler;
 
     public static final String[] GET_WHITE_LIST = {
             "/tenSeconds/list"
@@ -41,7 +47,8 @@ public class SecurityConfiguration {
             "/taste",
             "/tenSeconds",
             "/adme",
-            "/"
+            "/",
+            "/oauth2/**"
     };
 
     @Bean
@@ -49,6 +56,13 @@ public class SecurityConfiguration {
         httpSecurity.formLogin()
                 .disable()
                 .cors().configurationSource(corsConfigurationSource())
+
+                .and()
+                .oauth2Login().loginPage("/user/login")
+                .and().logout().logoutSuccessUrl("/taste")
+                .and().oauth2Login().userInfoEndpoint().userService(customOAuth2UserService)
+                .and().successHandler(successHandler)
+                .failureHandler(failureHandler)
                 .and()
                 .csrf()
                 .disable() // rest api 에서는 csrf 공격으로부터 안전하고 매번 api 요청으로부터 csrf 토큰을 받지 않아도 되어 disable로 설정
