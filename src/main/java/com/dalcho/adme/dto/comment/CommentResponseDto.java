@@ -3,6 +3,8 @@ package com.dalcho.adme.dto.comment;
 import com.dalcho.adme.domain.Comment;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -14,6 +16,7 @@ public class CommentResponseDto {
     private String registryNickname;
     private Long commentId;
     private String comment;
+    private LocalDateTime modifiedAt;
 
     public static CommentResponseDto of (Comment comment){
         return CommentResponseDto.builder()
@@ -21,6 +24,7 @@ public class CommentResponseDto {
                 .comment(comment.getComment())
                 .commentNickname(comment.getUser().getNickname())
                 .registryNickname(comment.getRegistry().getUser().getNickname())
+                .modifiedAt(comment.getModifiedAt())
                 .build();
     }
 }
