@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -40,6 +41,15 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		String nickname = userInfo.getNickname();
 		User user = UserMapper.of(oAuth2User, nickname);
 		String token = jwtProvider.generateToken(user);
+
+		log.info("[Oauth Success Handler] 쿠키 생성");
+		Cookie idCookie = new Cookie("TokenCookie", token);
+		idCookie.setPath("/"); // 모든 경로에서 접근 가능
+		idCookie.setDomain("localhost");
+		idCookie.setMaxAge(24 * 60 * 60); // 1day
+		//idCookie.setSecure(true);
+		response.addCookie(idCookie);
+
 		response.sendRedirect(getRedirectionURI(token, user));
 	}
 
