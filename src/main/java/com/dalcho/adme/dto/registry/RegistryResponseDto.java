@@ -18,6 +18,11 @@ public class RegistryResponseDto {
     private LocalDateTime modifiedAt;
     private String nickname;
 
+    public RegistryResponseDto(Long idx, String title){
+        this.idx = idx;
+        this.title = title;
+    }
+
     public static RegistryResponseDto of(Registry registry){
         return RegistryResponseDto.builder()
                 .idx(registry.getIdx())

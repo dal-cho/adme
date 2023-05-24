@@ -43,7 +43,7 @@ public class RegistryServiceImpl implements RegistryService {
         Pageable pageable = PageRequest.of(curPage - 1, PAGE_POST_COUNT);
         Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);
         List<RegistryResponseDto> boardList = boards.stream()
-                .map(RegistryResponseDto::of)
+                .map(board -> new RegistryResponseDto(board.getIdx(), board.getTitle()))
                 .collect(Collectors.toList());
         int startPage = (((int) Math.ceil(curPage / (double) displayPageNum)) - 1) * 5 + 1; // 시작 페이지 번호
         int endPage = startPage + 4; // 끝 페이지 번호
