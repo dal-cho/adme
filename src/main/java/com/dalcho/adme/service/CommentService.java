@@ -21,7 +21,7 @@ public interface CommentService {
 
     CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, User user) throws AccessDeniedException;
 
-    void deleteComment(Long commentId, CommentRequestDto commentDto, User user) throws AccessDeniedException;
+    void deleteComment(Long commentId, User user) throws AccessDeniedException;
 
     List<RegistryResponseDto> needComments();
 }

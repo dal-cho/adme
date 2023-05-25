@@ -77,8 +77,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long commentId, CommentRequestDto commentDto, User user) {
-        registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
+    public void deleteComment(Long commentId, User user) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!user.getNickname().equals(comment.getUser().getNickname())) {
             throw new InvalidPermissionException();
