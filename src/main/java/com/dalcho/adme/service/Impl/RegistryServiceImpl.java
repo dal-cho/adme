@@ -27,6 +27,7 @@ public class RegistryServiceImpl implements RegistryService {
     private final RegistryRepository registryRepository;
     private final UserRepository userRepository;
     private static final int PAGE_POST_COUNT = 12; // 한 페이지에 존재하는 게시글 수
+    private static final int MY_PAGE = 4; // 한 페이지에 존재하는 게시글 수
     private int displayPageNum = 5;
 
     // 게시글 등록
@@ -51,7 +52,6 @@ public class RegistryServiceImpl implements RegistryService {
         boolean next = endPage < boards.getTotalPages(); // 다음 페이지 여부
         return PagingDto.builder()
                 .boardList(boardList)
-                .totalPages(boards.getTotalPages())
                 .curPage(curPage)
                 .startPage(startPage)
                 .endPage(endPage)
@@ -61,10 +61,29 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
 
-
     // 게시글 상세 보기
     public RegistryResponseDto getIdxRegistry(Long idx) throws CustomException {
         Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(RegistryNotFoundException::new);
         return RegistryResponseDto.of(getIdxRegistry);
+    }
+
+    public PagingDto myPage(int curPage) {
+        Pageable pageable = PageRequest.of(curPage - 1, MY_PAGE);
+        Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);
+        List<RegistryResponseDto> boardList = boards.stream()
+                .map(board -> new RegistryResponseDto(board.getIdx(), board.getTitle()))
+                .collect(Collectors.toList());
+        int startPage = (((int) Math.ceil(curPage / (double) displayPageNum)) - 1) * 5 + 1; // 시작 페이지 번호
+        int endPage = startPage + 4; // 끝 페이지 번호
+        boolean prev = startPage != 1; // 이전 페이지 여부
+        boolean next = endPage < boards.getTotalPages(); // 다음 페이지 여부
+        return PagingDto.builder()
+                .boardList(boardList)
+                .curPage(curPage)
+                .startPage(startPage)
+                .endPage(endPage)
+                .prev(prev)
+                .next(next)
+                .build();
     }
 }
