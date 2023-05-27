@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 public class PagingDto {
 	private List<RegistryResponseDto> boardList;
-	private int totalPages;
 	private int curPage;
 	private boolean prev;
 	private boolean next;
@@ -20,10 +19,9 @@ public class PagingDto {
 	private int endPage;
 
 
-	public static PagingDto of(List<RegistryResponseDto> registry, int totalPages, int curPage, int startPage, int endPage, boolean prev, boolean next){
+	public static PagingDto of(List<RegistryResponseDto> registry, int curPage, int startPage, int endPage, boolean prev, boolean next){
 		return PagingDto.builder()
 				.boardList(registry)
-				.totalPages(totalPages)
 				.curPage(curPage)
 				.startPage(startPage)
 				.endPage(endPage)
