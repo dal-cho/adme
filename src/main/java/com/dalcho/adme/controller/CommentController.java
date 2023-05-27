@@ -47,9 +47,8 @@ public class CommentController {
     // 댓글 삭제
     @DeleteMapping("/comment/{commentId}")
     public void deleteComment(@PathVariable Long commentId,
-                              @RequestBody CommentRequestDto commentDto,
                               @AuthenticationPrincipal User user)throws AccessDeniedException {
-        commentService.deleteComment(commentId, commentDto, user);
+        commentService.deleteComment(commentId, user);
     }
 
     @GetMapping("/needComment")

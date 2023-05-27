@@ -183,32 +183,21 @@ public class CommentServiceTest {
         // given
         saveComment();
         Comment comment = new Comment(commentDto.getComment(), registry, user);
-        when(registryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(registry));
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
 
         //when
-        commentService.deleteComment(1L, commentDto, user);
+        commentService.deleteComment(1L, user);
 
         // then
         verify(commentRepository).delete(comment);
     }
 
     @Test
-    @DisplayName("삭제 실패 _ registry not found")
-    void delete_registry_not_found(){
-        when(registryRepository.findById(anyLong())).thenReturn(Optional.empty());
-        CustomException e = assertThrows(RegistryNotFoundException.class, ()->
-                commentService.deleteComment(1L, commentDto, user));
-        assertEquals(REGISTRY_NOT_FOUND, e.getErrorCode());
-    }
-
-    @Test
     @DisplayName("삭제 실패 _ comment not found")
     void delete_comment_not_found(){
-        when(registryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(registry));
         when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
         CustomException e = assertThrows(CommentNotFoundException.class, () ->
-                commentService.deleteComment(1L, commentDto, user));
+                commentService.deleteComment(1L, user));
         assertEquals(COMMENT_NOT_FOUND, e.getErrorCode());
     }
 }
