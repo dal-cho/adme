@@ -39,4 +39,10 @@ public class RegistryController {
     public RegistryResponseDto getIdxRegistry(@RequestParam Long idx) {
         return registryService.getIdxRegistry(idx);
     }
+
+    //mypage 게시글 paging
+    @GetMapping("/mypage/{curPage}")
+    public PagingDto myPage(@PathVariable int curPage){
+        return registryService.myPage(curPage);
+    }
 }
