@@ -138,6 +138,7 @@ public class VideoServiceImpl implements VideoService {
 
         return VideoPagingDto.builder()
                 .videoList(videoList)
+                .totalPage(totalPages)
                 .startPage(startPage)
                 .endPage(endPage)
                 .prev(prev)
