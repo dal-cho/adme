@@ -1,21 +1,18 @@
 package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.dto.video.VideoPagingDto;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
 import com.dalcho.adme.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,10 +21,16 @@ public class VideoController {
 
     public final VideoService videoService;
 
-    @GetMapping("/tenSeconds/list")
-    public List<VideoResponseDto> listFiles(@PageableDefault(size = 12, sort = "videoDate", direction = Sort.Direction.ASC) Pageable pageable) throws Exception {
+    @GetMapping("/tenSeconds/list/{curPage}")
+    public VideoPagingDto listFiles(@PathVariable int curPage) throws Exception {
         log.info("[VideoController] GetList");
-        return videoService.getList(pageable);
+        return videoService.getList(curPage);
+    }
+
+    @GetMapping("/tenSeconds/my/list/{curPage}")
+    public VideoPagingDto myListFiles(@PathVariable int curPage) throws Exception {
+        log.info("[VideoController] GetList");
+        return videoService.getMyList(curPage);
     }
 
     @GetMapping("/tenSeconds/video/{id}")

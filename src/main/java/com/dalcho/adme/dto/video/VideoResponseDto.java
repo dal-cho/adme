@@ -1,6 +1,5 @@
 package com.dalcho.adme.dto.video;
 
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.domain.VideoFile;
 import lombok.Builder;
 import lombok.Getter;
@@ -62,15 +61,4 @@ public class VideoResponseDto {
                 .nickname(nickname)
                 .build();
     }
-
-//        return new VideoResponseDto(
-//                videoFile.getId(),
-//                videoFile.getTitle(),
-//                videoFile.getContent(),
-//                videoFile.getUuid(),
-//                videoFile.getUploadPath(),
-//                videoFile.getVideoDate(),
-//                nickname
-//        );
-
 }
