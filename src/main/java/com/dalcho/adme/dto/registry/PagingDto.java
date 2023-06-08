@@ -17,11 +17,13 @@ public class PagingDto {
 	private boolean next;
 	private int startPage;
 	private int endPage;
+	private int totalPage;
 
 
-	public static PagingDto of(List<RegistryResponseDto> registry, int curPage, int startPage, int endPage, boolean prev, boolean next){
+	public static PagingDto of(List<RegistryResponseDto> registry, int totalPage, int curPage, int startPage, int endPage, boolean prev, boolean next){
 		return PagingDto.builder()
 				.boardList(registry)
+				.totalPage(totalPage)
 				.curPage(curPage)
 				.startPage(startPage)
 				.endPage(endPage)

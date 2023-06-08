@@ -46,8 +46,8 @@ public class RegistryServiceImpl implements RegistryService {
         List<RegistryResponseDto> boardList = boards.stream()
                 .map(board -> new RegistryResponseDto(board.getIdx(), board.getTitle()))
                 .collect(Collectors.toList());
-        int startPage = (((int) Math.ceil(curPage / (double) displayPageNum)) - 1) * 5 + 1; // 시작 페이지 번호
-        int endPage = startPage + 4; // 끝 페이지 번호
+        int startPage = ((int)Math.floor((curPage-1) / (double)displayPageNum)) * displayPageNum + 1; // 시작 페이지 번호
+        int endPage = Math.min(startPage + displayPageNum - 1, boards.getTotalPages()); // 끝 페이지 번호
         boolean prev = startPage != 1; // 이전 페이지 여부
         boolean next = endPage < boards.getTotalPages(); // 다음 페이지 여부
         return PagingDto.builder()
@@ -73,12 +73,14 @@ public class RegistryServiceImpl implements RegistryService {
         List<RegistryResponseDto> boardList = boards.stream()
                 .map(board -> new RegistryResponseDto(board.getIdx(), board.getTitle()))
                 .collect(Collectors.toList());
-        int startPage = (((int) Math.ceil(curPage / (double) displayPageNum)) - 1) * 5 + 1; // 시작 페이지 번호
-        int endPage = startPage + 4; // 끝 페이지 번호
+        int totalPage = boards.getTotalPages();
+        int startPage = ((int)Math.floor((curPage-1) / (double)displayPageNum)) * displayPageNum + 1; // 시작 페이지 번호
+        int endPage = Math.min(startPage + displayPageNum - 1, totalPage); // 끝 페이지 번호
         boolean prev = startPage != 1; // 이전 페이지 여부
         boolean next = endPage < boards.getTotalPages(); // 다음 페이지 여부
         return PagingDto.builder()
                 .boardList(boardList)
+                .totalPage(totalPage)
                 .curPage(curPage)
                 .startPage(startPage)
                 .endPage(endPage)
