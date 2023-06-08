@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -36,9 +37,11 @@ public class ChatServiceImpl {
 	private Map<String, Integer> connectUsers;
 	private Map<String, Integer> adminChat;
 	private Map<String, Integer> userChat;
+	private final RedisTemplate<String, ChatRoomDto> redisTemplate;
 	@Value("${spring.servlet.multipart.location}")
 	private String chatUploadLocation;
 	private final UserRepository userRepository;
+	private final Object lock = new Object();
 
 	@PostConstruct
 	private void setUp() {
@@ -48,16 +51,19 @@ public class ChatServiceImpl {
 	}
 
 	public void connectUser(String status, String roomId, ChatMessage chatMessage) {
-		if (Objects.equals(status, "Connect")){
-			connectUsers.putIfAbsent(roomId, 0);
-			int num = connectUsers.get(roomId);
-			connectUsers.put(roomId, (num+1));
-			saveFile(chatMessage);
-		} else if (Objects.equals(status, "Disconnect")) {
-			int num = connectUsers.get(roomId);
-			connectUsers.put(roomId, (num-1));
+		int num = 0;
+		synchronized (lock) {
+			if (Objects.equals(status, "Connect")) {
+				connectUsers.putIfAbsent(roomId, 0);
+				num = connectUsers.get(roomId);
+				connectUsers.put(roomId, (num + 1));
+				saveFile(chatMessage);
+			} else if (Objects.equals(status, "Disconnect")) {
+				num = connectUsers.get(roomId);
+				connectUsers.put(roomId, (num - 1));
+			}
+			log.info("현재 인원 : " + connectUsers.get(roomId));
 		}
-		log.info("현재 인원 : " + connectUsers.get(roomId));
 	}
 
 	//채팅방 불러오기
@@ -78,24 +84,19 @@ public class ChatServiceImpl {
 	//채팅방 생성
 	public ChatRoomDto createRoom(String nickname) {
 		User user = userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
-		long expireTimeInSeconds = 24 * 60 * 60;
-		long creationTimeInMillis = System.currentTimeMillis();
-		long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
 		ChatRoomDto chatRoom = new ChatRoomDto();
 		if (!chatRepository.existsByUserId(user.getId())) {
+			log.info("[createRoom] roomId 값이 없음");
 			chatRoom = ChatRoomDto.create(nickname);
 			ChatRoomMap.getInstance().getChatRooms().put(chatRoom.getRoomId(), chatRoom);
 			Chat chat = new Chat(chatRoom.getRoomId(), user);
-			log.info("Service chat :  " + chat);
 			chatRepository.save(chat);
 			return chatRoom;
 		} else {
-			ChatRoomDto chatRoomDto = null;
-			if (chatRoomDto == null) {
-				Optional<Chat> findChat = chatRepository.findByUserId(user.getId());
-				return ChatRoomDto.of(findChat.get().getRoomId(), nickname, user, lastLine(findChat.get().getRoomId()));
-			}
-			return ChatRoomDto.of(chatRoomDto.getRoomId(), chatRoomDto.getNickname(), user, lastLine(chatRoomDto.getRoomId()));
+			log.info("[createRoom] roomId 값은 있지만 cache 적용 안됨");
+			Optional<Chat> findChat = chatRepository.findByUserId(user.getId());
+			chatRoom.setRoomId(findChat.get().getRoomId());
+			return ChatRoomDto.of(findChat.get().getRoomId(), nickname, user, lastLine(findChat.get().getRoomId()));
 		}
 	}
 
