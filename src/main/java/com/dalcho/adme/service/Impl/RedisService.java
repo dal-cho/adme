@@ -2,6 +2,7 @@ package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.dto.chat.ChatMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class RedisService {
 		redisTemplate.opsForValue().set(chatMessage.getSender(), chatMessage.getRoomId(), remainingTimeInSeconds, TimeUnit.SECONDS);
 	}
 
-	@Cacheable(value = "roomId", key = "#nickname")
+	@CachePut(value = "roomId", key = "#nickname")
 	public String getRedis(String nickname){
 		return redisTemplate.opsForValue().get(nickname);
 	}

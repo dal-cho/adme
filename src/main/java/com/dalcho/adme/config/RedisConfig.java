@@ -51,8 +51,11 @@ public class RedisConfig {
 
 	@Bean
 	public CacheManager cacheManager() {
+		long expireTimeInSeconds = 24 * 60 * 60;
+		long creationTimeInMillis = System.currentTimeMillis();
+		long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
 		RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-				.entryTtl(Duration.ofMinutes(30))
+				.entryTtl(Duration.ofSeconds(remainingTimeInSeconds))
 				.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
 				.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 		RedisCacheConfiguration cacheConfigWithoutNullValues = RedisCacheConfiguration.defaultCacheConfig()
