@@ -2,7 +2,6 @@ package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.registry.PagingDto;
-import com.dalcho.adme.dto.video.VideoPagingDto;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
