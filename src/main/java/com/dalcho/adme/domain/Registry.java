@@ -36,7 +36,8 @@ public class Registry extends Timestamped {
     private User user;
 
     public Registry(Long idx, String title) {
-        super();
+        this.idx = idx;
+        this.title = title;
     }
 
     public void setIdx(Long idx) {

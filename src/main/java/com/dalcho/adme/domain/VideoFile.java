@@ -40,6 +40,12 @@ public class VideoFile {
     private User user;
 
     public VideoFile(Long id, String title, String content, String uuid, String uploadPath, LocalDateTime videoDate) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.uuid = uuid;
+        this.uploadPath = uploadPath;
+        this.videoDate = videoDate;
     }
 
     public void setUser(User user) {
