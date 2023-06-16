@@ -39,6 +39,9 @@ public class VideoFile {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    public VideoFile(Long id, String title, String content, String uuid, String uploadPath, LocalDateTime videoDate) {
+    }
+
     public void setUser(User user) {
         if (this.user != null) {
             this.user.getVideo().remove(this);
