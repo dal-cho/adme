@@ -35,6 +35,10 @@ public class Registry extends Timestamped {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    public Registry(Long idx, String title) {
+        super();
+    }
+
     public void setIdx(Long idx) {
         this.idx = idx;
     }
