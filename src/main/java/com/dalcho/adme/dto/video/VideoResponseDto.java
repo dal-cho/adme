@@ -39,17 +39,6 @@ public class VideoResponseDto {
         this.nickname = nickname;
     }
 
-    public static VideoResponseDto of(VideoFile videoFile) {
-        return new VideoResponseDto(
-                videoFile.getId(),
-                videoFile.getTitle(),
-                videoFile.getContent(),
-                videoFile.getUuid(),
-                videoFile.getUploadPath(),
-                videoFile.getVideoDate()
-        );
-    }
-
     public static VideoResponseDto toEntity(VideoFile videoFile, String nickname) {
         return VideoResponseDto.builder()
                 .id(videoFile.getId())

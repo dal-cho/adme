@@ -3,7 +3,7 @@ package com.dalcho.adme.service.Impl;
 import com.dalcho.adme.common.CommonResponse;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.domain.VideoFile;
-import com.dalcho.adme.dto.video.VideoPagingDto;
+import com.dalcho.adme.dto.registry.PagingDto;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
@@ -45,9 +45,6 @@ public class VideoServiceImpl implements VideoService {
     private final OSValidator osValidator;
     private final ApplicationEventPublisher publisher;
     private static final int PAGE_POST_COUNT = 12; // 한 페이지에 존재하는 게시글 수
-    private static final int MY_PAGE_POST_COUNT = 8;
-    private static final int displayPageNum = 5;
-
 
     @Value("${ffmpeg.path}")
     private String ffmpegPath;
@@ -101,49 +98,14 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public VideoPagingDto getList(int curPage) {
+    public PagingDto<Object> getList(int curPage) {
         Pageable pageable = PageRequest.of(curPage - 1, PAGE_POST_COUNT);
         Page<VideoFile> videoFiles = videoRepository.findAll(pageable);
-        List<VideoResponseDto> videoList = videoFiles.stream()
-                .map(VideoResponseDto::of)
+        List<VideoFile> videoFileList = videoFiles.stream()
+                .map(video -> new VideoFile(video.getId(), video.getTitle(), video.getContent(),
+                        video.getUuid(), video.getUploadPath(), video.getVideoDate()))
                 .collect(Collectors.toList());
-        int totalPages = videoFiles.getTotalPages();
-        int startPage = ((int)Math.floor((curPage-1) / (double)displayPageNum)) * displayPageNum + 1; // 시작 페이지 번호
-        int endPage = Math.min(startPage + displayPageNum - 1, totalPages); // 끝 페이지 번호
-        boolean prev = startPage != 1; // 이전 페이지 여부
-        boolean next = endPage < videoFiles.getTotalPages(); // 다음 페이지 여부
-
-        return VideoPagingDto.builder()
-                .videoList(videoList)
-                .startPage(startPage)
-                .endPage(endPage)
-                .prev(prev)
-                .next(next)
-                .build();
-    }
-
-    @Override
-    public VideoPagingDto getMyList(int curPage) {
-        Pageable pageable = PageRequest.of(curPage - 1, MY_PAGE_POST_COUNT);
-        Page<VideoFile> videoFiles = videoRepository.findAll(pageable);
-        List<VideoResponseDto> videoList = videoFiles.stream()
-                .map(VideoResponseDto::of)
-                .collect(Collectors.toList());
-
-        int totalPages = videoFiles.getTotalPages();
-        int startPage = ((int)Math.floor((curPage-1) / (double)displayPageNum)) * displayPageNum + 1; // 시작 페이지 번호
-        int endPage = Math.min(startPage + displayPageNum - 1, totalPages); // 끝 페이지 번호
-        boolean prev = startPage != 1; // 이전 페이지 여부
-        boolean next = endPage < videoFiles.getTotalPages(); // 다음 페이지 여부
-
-        return VideoPagingDto.builder()
-                .videoList(videoList)
-                .totalPage(totalPages)
-                .startPage(startPage)
-                .endPage(endPage)
-                .prev(prev)
-                .next(next)
-                .build();
+        return PagingDto.of(videoFiles, null, videoFileList, videoFiles.getTotalPages());
     }
 
     @Override

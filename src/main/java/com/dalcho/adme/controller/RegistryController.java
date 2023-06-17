@@ -42,7 +42,7 @@ public class RegistryController {
 
     //mypage 게시글 paging
     @GetMapping("/mypage/{curPage}")
-    public PagingDto myPage(@PathVariable int curPage){
-        return registryService.myPage(curPage);
+    public PagingDto myPage(@PathVariable int curPage, @AuthenticationPrincipal User user){
+        return registryService.myPage(curPage, user);
     }
 }
