@@ -1,19 +1,15 @@
 package com.dalcho.adme.controller;
 
-import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.registry.PagingDto;
 import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.service.RegistryService;
-import com.dalcho.adme.dto.registry.PagingResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -44,5 +40,11 @@ public class RegistryController {
     @GetMapping("/mypage/{curPage}")
     public PagingDto myPage(@PathVariable int curPage, @AuthenticationPrincipal User user){
         return registryService.myPage(curPage, user);
+    }
+
+    // 게시글 삭제
+    @DeleteMapping("/registry/{registryId}")
+    public void deleteRegistry(@PathVariable Long registryId, @AuthenticationPrincipal User user){
+        registryService.deleteRegistry(registryId, user);
     }
 }

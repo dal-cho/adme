@@ -7,9 +7,9 @@ import com.dalcho.adme.dto.registry.PagingDto;
 import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.exception.CustomException;
+import com.dalcho.adme.exception.invalid.InvalidPermissionException;
 import com.dalcho.adme.exception.notfound.RegistryNotFoundException;
 import com.dalcho.adme.repository.RegistryRepository;
-import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.repository.VideoRepository;
 import com.dalcho.adme.service.RegistryService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class RegistryServiceImpl implements RegistryService {
     private final RegistryRepository registryRepository;
     private final VideoRepository videoRepository;
-    private final UserRepository userRepository;
     private static final int PAGE_POST_COUNT = 12; // Registry : 한 페이지에 존재하는 게시글 수
     private static final int MY_PAGE = 4; // MY_PAGE : 한 페이지에 존재하는 게시글 수
 
@@ -40,7 +39,7 @@ public class RegistryServiceImpl implements RegistryService {
         return RegistryResponseDto.of(registry);
     }
 
-    // 작성 글 페이징
+    @Override // 작성 글 페이징
     public PagingDto<Registry> getBoards(int curPage) {
         Pageable pageable = PageRequest.of(curPage - 1, PAGE_POST_COUNT);
         Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);
@@ -50,12 +49,13 @@ public class RegistryServiceImpl implements RegistryService {
         return PagingDto.of(boards, boardList);
     }
 
-    // 게시글 상세 보기
+    @Override // 게시글 상세 보기
     public RegistryResponseDto getIdxRegistry(Long idx) throws CustomException {
         Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(RegistryNotFoundException::new);
         return RegistryResponseDto.of(getIdxRegistry);
     }
 
+    @Override
     public PagingDto<Object> myPage(int curPage, User user) {
         Pageable registryPageable = PageRequest.of(curPage - 1, MY_PAGE);
         Pageable videoPageable = PageRequest.of(curPage - 1, MY_PAGE*2);
@@ -69,5 +69,14 @@ public class RegistryServiceImpl implements RegistryService {
         }else{
             return PagingDto.of(videoPage, registryList, videoList, total);
         }
+    }
+
+    @Override
+    public void deleteRegistry(Long registryId, User user){
+        Registry registry = registryRepository.findById(registryId).orElseThrow(RegistryNotFoundException::new);
+        if (!user.getNickname().equals(registry.getUser().getNickname())) {
+            throw new InvalidPermissionException();
+        }
+        registryRepository.delete(registry);
     }
 }
