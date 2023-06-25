@@ -1,16 +1,12 @@
 package com.dalcho.adme.service;
 
-import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.registry.PagingDto;
-import com.dalcho.adme.dto.registry.PagingResult;
 import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.dalcho.adme.dto.registry.RegistryResponseDto;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
 
 @Service
 public interface RegistryService {
@@ -24,4 +20,6 @@ public interface RegistryService {
     RegistryResponseDto getIdxRegistry(Long idx);
 
     PagingDto myPage(int curPage, User user);
+
+    void deleteRegistry(Long registryId, User user);
 }

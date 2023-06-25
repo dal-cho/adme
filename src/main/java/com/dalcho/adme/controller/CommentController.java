@@ -1,7 +1,5 @@
 package com.dalcho.adme.controller;
 
-import com.dalcho.adme.domain.Comment;
-import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.dto.comment.CommentResponseDto;
@@ -11,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,14 +36,14 @@ public class CommentController {
     @PutMapping("/comment/{commentId}")
     public CommentResponseDto updateComment(@PathVariable Long commentId,
                                  @RequestBody CommentRequestDto commentDto,
-                                 @AuthenticationPrincipal User user) throws AccessDeniedException {
+                                 @AuthenticationPrincipal User user){
         return commentService.updateComment(commentId, commentDto, user);
     }
 
     // 댓글 삭제
     @DeleteMapping("/comment/{commentId}")
     public void deleteComment(@PathVariable Long commentId,
-                              @AuthenticationPrincipal User user)throws AccessDeniedException {
+                              @AuthenticationPrincipal User user){
         commentService.deleteComment(commentId, user);
     }
 
