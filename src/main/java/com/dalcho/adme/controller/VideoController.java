@@ -48,8 +48,8 @@ public class VideoController {
     }
 
     @DeleteMapping("/tenSeconds/video/{id}")
-    public void delete(@PathVariable Long id) {
-        videoService.delete(id);
+    public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        videoService.delete(id, user);
     }
 }
 

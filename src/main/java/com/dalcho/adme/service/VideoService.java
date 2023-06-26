@@ -18,5 +18,5 @@ public interface VideoService {
 
     VideoResultDto update(Long id, VideoRequestDto videoRequestDto, MultipartFile thumbnail) throws IOException;
 
-    void delete(Long id);
+    void delete(Long id, User user);
 }
