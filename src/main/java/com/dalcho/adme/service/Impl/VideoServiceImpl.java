@@ -8,6 +8,7 @@ import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
 import com.dalcho.adme.event.VideoRevisionDeadlineEvent;
+import com.dalcho.adme.exception.invalid.InvalidPermissionException;
 import com.dalcho.adme.exception.notfound.FileNotFoundException;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.UserRepository;
@@ -158,8 +159,11 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, User user) {
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
+        if(!user.getNickname().equals(videoFile.getUser().getNickname())) {
+            throw new InvalidPermissionException();
+        }
         VideoUtils.deleteFiles(videoFile);
         videoRepository.deleteById(id);
     }
