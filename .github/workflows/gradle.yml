@@ -15,30 +15,24 @@ jobs:
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'temurin'
+          distribution: temurin
+          java-version: 11
 
-      ## gradle caching (build 시간 향상)
-      - name: Gradle Caching
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      ## 빌드 전 gradle 권한 부여
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2.4.2
 
       ## gradle build
-      - name: Build with Gradle
+      - name: Execute Gradle build
         run: ./gradlew build -x test # test 생략, 생략 안하려면 build 까지만 작성
 
-  docker-push:
-    needs: gradle-build
+      ## artifact 에 jar 파일 올리기
+      - uses: actions/upload-artifact@v3
+        with:
+          name: jar-file-artifact
+          path: ./build/libs/*-SNAPSHOT.jar
+
+  docker:
+    needs: gradle
     runs-on: ubuntu-latest
 
     permissions:
@@ -49,6 +43,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      ## artifact 에서 jar 파일 다운로드
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: jar-file-artifact
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       ## GitHub 로그인
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -58,9 +64,22 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       ## 빌드 및 GitHub Package 에 이미지 업로드 ( repository 는 필히 소문자로 설정 해야한다. )
-      - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      - name: Build and push
+        uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/adme-image:0.1
+          tags: ghcr.io/${{ github.repository }}:latest
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: sh deploy.sh
