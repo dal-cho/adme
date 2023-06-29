@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  gradle-build:
+  gradle:
     runs-on: ubuntu-latest
     steps:
       ## jdk 설정
