@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +68,7 @@ public class ChatServiceImpl {
 	}
 
 	//채팅방 불러오기
-	public List<ChatRoomDto> findAllRoom() {
+	public List<ChatRoomDto> findAllRoom(){
 		List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
 		List<Chat> all = chatRepository.findAll();
 		try {
@@ -82,22 +83,42 @@ public class ChatServiceImpl {
 	}
 
 	//채팅방 생성
+	@Cacheable(key = "#nickname", value = "createRoom", unless = "#result == null", cacheManager = "cacheManager")
 	public ChatRoomDto createRoom(String nickname) {
+		long startTime = System.currentTimeMillis();
 		User user = userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
 		ChatRoomDto chatRoom = new ChatRoomDto();
+		long stopTime;
 		if (!chatRepository.existsByUserId(user.getId())) {
 			log.info("[createRoom] roomId 값이 없음");
 			chatRoom = ChatRoomDto.create(nickname);
 			ChatRoomMap.getInstance().getChatRooms().put(chatRoom.getRoomId(), chatRoom);
 			Chat chat = new Chat(chatRoom.getRoomId(), user);
 			chatRepository.save(chat);
+			stopTime = System.currentTimeMillis();
+			log.info("readFile : " + (stopTime - startTime) + " 초");
 			return chatRoom;
 		} else {
 			log.info("[createRoom] roomId 값은 있지만 cache 적용 안됨");
 			Optional<Chat> findChat = chatRepository.findByUserId(user.getId());
 			chatRoom.setRoomId(findChat.get().getRoomId());
-			return ChatRoomDto.of(findChat.get().getRoomId(), nickname, user, lastLine(findChat.get().getRoomId()));
+			if (!isChatFileExists(findChat.get().getRoomId())) {
+				return null;
+			}
+			List<String> lastLine = lastLine(findChat.get().getRoomId());
+			if (lastLine == null || lastLine.isEmpty()) {
+				return null;
+			}
+			stopTime = System.currentTimeMillis();
+			log.info("readFile : " + (stopTime - startTime) + " 초");
+			return ChatRoomDto.of(findChat.get().getRoomId(), nickname, user, lastLine);
 		}
+	}
+
+	private boolean isChatFileExists(String roomId) {
+		String filePath = chatUploadLocation + "/" + roomId + ".txt";
+		File file = new File(filePath);
+		return file.exists();
 	}
 
 	// 파일 저장
@@ -126,7 +147,7 @@ public class ChatServiceImpl {
 
 		try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt", true)))){
 			if (new File(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt").length() == 0) {
-				out.println("[" + json + "]");
+				out.println(json);
 				chatAlarm(chatMessage.getSender(), chatMessage.getRoomId());
 			} else {
 				out.println("," + json);
@@ -138,8 +159,18 @@ public class ChatServiceImpl {
 
 	public Object readFile(String roomId) {
 		long startTime = System.currentTimeMillis();
+		String filePath = chatUploadLocation + "/" + roomId + ".txt";
+		File file = new File(filePath);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				log.error("[error] " + e);
+				return null;
+			}
+		}
 		try {
-			List<String> lines = Files.lines(Paths.get(chatUploadLocation, roomId + ".txt")).collect(Collectors.toList());
+			List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
 			String jsonString = "[" + String.join(",", lines) + "]";
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(jsonString);
@@ -181,20 +212,35 @@ public class ChatServiceImpl {
 		}
 	}
 	public List<String> lastLine(String roomId) {
-		try (RandomAccessFile file = new RandomAccessFile(chatUploadLocation + "/" + roomId + ".txt", "r")) {
+		String filePath = chatUploadLocation + "/" + roomId + ".txt";
+		File file = new File(filePath);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+				return Collections.emptyList();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return Collections.emptyList();
+			}
+		}
+		try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
+
 			long fileLength = file.length();
-			file.seek(fileLength);
+			if (fileLength <= 0) {
+				return Collections.emptyList();
+			}
+			randomAccessFile.seek(fileLength);
 			long pointer = fileLength - 2;
 			while (pointer > 0) {
-				file.seek(pointer);
-				char c = (char) file.read();
+				randomAccessFile.seek(pointer);
+				char c = (char) randomAccessFile.read();
 				if (c == '\n') {
 					break;
 				}
 				pointer--;
 			}
-			file.seek(pointer + 1);
-			String line = file.readLine();
+			randomAccessFile.seek(pointer + 1);
+			String line = randomAccessFile.readLine();
 			if (line == null || line.trim().isEmpty()) {
 				return Collections.emptyList();
 			}
