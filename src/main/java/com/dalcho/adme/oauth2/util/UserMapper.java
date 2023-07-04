@@ -19,7 +19,7 @@ public class UserMapper {
 		Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
 		Map<String, Object> properties = (Map<String, Object>) oAuth2User.getAttributes().get("properties");
 		return User.builder()
-				.socialId((String) attributes.get("id"))
+				.socialId(String.valueOf(attributes.get("id")))
 				.email((String) kakao_account.get("email"))
 				.password("")
 				.username( (String) properties.get("nickname"))
