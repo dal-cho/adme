@@ -37,7 +37,6 @@ public class SecurityConfiguration {
             "/tenSeconds/video/**",
             "/registry/**",
             "/comment/**",
-            "/adme",
             "/chat"
     };
 
@@ -54,61 +53,39 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors();
-        http.csrf().disable() // rest api 에서는 csrf 공격으로부터 안전하고 매번 api 요청으로부터 csrf 토큰을 받지 않아도 되어 disable로 설정
-                .sessionManagement();
-
-        http.authorizeRequests()
-                .antMatchers("/css/**", "/oauth2/**", "/user/**", "/taste/**", "/js/**").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .anyRequest().authenticated();
-
-        http.oauth2Login().loginPage("/user/login")
-                .and().logout().logoutSuccessUrl("/taste");
-        http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService)
+        http.cors().configurationSource(corsConfigurationSource())
+                .and()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .headers().frameOptions().disable()
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, GET_WHITE_LIST).authenticated()
+                .antMatchers(VIEW_LIST).permitAll()
+                .antMatchers(USER_ENABLE).hasAnyRole("USER", "ADMIN")
+                .anyRequest().hasAnyRole("USER", "ADMIN")
+                .and()
+                .logout()
+                .logoutUrl("/user/logout")
+                .logoutSuccessUrl("/user/login")
+                .deleteCookies("TokenCookie")
+                .permitAll()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
+                .oauth2Login().loginPage("/user/login") // 소셜 로그인 페이지 설정
+                .userInfoEndpoint().userService(customOAuth2UserService)
                 .and()
                 .successHandler(successHandler)
-                .failureHandler(failureHandler);
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .failureHandler(failureHandler)
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-//        httpSecurity.formLogin()
-//                .disable()
-//                .cors().configurationSource(corsConfigurationSource())
-//                .and()
-//                .oauth2Login().loginPage("/user/login")
-//                .and().logout().logoutSuccessUrl("/taste")
-//                .and().oauth2Login().userInfoEndpoint().userService(customOAuth2UserService)
-//                .and().successHandler(successHandler)
-//                .failureHandler(failureHandler)
-//                .and()
-//                .csrf()
-//                .disable() // rest api 에서는 csrf 공격으로부터 안전하고 매번 api 요청으로부터 csrf 토큰을 받지 않아도 되어 disable로 설정
-//                .sessionManagement() // Rest Api 기반 애플리케이션 동작 방식 설정
-//                //.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않아 STATELESS 로 설정
-//                .and()// 클릭재킹 공격으로부터 보안 설정
-//                .headers()
-//                .frameOptions()
-//                .disable()
-//                .and() // 접근설정
-//                .authorizeRequests() // 요청에 의한 보안검사 시작
-//                //.antMatchers(HttpMethod.GET, GET_WHITE_LIST).permitAll() // GET 요청 허용
-//                .antMatchers(HttpMethod.GET, GET_WHITE_LIST).authenticated()
-//                .antMatchers(VIEW_LIST).permitAll()
-//                .antMatchers(USER_ENABLE).hasAnyRole("USER","ADMIN") // USER 접근 가능
-//                .anyRequest().hasAnyRole("USER","ADMIN") // USER 접근 가능
-//                .and() // 로그아웃 처리
-//                .logout()
-//                .logoutUrl("/user/logout") // 로그아웃 처리 URL
-//                .logoutSuccessUrl("/user/login") // 로그아웃 처리 후 이동할 URL
-//                .deleteCookies("TokenCookie") // 쿠키삭제
-//                .permitAll()
-//                .and()
-//                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인증과정에서의 예외처리
-//                .and() // JWT Token 필터를 id/password 인증 필터 이전에 추가
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-//        return httpSecurity.build();
     }
+
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
