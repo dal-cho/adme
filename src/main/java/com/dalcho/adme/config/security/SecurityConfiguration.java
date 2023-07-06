@@ -42,6 +42,7 @@ public class SecurityConfiguration {
 
     public static final String[] VIEW_LIST = {
             "/static/**",
+            "/css/**",
             "/js/**",
             "/favicon.ico/**",
             "/user/**",
