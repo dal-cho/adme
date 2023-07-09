@@ -51,11 +51,6 @@ public class CustomOAuthService implements OAuth2UserService<OAuth2UserRequest, 
 				log.info("saved : " + saved);
 				userRepository.save(saved);
 				return saved;
-			} else if (registrationId.equals("naver")) {
-				User saved = UserMapper.ofNaver(oAuth2User, nickname);
-				log.info("saved : " + saved);
-				userRepository.save(saved);
-				return saved;
 			} else if(registrationId.equals("google")){
 				User saved = UserMapper.ofGoogle(oAuth2User, nickname);
 				log.info("saved : " + saved);

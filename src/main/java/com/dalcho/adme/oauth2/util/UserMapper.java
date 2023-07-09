@@ -28,20 +28,6 @@ public class UserMapper {
 				.build();
 	}
 
-	public static User ofNaver(OAuth2User oAuth2User, String nickname) {
-		log.info("ofNaver : " + oAuth2User);
-		var attributes = oAuth2User.getAttributes();
-		Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-		return User.builder()
-				.socialId((String) attributes.get("id"))
-				.email((String) response.get("email"))
-				.password("")
-				.username((String) response.get("name"))
-				.nickname(nickname)
-				.social("naver")
-				.build();
-	}
-
 	public static User ofGoogle(OAuth2User oAuth2User, String nickname) {
 		log.info("ofGoogle : " + oAuth2User);
 		var attributes = oAuth2User.getAttributes();
