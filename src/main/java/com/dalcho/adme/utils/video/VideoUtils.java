@@ -7,8 +7,8 @@ import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -19,9 +19,12 @@ import java.nio.file.Paths;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class VideoUtils {
+    private final FFmpeg ffmpeg;
+    private final FFprobe ffprobe;
 
-    public static void saveFile(MultipartFile file, VideoFile videoFile) {
+    public void saveFile(MultipartFile file, VideoFile videoFile) {
         log.info("[VideoUtils] saveFile");
 
         Path path = Paths.get(videoFile.getUploadPath());
@@ -40,7 +43,7 @@ public class VideoUtils {
         log.info("[VideoUtils] saveFile Completed!");
     }
 
-    public static void saveThumbnail(VideoFile videoFile, MultipartFile thumbnail) throws IOException {
+    public void saveThumbnail(VideoFile videoFile, MultipartFile thumbnail) throws IOException {
         log.info("[VideoUtils] saveThumbnail");
 
         // 가로 세로 비율 16:9 설정
@@ -62,11 +65,8 @@ public class VideoUtils {
         log.info("[VideoUtils] saveThumbnail Completed!");
     }
 
-    public static void createVideo(String ffmpegPath, String ffprobePath, VideoFile videoFile, int setTime) throws IOException {
+    public void createVideo(VideoFile videoFile, int setTime) {
         log.info("[VideoUtils] createVideo");
-
-        FFmpeg ffmpeg = new FFmpeg(ffmpegPath);
-        FFprobe ffprobe = new FFprobe(ffprobePath);
 
         FFmpegBuilder fFmpegBuilder = new FFmpegBuilder()
                 .setInput(videoFile.getUploadPath() + videoFile.getUuid() + ".mp4") // 변환 할 파일 위치 설정
@@ -86,11 +86,8 @@ public class VideoUtils {
         log.info("[VideoUtils] createVideo Completed!");
     }
 
-    public static void createThumbnail(String ffmpegPath, String ffprobePath, VideoFile videoFile, int setTime) throws IOException {
+    public void createThumbnail(VideoFile videoFile, int setTime) {
         log.info("[VideoUtils] createThumbnail");
-
-        FFmpeg ffmpeg = new FFmpeg(ffmpegPath);
-        FFprobe ffprobe = new FFprobe(ffprobePath);
 
         FFmpegBuilder builder = new FFmpegBuilder()
                 .overrideOutputFiles(true) // 출력이 있는경우 덮어쓰기
@@ -106,7 +103,7 @@ public class VideoUtils {
         log.info("[VideoUtils] createThumbnail Completed!");
     }
 
-    public static void deleteFile(Path path) {
+    public void deleteFile(Path path) {
         log.info("[VideoUtils] deleteFile");
         try {
             Files.delete(path);
@@ -116,7 +113,7 @@ public class VideoUtils {
         }
     }
 
-    public static void deleteFiles(VideoFile videoFile) {
+    public void deleteFiles(VideoFile videoFile) {
         log.info("[VideoUtils] deleteFiles");
 
         Path ten = Paths.get(videoFile.getUploadPath() + File.separator + "ten_" + videoFile.getUuid() + ".mp4");

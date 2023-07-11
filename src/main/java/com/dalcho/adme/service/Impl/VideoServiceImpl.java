@@ -19,7 +19,6 @@ import com.dalcho.adme.utils.video.ExtCheckUtils;
 import com.dalcho.adme.utils.video.VideoUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,9 +32,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service("VideoService")
@@ -44,13 +41,9 @@ public class VideoServiceImpl implements VideoService {
     private final UserRepository userRepository;
     private final VideoRepository videoRepository;
     private final OSValidator osValidator;
+    private final VideoUtils videoUtils;
     private final ApplicationEventPublisher publisher;
     private static final int PAGE_POST_COUNT = 12; // 한 페이지에 존재하는 게시글 수
-
-    @Value("${ffmpeg.path}")
-    private String ffmpegPath;
-    @Value("${ffprobe.path}")
-    private String ffprobePath;
 
     @Override
     @Transactional
@@ -67,21 +60,20 @@ public class VideoServiceImpl implements VideoService {
         videoFile.setUser(user);
 
         log.info("[uploadFile] data 저장 수행");
-        VideoUtils.saveFile(file, videoFile);
+        videoUtils.saveFile(file, videoFile);
 
         if (thumbnail == null) {
             log.info("[uploadFile] Thumbnail 생성 및 저장 수행");
-            VideoUtils.createThumbnail(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
+            videoUtils.createThumbnail(videoFile, videoRequestDto.getSetTime());
         } else {
             String ext = ExtCheckUtils.extractionExt(thumbnail);
             videoFile.setThumbnailExt(ext);
             log.info("[uploadFile] thumbnail 저장 수행");
-            VideoUtils.saveThumbnail(videoFile, thumbnail);
+            videoUtils.saveThumbnail(videoFile, thumbnail);
         }
 
-
         log.info("[uploadFile] 10초 비디오 생성 및 저장 수행");
-        VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
+        videoUtils.createVideo(videoFile, videoRequestDto.getSetTime());
 
         Path path = Paths.get(videoFile.getUploadPath() + File.separator + videoFile.getUuid() + ".mp4");
 
@@ -99,14 +91,10 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public PagingDto<Object> getList(int curPage) {
+    public PagingDto<VideoFile> getList(int curPage) {
         Pageable pageable = PageRequest.of(curPage - 1, PAGE_POST_COUNT);
         Page<VideoFile> videoFiles = videoRepository.findAll(pageable);
-        List<VideoFile> videoFileList = videoFiles.stream()
-                .map(video -> new VideoFile(video.getId(), video.getTitle(), video.getContent(),
-                        video.getUuid(), video.getUploadPath(), video.getVideoDate()))
-                .collect(Collectors.toList());
-        return PagingDto.of(videoFiles, null, videoFileList, videoFiles.getTotalPages());
+        return PagingDto.of(videoFiles);
     }
 
     @Override
@@ -132,20 +120,20 @@ public class VideoServiceImpl implements VideoService {
 
         if (setTimeCheck && originVideoCheck) {
             Path ten = Paths.get(videoFile.getUploadPath() + File.separator + "ten_" + videoFile.getUuid() + ".mp4");
-            VideoUtils.deleteFile(ten);
+            videoUtils.deleteFile(ten);
 
             log.info("[update] 10초 비디오 생성 및 저장 수행");
-            VideoUtils.createVideo(ffmpegPath, ffprobePath, videoFile, videoRequestDto.getSetTime());
+            videoUtils.createVideo(videoFile, videoRequestDto.getSetTime());
         }
 
         if (!thumbnailCheck) {
             Path thumb = Paths.get(videoFile.getUploadPath() + File.separator + "thumb_" + videoFile.getUuid() + "." + videoFile.getThumbnailExt());
-            VideoUtils.deleteFile(thumb);
+            videoUtils.deleteFile(thumb);
 
             String ext = ExtCheckUtils.extractionExt(thumbnail);
             videoFile.setThumbnailExt(ext);
             log.info("[uploadFile] thumbnail 저장 수행");
-            VideoUtils.saveThumbnail(videoFile, thumbnail);
+            videoUtils.saveThumbnail(videoFile, thumbnail);
         }
 
         VideoResultDto videoResultDto = VideoResultDto.builder()
@@ -161,11 +149,15 @@ public class VideoServiceImpl implements VideoService {
     @Transactional
     public void delete(Long id, User user) {
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
-        if(!user.getNickname().equals(videoFile.getUser().getNickname())) {
+        if(!checkAuthentication(videoFile.getUser(), user)) {
             throw new InvalidPermissionException();
         }
-        VideoUtils.deleteFiles(videoFile);
+        videoUtils.deleteFiles(videoFile);
         videoRepository.deleteById(id);
+    }
+
+    public boolean checkAuthentication(User getUser, User user) {
+        return user.getNickname().equals(getUser.getNickname());
     }
 
     private void setSuccessResult(VideoResultDto result) {

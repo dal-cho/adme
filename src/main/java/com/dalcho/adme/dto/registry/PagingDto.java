@@ -1,12 +1,10 @@
 package com.dalcho.adme.dto.registry;
 
 import com.dalcho.adme.domain.Registry;
-import com.dalcho.adme.domain.VideoFile;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -36,10 +34,11 @@ public class PagingDto<T> {
 		return new PagingDto<>(pageable, registryContent, total);
 	}
 
-	public static <T> PagingDto<Object> of(Page<T> page, List<Registry> registryContent, List<VideoFile> videoContent, long total) {
-		List<Object> content = new ArrayList<>();
-		content.addAll(registryContent);
-		content.addAll(videoContent);
-		return new PagingDto<>(page.getPageable(), content, total);
+	public static <T> PagingDto<T> of(Page<T> page) {
+		return new PagingDto<>(page.getPageable(), page.getContent(), page.getTotalElements());
+	}
+
+	public static <T> PagingDto<T> of(Pageable page, List<T> content, long total) {
+		return new PagingDto<>(page, content, total);
 	}
 }
