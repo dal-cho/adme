@@ -69,7 +69,7 @@ public class JwtTokenProvider {
 
         log.info("[getAuthentication] 토큰 인증 정보 조회 완료");
 
-        return new UsernamePasswordAuthenticationToken(userDetails, " ", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
     public String getNickname(String token) {
@@ -86,7 +86,7 @@ public class JwtTokenProvider {
     // 파라미터로 받아 헤더값으로 전달된 "X_AUTH_TOKEN" 추출
     public String resolveToken(HttpServletRequest request) {
         log.info("[resolveToken] Header 에서 Token 추출 완료");
-        return request.getHeader("X-AUTH-TOKEN");
+        return request.getHeader("Authorization");
     }
 
     // Token 유효기간 체크
