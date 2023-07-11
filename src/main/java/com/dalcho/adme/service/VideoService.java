@@ -1,6 +1,7 @@
 package com.dalcho.adme.service;
 
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.registry.PagingDto;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
@@ -12,7 +13,7 @@ import java.io.IOException;
 public interface VideoService {
     VideoResultDto uploadFile(User user, VideoRequestDto videoRequestDto, MultipartFile file, MultipartFile thumbnail) throws Exception;
 
-    PagingDto<Object> getList(int curPage) throws Exception;
+    PagingDto<VideoFile> getList(int curPage) throws Exception;
 
     VideoResponseDto getFile(long id) throws Exception;
 

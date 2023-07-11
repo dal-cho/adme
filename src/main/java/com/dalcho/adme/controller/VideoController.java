@@ -1,6 +1,7 @@
 package com.dalcho.adme.controller;
 
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.registry.PagingDto;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
@@ -22,7 +23,7 @@ public class VideoController {
     public final VideoService videoService;
 
     @GetMapping("/tenSeconds/list/{curPage}")
-    public PagingDto<Object> listFiles(@PathVariable int curPage) throws Exception {
+    public PagingDto<VideoFile> listFiles(@PathVariable int curPage) throws Exception {
         log.info("[VideoController] GetList");
         return videoService.getList(curPage);
     }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,16 +60,23 @@ public class RegistryServiceImpl implements RegistryService {
     public PagingDto<Object> myPage(int curPage, User user) {
         Pageable registryPageable = PageRequest.of(curPage - 1, MY_PAGE);
         Pageable videoPageable = PageRequest.of(curPage - 1, MY_PAGE*2);
+
         Page<Registry> registryPage = registryRepository.findByNickname(user.getNickname(), registryPageable);
         Page<VideoFile> videoPage = videoRepository.findByNickname(user.getNickname(), videoPageable);
+
         List<Registry> registryList = registryPage.getContent();
         List<VideoFile> videoList = videoPage.getContent();
+
+        List<Object> mergeList = new ArrayList<>();
+        mergeList.addAll(registryList);
+        mergeList.addAll(videoList);
+
         long total = Math.max(registryPage.getTotalPages(), videoPage.getTotalPages());
+
         if(registryPage.getTotalPages()>=videoPage.getTotalPages()){
-            return PagingDto.of(registryPage, registryList, videoList, total);
-        }else{
-            return PagingDto.of(videoPage, registryList, videoList, total);
+            return PagingDto.of(registryPageable, mergeList, total);
         }
+        return PagingDto.of(videoPageable, mergeList, total);
     }
 
     @Override
