@@ -11,9 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 
 @Slf4j
@@ -25,18 +24,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByNickname(username);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
-        }
+        return userRepository.findByNickname(username)
+                .map(this::buildUserDetails)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.get().getRole().name()));
-
-        // UserDetails 객체 생성
+    private UserDetails buildUserDetails(User user) {
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
         return new org.springframework.security.core.userdetails.User(
-                user.get().getNickname(),
-                user.get().getPassword(),
+                user.getNickname(),
+                user.getPassword(),
                 authorities
         );
     }

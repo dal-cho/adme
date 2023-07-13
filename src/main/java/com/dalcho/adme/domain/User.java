@@ -52,7 +52,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(this.role.name()));
+        return authorities;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

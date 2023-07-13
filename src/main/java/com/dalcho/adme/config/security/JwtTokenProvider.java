@@ -2,7 +2,7 @@ package com.dalcho.adme.config.security;
 
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.domain.UserRole;
-import com.dalcho.adme.service.UserDetailService;
+import com.dalcho.adme.service.Impl.UserDetailServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final UserDetailService userDetailsService;
+    private final UserDetailServiceImpl userDetailsService;
 
     @Value("${springboot.jwt.secret}")
     private String secretKey; // 토큰 생성에 필요한 key
