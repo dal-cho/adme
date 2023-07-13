@@ -55,25 +55,28 @@ public class SecurityConfiguration {
     };
 
 @Bean
-public SecurityFilterChain filterChain(HttpSecurity http)throws Exception {
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors().configurationSource(corsConfigurationSource());
     http.csrf().disable() // rest api 에서는 csrf 공격으로부터 안전하고 매번 api 요청으로부터 csrf 토큰을 받지 않아도 되어 disable로 설정
             .sessionManagement() // Rest Api 기반 애플리케이션 동작 방식 설정
             .and()
-            .headers().frameOptions().disable();
+            .headers()
+            .frameOptions()
+            .disable();
 
     http.authorizeRequests()
             .antMatchers(VIEW_LIST).permitAll()
-            //.antMatchers(HttpMethod.GET, GET_WHITE_LIST).authenticated()
             .antMatchers("/admin/**").hasAuthority("ADMIN")
-            //.antMatchers(USER_ENABLE).hasAnyAuthority("USER", "ADMIN");
             .anyRequest().authenticated();
 
     http.oauth2Login().loginPage("/oauth/login")
-            .and().logout().logoutSuccessUrl("/taste")
+            .and()
+            .logout().logoutSuccessUrl("/taste")
             .deleteCookies("TokenCookie");
 
-    http.oauth2Login().userInfoEndpoint().userService(customOAuth2UserService)
+    http.oauth2Login()
+            .userInfoEndpoint()
+            .userService(customOAuth2UserService)
             .and()
             .successHandler(successHandler)
             .failureHandler(failureHandler);
