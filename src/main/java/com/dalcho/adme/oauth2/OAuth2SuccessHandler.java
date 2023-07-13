@@ -6,10 +6,14 @@ import com.dalcho.adme.domain.UserRole;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.oauth2.util.UserMapper;
 import com.dalcho.adme.repository.UserRepository;
+import com.dalcho.adme.service.Impl.UserDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -23,10 +27,10 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	private final JwtTokenProvider jwtProvider;
 	private final UserRepository userRepository;
+	private final UserDetailServiceImpl userDetailService;
 	@Value("${oauth.redirection.url}")
 	private String REDIRECTION_URL;
 	@Value("${oauth.admin.redirection.url}")
@@ -49,7 +53,12 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		idCookie.setMaxAge(24 * 60 * 60); // 1day
 		//idCookie.setSecure(true);
 		response.addCookie(idCookie);
+		log.info("[oauth] 쿠키 생성 완료");
 
+		UserDetails userDetails = userDetailService.loadUserByUsername(jwtProvider.getNickname(token));
+		UsernamePasswordAuthenticationToken auth =
+				new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(auth);
 		response.sendRedirect(getRedirectionURI(token, user));
 	}
 

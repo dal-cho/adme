@@ -1,5 +1,6 @@
 package com.dalcho.adme.controller.chat;
 
+import com.dalcho.adme.config.security.JwtTokenProvider;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatRoomDto;
 import com.dalcho.adme.service.Impl.ChatServiceImpl;
@@ -24,7 +25,7 @@ public class ChatRoomController {
     private final ChatServiceImpl chatService;
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private static final Map<String, SseEmitter> CLIENTS = new ConcurrentHashMap<>();
-
+    private final JwtTokenProvider jwtTokenProvider;
     // 모든 채팅방 목록 반환(관리자)
     @GetMapping("/rooms")
     public List<ChatRoomDto> room() {
@@ -47,6 +48,15 @@ public class ChatRoomController {
     @PostMapping("/room/enter/{roomId}/{roomName}")
     public void saveFile(@PathVariable String roomId, @PathVariable String roomName, @RequestBody ChatMessage chatMessage){
         chatService.saveFile(chatMessage);
+    }
+    @GetMapping ("/room/enter/{roomId}")
+    List<String> lastLine(@PathVariable String roomId) {
+        return chatService.lastLine(roomId);
+    }
+
+    @GetMapping("/find-nickname/{token}")
+    public String findNickname(@PathVariable String token){
+        return jwtTokenProvider.getNickname(token);
     }
 
     @GetMapping("/room/subscribe")

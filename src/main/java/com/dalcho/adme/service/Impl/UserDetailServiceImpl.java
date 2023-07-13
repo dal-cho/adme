@@ -1,28 +1,40 @@
 package com.dalcho.adme.service.Impl;
 
-import com.dalcho.adme.exception.notfound.UserNotFoundException;
+import com.dalcho.adme.domain.User;
 import com.dalcho.adme.repository.UserRepository;
-
-import com.dalcho.adme.service.UserDetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-public class UserDetailServiceImpl implements UserDetailService {
+public class UserDetailServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    // User 엔티티의 id 값 가져오기 (인증)
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        log.info("[loadUserByUsername] loadUserByUsername 수행. username : {}", username);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByNickname(username)
+                .map(this::buildUserDetails)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
 
-        return userRepository.findByNickname(username).orElseThrow(() -> {
-            throw new UserNotFoundException();
-        });
+    private UserDetails buildUserDetails(User user) {
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
+        return new org.springframework.security.core.userdetails.User(
+                user.getNickname(),
+                user.getPassword(),
+                authorities
+        );
     }
 }
