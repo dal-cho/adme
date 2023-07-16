@@ -23,10 +23,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByNickname(username)
+    public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
+        return userRepository.findByNickname(nickname)
                 .map(this::buildUserDetails)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + nickname));
     }
 
     private UserDetails buildUserDetails(User user) {
