@@ -3,7 +3,7 @@ package com.dalcho.adme.service.Impl;
 import com.dalcho.adme.domain.Registry;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.domain.VideoFile;
-import com.dalcho.adme.dto.registry.PagingDto;
+import com.dalcho.adme.dto.PagingDto;
 import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.exception.CustomException;
@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -44,10 +43,7 @@ public class RegistryServiceImpl implements RegistryService {
     public PagingDto<Registry> getBoards(int curPage) {
         Pageable pageable = PageRequest.of(curPage - 1, PAGE_POST_COUNT);
         Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);
-        List<Registry> boardList = boards.stream()
-                .map(board -> new Registry(board.getIdx(), board.getTitle()))
-                .collect(Collectors.toList());
-        return PagingDto.of(boards, boardList);
+        return PagingDto.of(boards);
     }
 
     @Override // 게시글 상세 보기

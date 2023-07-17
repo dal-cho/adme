@@ -3,7 +3,7 @@ package com.dalcho.adme.service.Impl;
 import com.dalcho.adme.common.CommonResponse;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.domain.VideoFile;
-import com.dalcho.adme.dto.registry.PagingDto;
+import com.dalcho.adme.dto.PagingDto;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.dto.video.VideoResponseDto;
 import com.dalcho.adme.dto.video.VideoResultDto;
@@ -149,15 +149,11 @@ public class VideoServiceImpl implements VideoService {
     @Transactional
     public void delete(Long id, User user) {
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
-        if(!checkAuthentication(videoFile.getUser(), user)) {
+        if(!videoFile.hasAuthentication(user)) {
             throw new InvalidPermissionException();
         }
         videoUtils.deleteFiles(videoFile);
         videoRepository.deleteById(id);
-    }
-
-    public boolean checkAuthentication(User getUser, User user) {
-        return user.getNickname().equals(getUser.getNickname());
     }
 
     private void setSuccessResult(VideoResultDto result) {

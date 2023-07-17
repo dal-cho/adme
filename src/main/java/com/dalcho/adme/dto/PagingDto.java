@@ -1,6 +1,5 @@
-package com.dalcho.adme.dto.registry;
+package com.dalcho.adme.dto;
 
-import com.dalcho.adme.domain.Registry;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,7 @@ public class PagingDto<T> {
 	private long totalPage;
 	private List<T> content;
 
-	private PagingDto(Pageable page, List<T> content, long total){
+	public PagingDto(Pageable page, List<T> content, long total){
 		this.content = content;
 		this.curPage = page.getPageNumber()+1;
 		this.totalPage = total;
@@ -27,12 +26,6 @@ public class PagingDto<T> {
 		this.prev = startPage != 1;
 		this.next = endPage < totalPage;
 }
-
-	public static <T> PagingDto<Registry> of(Page<T> page, List<Registry> registryContent) {
-		Pageable pageable = page.getPageable();
-		long total = page.getTotalPages();
-		return new PagingDto<>(pageable, registryContent, total);
-	}
 
 	public static <T> PagingDto<T> of(Page<T> page) {
 		return new PagingDto<>(page.getPageable(), page.getContent(), page.getTotalElements());

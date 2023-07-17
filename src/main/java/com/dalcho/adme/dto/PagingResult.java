@@ -1,4 +1,4 @@
-package com.dalcho.adme.dto.registry;
+package com.dalcho.adme.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
