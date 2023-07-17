@@ -1,7 +1,7 @@
 package com.dalcho.adme.service;
 
 import com.dalcho.adme.domain.User;
-import com.dalcho.adme.dto.registry.PagingDto;
+import com.dalcho.adme.dto.PagingDto;
 import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import org.springframework.stereotype.Service;

@@ -96,4 +96,8 @@ public class VideoFile {
         }
     }
 
+    public boolean hasAuthentication(User user) {
+        return this.user.getNickname().equals(user.getNickname());
+    }
+
 }
