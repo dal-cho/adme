@@ -27,10 +27,6 @@ public class SecurityConfiguration {
     private final Oauth2FailureHandler failureHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    public static final String[] GET_WHITE_LIST = {
-            "/tenSeconds/list"
-    };
-
     public static final String[] USER_ENABLE = {
             "/tenSeconds/videos",
             "/tenSeconds/video/**",
@@ -95,7 +91,6 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .authenticationEntryPoint(customAuthenticationEntryPoint)
             .and()
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
     return http.build();
 }
 
