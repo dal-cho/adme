@@ -35,10 +35,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt:0.9.1' // jwt
 
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
+    //implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
 
     // oauth2
-    implementation 'org.json:json:20220320'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
@@ -57,7 +56,6 @@ dependencies {
     // chat-file
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
-    implementation 'org.json:json:20220320'
 
     // Bzip2 파일 압축
     implementation 'org.apache.commons:commons-compress:1.21'
