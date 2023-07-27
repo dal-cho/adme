@@ -11,10 +11,10 @@ import com.dalcho.adme.repository.ChatRepository;
 import com.dalcho.adme.repository.UserRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
@@ -246,17 +246,20 @@ public class ChatServiceImpl {
 			if (line.startsWith(",")) {
 				line = line.substring(1);
 			}
-			JSONObject json = new JSONObject(line);
-			int adminChat = json.getInt("adminChat");
-			int userChat = json.getInt("userChat");
-			String message = json.getString("message").trim();
+
+			JsonParser parser = new JsonParser();
+			JsonObject json = parser.parse(line).getAsJsonObject();
+			int adminChat = json.get("adminChat").getAsInt();
+			int userChat = json.get("userChat").getAsInt();
+			String message = json.get("message").getAsString().trim();
 			String messages = new String(message.getBytes("iso-8859-1"), "utf-8");
+
 			List<String> chat = new ArrayList<>();
 			chat.add(Integer.toString(adminChat));
 			chat.add(Integer.toString(userChat));
 			chat.add(messages);
 			return chat;
-		} catch (IOException | JSONException e) {
+		} catch (IOException | JsonSyntaxException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
 		}
