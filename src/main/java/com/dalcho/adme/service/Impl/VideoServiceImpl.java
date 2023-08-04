@@ -100,8 +100,7 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public VideoResponseDto getFile(long id) {
         VideoFile videoFile = videoRepository.findById(id).orElseThrow(FileNotFoundException::new);
-        String nickname = videoFile.getUser().getNickname();
-        return VideoResponseDto.toEntity(videoFile, nickname);
+        return VideoResponseDto.toEntity(videoFile);
     }
 
     @Override

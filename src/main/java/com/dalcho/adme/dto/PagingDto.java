@@ -1,5 +1,6 @@
 package com.dalcho.adme.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,17 @@ public class PagingDto<T> {
 		this.prev = startPage != 1;
 		this.next = endPage < totalPage;
 }
+
+	@Builder
+	public PagingDto(int curPage, boolean prev, boolean next, int startPage, int endPage, long totalPage, List<T> content) {
+		this.curPage = curPage;
+		this.prev = prev;
+		this.next = next;
+		this.startPage = startPage;
+		this.endPage = endPage;
+		this.totalPage = totalPage;
+		this.content = content;
+	}
 
 	public static <T> PagingDto<T> of(Page<T> page) {
 		return new PagingDto<>(page.getPageable(), page.getContent(), page.getTotalElements());

@@ -63,7 +63,8 @@ public class VideoFile {
     }
 
     @Builder
-    public VideoFile(String title, String content, String uuid, String uploadPath, String thumbnailExt, LocalDateTime videoDate) {
+    public VideoFile(Long id, String title, String content, String uuid, String uploadPath, String thumbnailExt, LocalDateTime videoDate) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.uuid = uuid;
