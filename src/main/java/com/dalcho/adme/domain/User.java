@@ -11,7 +11,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -145,6 +144,14 @@ public class User implements UserDetails {
         this.role = role == null ? UserRole.USER : role;
         this.profile = DEFAULT_PROFILE_IMG_PATH;
         this.social = social;
+    }
+
+    public User(Long id, String nickname, String password, String username, UserRole role) {
+        this.id = id;
+        this.nickname = nickname;
+        this.password = password;
+        this.username = username;
+        this.role = role;
     }
 }
 

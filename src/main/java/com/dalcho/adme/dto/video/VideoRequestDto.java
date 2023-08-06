@@ -13,6 +13,7 @@ public class VideoRequestDto {
     public VideoRequestDto() {
     }
 
+    @Builder
     public VideoRequestDto(String title, String content, int setTime) {
         this.title = title;
         this.content = content;

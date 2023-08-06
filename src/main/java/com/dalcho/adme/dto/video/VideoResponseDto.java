@@ -39,7 +39,7 @@ public class VideoResponseDto {
         this.nickname = nickname;
     }
 
-    public static VideoResponseDto toEntity(VideoFile videoFile, String nickname) {
+    public static VideoResponseDto toEntity(VideoFile videoFile) {
         return VideoResponseDto.builder()
                 .id(videoFile.getId())
                 .title(videoFile.getTitle())
@@ -47,7 +47,7 @@ public class VideoResponseDto {
                 .uuid(videoFile.getUuid())
                 .uploadPath(videoFile.getUploadPath())
                 .videoDate(videoFile.getVideoDate())
-                .nickname(nickname)
+                .nickname(videoFile.getUser().getNickname())
                 .build();
     }
 }
