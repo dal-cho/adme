@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class VideoFile {
+public class VideoFile extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)// id 자동 카운트
@@ -99,6 +99,11 @@ public class VideoFile {
 
     public boolean hasAuthentication(User user) {
         return this.user.getNickname().equals(user.getNickname());
+    }
+
+    public boolean limitTimeCheck() {
+        LocalDateTime checkTime = this.getCreatedAt().plusMinutes(10);
+        return LocalDateTime.now().isAfter(checkTime);
     }
 
 }

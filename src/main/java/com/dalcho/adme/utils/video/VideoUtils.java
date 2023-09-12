@@ -7,8 +7,10 @@ import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -125,6 +127,17 @@ public class VideoUtils {
             log.info("[VideoUtils] deleteFiles Completed!");
         } catch (IOException e) {
             throw new IllegalStateException("failed to delete Files. " + videoFile.getUuid(), e);
+        }
+    }
+
+    public void cleanDirectory(File file) {
+        log.info("[VideoUtils] CleanUpFiles");
+
+        try {
+            FileUtils.cleanDirectory(file);
+            log.info("[VideoUtils] CleanUpFiles Completed!");
+        } catch (IOException e) {
+            throw new IllegalStateException("failed to delete File.");
         }
     }
 

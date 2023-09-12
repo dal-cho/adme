@@ -104,7 +104,7 @@ class VideoServiceTest {
     }
 
     @Test
-    @DisplayName("UPLOAD_FILEr")
+    @DisplayName("UPLOAD_FILE")
     void 게시글_업로드() throws Exception {
         VideoRequestDto videoRequestDto = new VideoRequestDto("title", "content", 10);
         MockMultipartFile multipartVideoFile = new MockMultipartFile("videoFile", "mp4_1M_1280x720.mp4", "video/mp4", new FileInputStream(videoUploadPath));
