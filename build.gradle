@@ -24,6 +24,7 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.20'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.1'
     implementation 'org.mockito:mockito-core:5.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2:1.4.199'
     runtimeOnly 'mysql:mysql-connector-java'
@@ -68,6 +69,7 @@ dependencies {
 
     // 동영상 인코더
     implementation 'net.bramp.ffmpeg:ffmpeg:0.6.2'
+
 }
 
 test {
