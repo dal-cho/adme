@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.*;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -17,7 +19,7 @@ public class Chat {
 	@Column(nullable = false)
 	private String roomId;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = LAZY)
 	@JsonIgnore
 	@ToString.Exclude
 	@JoinColumn(name = "user_id", nullable = false)
@@ -30,7 +32,6 @@ public class Chat {
 	}
 
 	public void addUser(User user){
-		user.addChat(this);
 		this.user = user;
 	}
 }

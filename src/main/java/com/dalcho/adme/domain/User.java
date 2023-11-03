@@ -107,18 +107,9 @@ public class User implements UserDetails {
     @ToString.Exclude
     private Chat chat;
 
-    public void addRegistry(Registry registry) {
-        this.registries.add(registry);
-        if (registry.getUser() != this) {
-            registry.addUser(this);
-        }
-    }
-
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        if (comment.getUser() != this) {
-            comment.addUser(this);
-        }
+    public void addChat(Chat chat){
+        chat.addUser(this);
+        this.chat = chat;
     }
 
     public void addVideo(VideoFile video) {
@@ -127,12 +118,6 @@ public class User implements UserDetails {
             video.setUser(this);
         }
     }
-
-    public void addChat(Chat chat){
-        chat.addUser(this);
-        this.chat = chat;
-    }
-
 
     @Builder
     public User(String socialId, String email, String password, UserRole role, String username, String nickname, String social) {
