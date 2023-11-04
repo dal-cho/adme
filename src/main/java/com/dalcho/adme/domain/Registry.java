@@ -2,10 +2,10 @@ package com.dalcho.adme.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
@@ -27,6 +27,7 @@ public class Registry extends Timestamped {
     @Column(nullable = false)
     private String main;
 
+    @BatchSize(size = 12)
     @OneToMany(mappedBy = "registry", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @ToString.Exclude
