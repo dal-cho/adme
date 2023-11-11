@@ -38,7 +38,7 @@ public class ChatServiceImpl {
 	private Map<String, Integer> adminChat;
 	private Map<String, Integer> userChat;
 	private final RedisTemplate<String, ChatRoomDto> redisTemplate;
-	@Value("${spring.servlet.multipart.location}")
+	@Value("${chat.file}")
 	private String chatUploadLocation;
 	private final UserRepository userRepository;
 	private final Object lock = new Object();
