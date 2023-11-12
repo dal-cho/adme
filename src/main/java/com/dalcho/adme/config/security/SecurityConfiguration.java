@@ -35,7 +35,6 @@ public class SecurityConfiguration {
             "/chat/**",
             "/10s/**",
             "/space/**"
-
     };
 
     public static final String[] VIEW_LIST = {
@@ -47,7 +46,8 @@ public class SecurityConfiguration {
             "/taste",
             "/tenSeconds",
             "/",
-            "/oauth2/**"
+            "/oauth2/**",
+            "/sign-up"
     };
 
 @Bean
@@ -62,6 +62,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http.authorizeRequests()
             .antMatchers(VIEW_LIST).permitAll()
+            .antMatchers("/sign-up").permitAll()
+            .antMatchers("/sign-in").permitAll()
             .antMatchers("/admin/**").hasAuthority("ADMIN")
             .anyRequest().authenticated();
 

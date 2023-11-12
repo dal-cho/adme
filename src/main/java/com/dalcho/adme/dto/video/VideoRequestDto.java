@@ -20,12 +20,14 @@ public class VideoRequestDto {
         this.setTime = setTime;
     }
 
-    public VideoFile toEntity(String uuid, String uploadPath) {
+    public VideoFile toEntity(String originalFileName, String s3FileName, String s3ThumbnailUrl, String s3TenVideoUrl) {
         return VideoFile.builder()
                 .title(title)
                 .content(content)
-                .uuid(uuid)
-                .uploadPath(uploadPath)
+                .originalFileName(originalFileName)
+                .s3FileName(s3FileName)
+                .s3ThumbnailUrl(s3ThumbnailUrl)
+                .s3TenVideoUrl(s3TenVideoUrl)
                 .videoDate(LocalDateTime.now())
                 .build();
     }

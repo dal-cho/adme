@@ -1,6 +1,5 @@
 package com.dalcho.adme.controller;
 
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.PagingDto;
 import com.dalcho.adme.dto.video.VideoRequestDto;
@@ -10,6 +9,7 @@ import com.dalcho.adme.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,21 +24,21 @@ public class VideoController {
 
     @GetMapping("/tenSeconds/list/{curPage}")
     public PagingDto<VideoFile> listFiles(@PathVariable int curPage) throws Exception {
-        log.info("[VideoController] GetList");
+        log.info("[VideoController] listFiles");
         return videoService.getList(curPage);
     }
 
     @GetMapping("/tenSeconds/video/{id}")
     public VideoResponseDto getFile(@PathVariable long id) throws Exception {
-        log.info("[VideoController] GetFile");
+        log.info("[VideoController] getFile");
         return videoService.getFile(id);
     }
 
     @PostMapping("/tenSeconds/videos")
-    public VideoResultDto uploadFile(@AuthenticationPrincipal User user, @RequestPart(name = "sideData") VideoRequestDto requestDto,
-                                     @RequestPart(name = "videoFile") MultipartFile file, @RequestPart(name = "thumbnail", required = false) MultipartFile thumbnail) throws Exception {
+    public VideoResultDto uploadFile(@AuthenticationPrincipal UserDetails user, @RequestPart(name = "sideData") VideoRequestDto requestDto,
+                                     @RequestPart(name = "videoFile") MultipartFile videoFile, @RequestPart(name = "thumbnail", required = false) MultipartFile thumbnail) throws Exception {
         log.info("[VideoController] uploadFile()");
-        return videoService.uploadFile(user, requestDto, file, thumbnail);
+        return videoService.uploadFile(user, requestDto, videoFile, thumbnail);
     }
 
     @PutMapping("/tenSeconds/video/{id}")
@@ -49,7 +49,8 @@ public class VideoController {
     }
 
     @DeleteMapping("/tenSeconds/video/{id}")
-    public void delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
+    public void delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails user) {
+        log.info("[VideoController] delete");
         videoService.delete(id, user);
     }
 }

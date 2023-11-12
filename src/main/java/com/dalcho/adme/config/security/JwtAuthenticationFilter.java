@@ -25,30 +25,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // servletRequest 에서 token 추출
         String token = jwtTokenProvider.resolveToken(servletRequest);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         log.info("[dofilterInternal] token 값 유효성 체크 시작");
+
         try{
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if(auth.getPrincipal() != null && auth.getCredentials() == null){
-                log.info(" [  oauth  ]   login ");
-                filterChain.doFilter(servletRequest, servletResponse);
-                return; // 필터 종료
-            }else{
-                // token 이 유효하다면 Authentication 객체를 생성해서 SecurityContextHolder 에 추가
-                if (token != null && jwtTokenProvider.validateToken(token)) {
-                    Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    log.info("[doFilterInternal] token 값 유효성 체크 완료");
-                    return;
-                } else {
-                    log.info("[doFilterInternal] 유효한 JWT 토큰이 없습니다, uri: {}", servletRequest.getRequestURL());
-                }
+            if(token != null && jwtTokenProvider.validateToken(token)) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("[doFilterInternal] token 값 유효성 체크 완료");
+                log.info("[ jwt ] Login");
+            }
+            else if(auth.getPrincipal() != null && auth.getCredentials() == null) {
+                log.info(" [ oauth ] login ");
+            }
+            else {
+                log.info("[doFilterInternal] 유효한 JWT 토큰이 없습니다, uri: {}", servletRequest.getRequestURL());
             }
         }
         catch (NullPointerException e){
             log.info("doFilterInternal");
+        } finally {
+            filterChain.doFilter(servletRequest, servletResponse);
         }
-
-        // 요청 정보가 매칭되지 않을경우 동작
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 }

@@ -1,4 +1,4 @@
-package com.dalcho.adme.utils.video;
+package com.dalcho.adme.config;
 
 import lombok.extern.slf4j.Slf4j;
 import net.bramp.ffmpeg.FFmpeg;

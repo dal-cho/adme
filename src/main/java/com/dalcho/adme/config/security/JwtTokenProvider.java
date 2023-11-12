@@ -75,14 +75,14 @@ public class JwtTokenProvider {
         log.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
 
         // 토큰을 생성할때 넣었던 sub 값 추출
-        String info = getClaims(token).getBody().getSubject();
+        String subject = getClaims(token).getBody().getSubject();
 
         log.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료");
 
-        return info;
+        return subject;
     }
 
-    // 파라미터로 받아 헤더값으로 전달된 "X_AUTH_TOKEN" 추출
+    // 파라미터로 받아 헤더값으로 전달된 "Authorization" 추출
     public String resolveToken(HttpServletRequest request) {
         log.info("[resolveToken] Header 에서 Token 추출 완료");
         return request.getHeader("Authorization");

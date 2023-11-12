@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class BatchScheduler {
-    private final Job job;  // tutorialJob
+    private final Job job;
     private final JobLauncher jobLauncher;
 
     // 매일 04시 동작
