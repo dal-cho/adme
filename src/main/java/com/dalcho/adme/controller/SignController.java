@@ -1,6 +1,5 @@
 package com.dalcho.adme.controller;
 
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.sign.SignInRequestDto;
 import com.dalcho.adme.dto.sign.SignInResultDto;
 import com.dalcho.adme.dto.sign.SignUpRequestDto;
@@ -9,6 +8,7 @@ import com.dalcho.adme.service.SignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,9 +65,9 @@ public class SignController {
     }
 
     @GetMapping("/user")
-    public User userInfo(@AuthenticationPrincipal User user) {
+    public UserDetails userInfo(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("[SignController]");
         log.info("[userInfo] 유저정보 조회");
-        return user;
+        return userDetails;
     }
 }

@@ -1,12 +1,12 @@
 package com.dalcho.adme.controller;
 
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.comment.CommentRequestDto;
 import com.dalcho.adme.dto.comment.CommentResponseDto;
 import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,15 +36,15 @@ public class CommentController {
     @PutMapping("/comment/{commentId}")
     public CommentResponseDto updateComment(@PathVariable Long commentId,
                                  @RequestBody CommentRequestDto commentDto,
-                                 @AuthenticationPrincipal User user){
-        return commentService.updateComment(commentId, commentDto, user);
+                                 @AuthenticationPrincipal UserDetails userDetails){
+        return commentService.updateComment(commentId, commentDto, userDetails);
     }
 
     // 댓글 삭제
     @DeleteMapping("/comment/{commentId}")
     public void deleteComment(@PathVariable Long commentId,
-                              @AuthenticationPrincipal User user){
-        commentService.deleteComment(commentId, user);
+                              @AuthenticationPrincipal UserDetails userDetails){
+        commentService.deleteComment(commentId, userDetails);
     }
 
     @GetMapping("/needComment")

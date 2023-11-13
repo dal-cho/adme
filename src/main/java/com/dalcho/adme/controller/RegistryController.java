@@ -1,12 +1,12 @@
 package com.dalcho.adme.controller;
 
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.PagingDto;
 import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.dalcho.adme.dto.registry.RegistryResponseDto;
 import com.dalcho.adme.service.RegistryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -18,8 +18,8 @@ public class RegistryController {
 
     // 게시글 등록
     @PostMapping("/registry") //@RequestParam이 여러개 있다. -> @ModelAttribute
-    public RegistryResponseDto postUpload(@ModelAttribute RegistryRequestDto registryDto, @AuthenticationPrincipal User user) throws IOException {
-        return registryService.postUpload(registryDto, user);
+    public RegistryResponseDto postUpload(@ModelAttribute RegistryRequestDto registryDto, @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+        return registryService.postUpload(registryDto, userDetails);
     }
 
 
@@ -38,13 +38,13 @@ public class RegistryController {
 
     //mypage 게시글 paging
     @GetMapping("/mypage/{curPage}")
-    public PagingDto myPage(@PathVariable int curPage, @AuthenticationPrincipal User user){
-        return registryService.myPage(curPage, user);
+    public PagingDto myPage(@PathVariable int curPage, @AuthenticationPrincipal UserDetails userDetails){
+        return registryService.myPage(curPage, userDetails);
     }
 
     // 게시글 삭제
     @DeleteMapping("/registry/{registryId}")
-    public void deleteRegistry(@PathVariable Long registryId, @AuthenticationPrincipal User user){
-        registryService.deleteRegistry(registryId, user);
+    public void deleteRegistry(@PathVariable Long registryId, @AuthenticationPrincipal UserDetails userDetails){
+        registryService.deleteRegistry(registryId, userDetails);
     }
 }

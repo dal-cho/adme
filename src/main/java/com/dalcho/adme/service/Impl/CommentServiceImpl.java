@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,10 +65,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, User user) {
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, UserDetails userDetails) {
         registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-        if (!user.getNickname().equals(comment.getUser().getNickname())) {
+        if (!userDetails.getUsername().equals(comment.getUser().getNickname())) {
             throw new InvalidPermissionException();
         }
         comment.updateComment(commentDto.getComment());
@@ -76,9 +77,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long commentId, User user) {
+    public void deleteComment(Long commentId, UserDetails userDetails) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-        if (!user.getNickname().equals(comment.getUser().getNickname())) {
+        if (!userDetails.getUsername().equals(comment.getUser().getNickname())) {
             throw new InvalidPermissionException();
         }
         commentRepository.delete(comment);
