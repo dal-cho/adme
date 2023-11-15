@@ -36,6 +36,7 @@ public class CommentServiceImpl implements CommentService {
     private static final int PAGE_POST_COUNT = 15;
 
     @Override
+    @Transactional
     public CommentResponseDto postComment(CommentRequestDto commentDto) {
         Registry registry = registryRepository.getReferenceById(commentDto.getRegistryIdx());
         User user = userRepository.findByNickname(commentDto.getNickname()).orElseThrow(UserNotFoundException::new);
@@ -65,6 +66,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, UserDetails userDetails) {
         registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
@@ -77,6 +79,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long commentId, UserDetails userDetails) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         if (!userDetails.getUsername().equals(comment.getUser().getNickname())) {

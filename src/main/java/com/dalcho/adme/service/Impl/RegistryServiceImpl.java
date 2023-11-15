@@ -82,6 +82,7 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
+    @Transactional
     public void deleteRegistry(Long registryId, UserDetails userDetails){
         Registry registry = registryRepository.findById(registryId).orElseThrow(RegistryNotFoundException::new);
         if (!userDetails.getUsername().equals(registry.getUser().getNickname())) {
