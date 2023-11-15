@@ -11,30 +11,21 @@ public class VideoResponseDto {
     private long id;
     private String title;
     private String content;
-    private String uuid;
-    private String uploadPath;
+    private String s3ThumbnailUrl;
+    private String s3TenVideoUrl;
     private LocalDateTime videoDate;
     private String nickname;
 
     public VideoResponseDto() {
     }
 
-    public VideoResponseDto(long id, String title, String content, String uuid, String uploadPath, LocalDateTime videoDate) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.uuid = uuid;
-        this.uploadPath = uploadPath;
-        this.videoDate = videoDate;
-    }
-
     @Builder
-    public VideoResponseDto(long id, String title, String content, String uuid, String uploadPath, LocalDateTime videoDate, String nickname) {
+    public VideoResponseDto(long id, String title, String content, String s3ThumbnailUrl, String s3TenVideoUrl, LocalDateTime videoDate, String nickname) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.uuid = uuid;
-        this.uploadPath = uploadPath;
+        this.s3ThumbnailUrl = s3ThumbnailUrl;
+        this.s3TenVideoUrl = s3TenVideoUrl;
         this.videoDate = videoDate;
         this.nickname = nickname;
     }
@@ -44,8 +35,8 @@ public class VideoResponseDto {
                 .id(videoFile.getId())
                 .title(videoFile.getTitle())
                 .content(videoFile.getContent())
-                .uuid(videoFile.getUuid())
-                .uploadPath(videoFile.getUploadPath())
+                .s3ThumbnailUrl(videoFile.getS3ThumbnailUrl())
+                .s3TenVideoUrl(videoFile.getS3TenVideoUrl())
                 .videoDate(videoFile.getVideoDate())
                 .nickname(videoFile.getUser().getNickname())
                 .build();

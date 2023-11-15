@@ -9,7 +9,6 @@ import lombok.Setter;
 public class VideoResultDto {
     private boolean success;
     private int code;
-    private String Url;
     private String msg;
     private String title;
 
