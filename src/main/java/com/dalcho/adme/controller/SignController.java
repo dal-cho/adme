@@ -7,6 +7,7 @@ import com.dalcho.adme.dto.sign.SignUpResultDto;
 import com.dalcho.adme.service.SignService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,6 +59,9 @@ public class SignController {
         idCookie.setMaxAge(24 * 60 * 60); // 1day
         idCookie.setSecure(true);
         response.addCookie(idCookie);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + signInResultDto.getToken());
 
         log.info("[getSignInResult] 쿠키 생성 완료");
 
