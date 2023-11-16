@@ -27,22 +27,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = jwtTokenProvider.resolveToken(servletRequest);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         log.info("[dofilterInternal] token 값 유효성 체크 시작");
-
-        try{
-            if(token != null && jwtTokenProvider.validateToken(token)) {
+        try {
+            if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.info("[doFilterInternal] token 값 유효성 체크 완료");
-                log.info("[ jwt ] Login");
-            }
-            else if(auth.getPrincipal() != null && auth.getCredentials() == null) {
+            } else if (auth.getPrincipal() != null && token == null) {
                 log.info(" [ oauth ] login ");
-            }
-            else {
+            } else {
                 log.info("[doFilterInternal] 유효한 JWT 토큰이 없습니다, uri: {}", servletRequest.getRequestURL());
             }
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             log.info("doFilterInternal");
         } finally {
             filterChain.doFilter(servletRequest, servletResponse);
