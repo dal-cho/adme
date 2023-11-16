@@ -74,7 +74,6 @@ public class CommentServiceImpl implements CommentService {
             throw new InvalidPermissionException();
         }
         comment.updateComment(commentDto.getComment());
-        commentRepository.save(comment);
         return CommentResponseDto.of(comment);
     }
 
