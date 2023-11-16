@@ -1,5 +1,6 @@
 package com.dalcho.adme.domain;
 
+import com.dalcho.adme.dto.registry.RegistryRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -52,6 +53,16 @@ public class Registry extends Timestamped {
     public Registry(String title, String main, User user) {
         this.title = title;
         this.main = main;
+        this.user = user;
+    }
+
+    public void updateRegistry(RegistryRequestDto requestDto, User user){
+        if(requestDto.getTitle() != null){
+            this.title = requestDto.getTitle();
+        }
+        if(requestDto.getMain() != null){
+            this.main = requestDto.getMain();
+        }
         this.user = user;
     }
 
