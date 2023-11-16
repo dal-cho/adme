@@ -60,9 +60,6 @@ public class SignController {
         idCookie.setSecure(true);
         response.addCookie(idCookie);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Bearer " + signInResultDto.getToken());
-
         log.info("[getSignInResult] 쿠키 생성 완료");
 
         return signInResultDto;
