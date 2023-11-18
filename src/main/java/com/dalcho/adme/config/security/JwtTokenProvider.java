@@ -72,12 +72,12 @@ public class JwtTokenProvider {
     }
 
     public String getNickname(String token) {
-        log.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
+        log.info("[getNickname] 토큰 기반 회원 구별 정보 추출");
 
         // 토큰을 생성할때 넣었던 sub 값 추출
         String subject = getClaims(token).getBody().getSubject();
 
-        log.info("[getUsername] 토큰 기반 회원 구별 정보 추출 완료");
+        log.info("[getNickname] 토큰 기반 회원 구별 정보 추출 완료");
 
         return subject;
     }

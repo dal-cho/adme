@@ -24,7 +24,7 @@ public class RegistryController {
 
 
     // 작성 글 페이징
-    @GetMapping("/space/{curPage}")
+    @GetMapping("/registry/{curPage}")
     public PagingDto readBoard(@PathVariable Integer curPage) {
         return registryService.getBoards(curPage);
     }
@@ -34,6 +34,11 @@ public class RegistryController {
     @GetMapping("/registry")
     public RegistryResponseDto getIdxRegistry(@RequestParam Long idx) {
         return registryService.getIdxRegistry(idx);
+    }
+
+    @PutMapping("/registry")
+    public RegistryResponseDto updateRegistry(Long id, RegistryRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails){
+        return registryService.updateRegistry(id, requestDto,  userDetails);
     }
 
     //mypage 게시글 paging

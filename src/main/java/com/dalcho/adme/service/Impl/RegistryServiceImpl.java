@@ -40,7 +40,6 @@ public class RegistryServiceImpl implements RegistryService {
     public RegistryResponseDto postUpload(RegistryRequestDto registryDto, UserDetails userDetails) throws IOException {
         User user = userRepository.findByNickname(userDetails.getUsername()).orElseThrow(UserNotFoundException::new);
         Registry registry = registryDto.toEntity(user);
-        //Registry registry = registryDto.toEntity((User) userDetails);
         registryRepository.save(registry);
         return RegistryResponseDto.of(registry);
     }
@@ -56,6 +55,17 @@ public class RegistryServiceImpl implements RegistryService {
     public RegistryResponseDto getIdxRegistry(Long idx) throws CustomException {
         Registry getIdxRegistry = registryRepository.findById(idx).orElseThrow(RegistryNotFoundException::new);
         return RegistryResponseDto.of(getIdxRegistry);
+    }
+
+    @Override
+    public RegistryResponseDto updateRegistry(Long id, RegistryRequestDto requestDto, UserDetails userDetails){
+        User user = userRepository.findByNickname(userDetails.getUsername()).orElseThrow(UserNotFoundException::new);
+        Registry registry = registryRepository.findById(id).orElseThrow(RegistryNotFoundException::new);
+        if(!user.getNickname().equals(registry.getUser().getNickname())){
+            throw new InvalidPermissionException();
+        }
+        registry.updateRegistry(requestDto, user);
+        return RegistryResponseDto.of(registry);
     }
 
     @Override

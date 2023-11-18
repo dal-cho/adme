@@ -19,6 +19,8 @@ public interface RegistryService {
     // 게시글 상세 보기
     RegistryResponseDto getIdxRegistry(Long idx);
 
+    RegistryResponseDto updateRegistry(Long id, RegistryRequestDto requestDto, UserDetails userDetails);
+
     PagingDto myPage(int curPage, UserDetails userDetails);
 
     void deleteRegistry(Long registryId, UserDetails userDetails);

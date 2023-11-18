@@ -27,7 +27,7 @@ public class CommentController {
         return commentService.getComment(idx);
     }
 
-    @GetMapping("comment-count")
+    @GetMapping("/comment-count")
     public Integer getCountComment(@RequestParam Long idx){
         return commentService.getCountComment(idx);
     }
