@@ -2,6 +2,7 @@ package com.dalcho.adme.service.Impl;
 
 import com.dalcho.adme.domain.Chat;
 import com.dalcho.adme.domain.User;
+import com.dalcho.adme.dto.LastMessage;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatRoomDto;
 import com.dalcho.adme.dto.chat.ChatRoomMap;
@@ -26,6 +27,8 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,12 +45,14 @@ public class ChatServiceImpl {
 	private String chatUploadLocation;
 	private final UserRepository userRepository;
 	private final Object lock = new Object();
+	private Map<String, LastMessage> lastMessageMap;
 
 	@PostConstruct
 	private void setUp() {
 		this.connectUsers = new HashMap<>();
 		this.adminChat = new HashMap<>();
 		this.userChat = new HashMap<>();
+		this.lastMessageMap = new HashMap<>();
 	}
 
 	public void connectUser(String status, String roomId, ChatMessage chatMessage) {
@@ -129,22 +134,38 @@ public class ChatServiceImpl {
 				countChat(chatMessage.getSender(), chatMessage.getRoomId());
 			}
 		}
+
+		LocalDateTime now = LocalDateTime.now();
+		int month = now.getMonthValue();
+		int day = now.getDayOfMonth();
+		String pattern = "HH:mm";
+		String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern));
+
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("roomId", chatMessage.getRoomId());
-		if (chatMessage.getType().toString().equals("JOIN")){
+		if (chatMessage.getType() == ChatMessage.MessageType.JOIN) {
 			jsonObject.addProperty("type", "JOINED");
-		}else {
+		} else {
 			jsonObject.addProperty("type", chatMessage.getType().toString());
 		}
+		Integer adminCnt = adminChat.get(chatMessage.getRoomId());
+		Integer userCnt = adminChat.get(chatMessage.getRoomId());
+		String days = month + "/" + day;
+
 		jsonObject.addProperty("sender", chatMessage.getSender());
 		jsonObject.addProperty("message", chatMessage.getMessage());
-		jsonObject.addProperty("adminChat", adminChat.get(chatMessage.getRoomId()));
-		jsonObject.addProperty("userChat", userChat.get(chatMessage.getRoomId()));
+		jsonObject.addProperty("adminChat", adminCnt);
+		jsonObject.addProperty("userChat", userCnt);
+		jsonObject.addProperty("day", days);
+		jsonObject.addProperty("time", time);
+
+		LastMessage lastMessage = LastMessage.of(chatMessage, adminCnt, userCnt, days, time);
+		lastMessageMap.put(chatMessage.getRoomId(), lastMessage);
 
 		Gson gson = new Gson();
 		String json = gson.toJson(jsonObject);
 
-		try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt", true)))){
+		try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt", true)))) {
 			if (new File(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt").length() == 0) {
 				out.println(json);
 				chatAlarm(chatMessage.getSender(), chatMessage.getRoomId());
