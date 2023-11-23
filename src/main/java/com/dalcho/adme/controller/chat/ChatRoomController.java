@@ -1,6 +1,7 @@
 package com.dalcho.adme.controller.chat;
 
 import com.dalcho.adme.config.security.JwtTokenProvider;
+import com.dalcho.adme.dto.LastMessage;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatRoomDto;
 import com.dalcho.adme.service.Impl.ChatServiceImpl;
@@ -50,7 +51,7 @@ public class ChatRoomController {
         chatService.saveFile(chatMessage);
     }
     @GetMapping ("/room/enter/{roomId}")
-    List<String> lastLine(@PathVariable String roomId) {
+    LastMessage lastLine(@PathVariable String roomId) {
         return chatService.lastLine(roomId);
     }
 

@@ -47,13 +47,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		String token = jwtProvider.generateToken(user);
 
 		log.info("[Oauth Success Handler] 쿠키 생성");
-		Cookie idCookie = new Cookie("TokenCookie", token);
-		idCookie.setPath("/"); // 모든 경로에서 접근 가능
-		idCookie.setDomain("localhost");
-		idCookie.setMaxAge(24 * 60 * 60); // 1day
-		//idCookie.setSecure(true);
-		response.addCookie(idCookie);
-		log.info("[oauth] 쿠키 생성 완료");
 
 		UserDetails userDetails = userDetailService.loadUserByUsername(jwtProvider.getNickname(token));
 		UsernamePasswordAuthenticationToken auth =
