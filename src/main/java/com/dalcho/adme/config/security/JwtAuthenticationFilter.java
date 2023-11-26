@@ -1,9 +1,11 @@
 package com.dalcho.adme.config.security;
 
+import com.dalcho.adme.service.Impl.UserDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -16,6 +18,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailServiceImpl userDetailService;
 
     @Override
     public void doFilterInternal(
@@ -27,12 +30,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = jwtTokenProvider.resolveToken(servletRequest);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         log.info("[dofilterInternal] token 값 유효성 체크 시작");
+
+        // UserDetails 값 유무
         try {
-            if (token != null && jwtTokenProvider.validateToken(token)) {
+            if (token != null && auth != null) {
+                log.info("[doFilterInternal] login 완료");
+            } else if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.info("[doFilterInternal] token 값 유효성 체크 완료");
-            } else if (auth.getPrincipal() != null && token == null) {
+            } else if (auth != null && token == null) {
                 log.info(" [ oauth ] login ");
             } else {
                 log.info("[doFilterInternal] 유효한 JWT 토큰이 없습니다, uri: {}", servletRequest.getRequestURL());
