@@ -1,7 +1,5 @@
 package com.dalcho.adme.controller.chat;
 
-import com.dalcho.adme.config.RedisConfig;
-import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.UserRepository;
@@ -14,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -23,8 +21,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Component
 @Slf4j
 public class WebSocketEventListener {
-	private final RedisConfig redisConfig;
-	private final SimpMessageSendingOperations sendingOperations;
+	private final SimpMessageSendingOperations template;
 	private final ChatServiceImpl chatService;
 	private final RedisService redisService;
 	private final UserRepository userRepository;
@@ -38,11 +35,11 @@ public class WebSocketEventListener {
 	@EventListener
 	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) headerAccessor.getHeader("simpUser");
-		String email = (String) token.getPrincipal().getAttributes().get("email");
-		User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
-		String nickname = user.getNickname();
-		String role = token.getPrincipal().getAuthorities().toString().replace("[","").replace("]","");
+		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
+
+		String nickname = token.getName();
+		userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
+		String role = token.getAuthorities().toString().replace("[","").replace("]","");
 		String roomId = redisService.getRedis(nickname);
 		if (roomId.startsWith("aaaa")) {
 			log.info("[랜덤 채팅] disconnected chat");
@@ -56,8 +53,7 @@ public class WebSocketEventListener {
 			if (role.equals("ADMIN")){
 				redisService.deleteRedis(nickname);
 			}
-			redisConfig.redisTemplate().convertAndSend("/topic/public/" + roomId, chatMessage);
-			sendingOperations.convertAndSend("/topic/public/" + roomId, chatMessage);
+			template.convertAndSend("/topic/public/" + roomId, chatMessage);
 		}
 	}
 }
