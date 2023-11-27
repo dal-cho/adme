@@ -58,14 +58,15 @@ public class ChatServiceImpl {
     }
 
     public void connectUser(String status, String roomId, ChatMessage chatMessage) {
-        log.info("[ connectUser ] roomId : " + roomId);
         int num = 0;
         synchronized (lock) {
+            log.info("[ ConnectUser ] roomId : " + roomId);
             if (Objects.equals(status, "Connect")) {
                 num = connectUsers.getOrDefault(roomId, 0);
                 connectUsers.put(roomId, (num + 1));
                 saveFile(chatMessage);
             } else if (Objects.equals(status, "Disconnect")) {
+                log.info("[ DisconnectUser ] roomId : " + roomId);
                 num = connectUsers.get(roomId);
                 connectUsers.put(roomId, (num - 1));
             }
@@ -102,7 +103,7 @@ public class ChatServiceImpl {
             Chat chat = new Chat(chatRoom.getRoomId(), user);
             chatRepository.save(chat);
             stopTime = System.currentTimeMillis();
-            log.info("readFile : " + (stopTime - startTime) + " 초");
+            log.info("roomId 생성 : " + (stopTime - startTime) + " 초");
             return chatRoom;
         } else {
             log.info("[createRoom] roomId 값은 있지만 cache 적용 안됨");
@@ -110,16 +111,23 @@ public class ChatServiceImpl {
             String roomId = findChat.get().getRoomId();
             chatRoom.setRoomId(findChat.get().getRoomId());
 
-            if (!isChatFileExists(roomId)) {
-                return null;
-            }
+//            if (!isChatFileExists(roomId)) {
+//                return null;
+//            }
 
             LastMessage lastLine = lastLine(roomId);
             if (lastLine == null) {
-                return null;
+                lastLine = LastMessage.builder()
+                        .roomId(roomId)
+                        .adminChat(0)
+                        .userChat(0)
+                        .message("환영합니다.")
+                        .day("")
+                        .time("")
+                        .build();
             }
             stopTime = System.currentTimeMillis();
-            log.info("readFile : " + (stopTime - startTime) + " 초");
+            log.info("채팅방 생성 소요 시간 : " + (stopTime - startTime) + " 초");
             return ChatRoomDto.of(roomId, user, lastLine);
         }
     }
@@ -149,6 +157,7 @@ public class ChatServiceImpl {
 
     // 파일 저장
     public void saveFile(ChatMessage chatMessage) {
+        log.info(" [ save chatFile ] start ");
         if (connectUsers.get(chatMessage.getRoomId()) != 0) {
             if (chatMessage.getType() == MessageType.JOIN) {
                 reset(chatMessage.getSender(), chatMessage.getRoomId());
@@ -196,6 +205,8 @@ public class ChatServiceImpl {
             }
         } catch (IOException e) {
             log.error("[error] " + e);
+        }finally {
+            log.info(" [ save chatFile ] end ");
         }
     }
 
@@ -227,6 +238,7 @@ public class ChatServiceImpl {
     }
 
     public Object readFile(String roomId) {
+        log.info(" [readFile]  start ");
         long startTime = System.currentTimeMillis();
         String filePath = chatUploadLocation + "/" + roomId + ".txt";
         File file = new File(filePath);
@@ -252,6 +264,8 @@ public class ChatServiceImpl {
         } catch (IOException | ParseException e) {
             log.error("[error] " + e);
             return null;
+        }finally {
+            log.info(" [readFile]  end ");
         }
     }
 
