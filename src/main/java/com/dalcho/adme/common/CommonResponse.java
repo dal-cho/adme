@@ -5,8 +5,8 @@ public enum CommonResponse {
     SUCCESS(0, "Success"),
     FAIL(-1, "Fail");
 
-    int code;
-    String msg;
+    final int code;
+    final String msg;
 
     CommonResponse(int code, String msg) {
         this.code = code;

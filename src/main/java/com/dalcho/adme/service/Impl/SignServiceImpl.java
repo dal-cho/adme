@@ -50,15 +50,24 @@ public class SignServiceImpl implements SignService {
         String name = signUpRequestDto.getName();
         String email = signUpRequestDto.getEmail();
 
+        SignUpResultDto signUpResultDto = new SignInResultDto();
+
         log.info("[getSignUpResult] 회원 정보 유무 확인");
         if (userRepository.existsByNickname(nickname)) {
             throw new UserDuplicateIdException();
         }
         log.info("[getSignUpResult] 회원 정보 유무 확인 완료");
 
-        log.info("[getSignUpResult] email,password 패턴 확인");
-        patternCheck("\\w+@\\w+\\.\\w+(\\.\\w+)?", email); // ex) abcd@add.com
-        patternCheck("(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}", password); // 영문과 특수문자 숫자를 포함하며 8자 이상
+        try {
+            log.info("[getSignUpResult] email,password 패턴 확인");
+            patternCheck("\\w+@\\w+\\.\\w+(\\.\\w+)?", email); // ex) abcd@add.com
+            patternCheck("(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}", password); // 영문과 특수문자 숫자를 포함하며 8자 이상
+        } catch (InvalidPatternException e) {
+            signUpResultDto.setCode(460);
+            signUpResultDto.setMsg(e.getMessage());
+            return signUpResultDto;
+        }
+
         log.info("[getSignUpResult] email,password 패턴 확인 완료");
 
         UserRole role = UserRole.of(UserRole.USER.name());
@@ -83,7 +92,6 @@ public class SignServiceImpl implements SignService {
 
         User savedUser = userRepository.save(user);
 
-        SignUpResultDto signUpResultDto = new SignInResultDto();
         log.info("[getSignUpResult] userEntity 값이 들어왔는지 확인 후 결과값 주입");
 
         if (!savedUser.getUsername().isEmpty()) {
@@ -93,7 +101,6 @@ public class SignServiceImpl implements SignService {
             log.info("[getSignUpResult] 실패 처리 완료");
             setFailResult(signUpResultDto);
         }
-
         return signUpResultDto;
     }
 
