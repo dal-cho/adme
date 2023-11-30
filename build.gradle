@@ -47,6 +47,7 @@ dependencies {
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'redis.clients:jedis:3.6.3'
 
     // chat
     implementation 'org.webjars:webjars-locator-core'
