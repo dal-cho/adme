@@ -10,7 +10,6 @@ import com.dalcho.adme.dto.video.VideoResultDto;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.repository.VideoRepository;
 import com.dalcho.adme.service.Impl.VideoServiceImpl;
-import com.dalcho.adme.system.OSValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,8 +42,6 @@ class VideoServiceTest {
 //    private VideoRepository videoRepository;
 //    @Mock
 //    private UserRepository userRepository;
-//    @Mock
-//    private OSValidator osValidator;
 //    @Mock
 //    private ApplicationEventPublisher publisher;
 //    @Spy // 실제 메소드를 돌린다. verify 시 사용

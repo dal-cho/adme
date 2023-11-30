@@ -85,8 +85,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .and()
             .logout()
             .logoutUrl("/user/logout") // 로그아웃 처리 URL
-            .logoutSuccessUrl("/user/login") // 로그아웃 처리 후 이동할 URL
-            .deleteCookies("TokenCookie"); // 쿠키삭제
+            .logoutSuccessUrl("/user/login"); // 로그아웃 처리 후 이동할 URL
             //.permitAll();
 
     http.exceptionHandling()
@@ -101,11 +100,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-
         configuration.addAllowedHeader("*");
-        //configuration.setAllowedHeaders(Arrays.asList("X-Custom-Header", "Content-Type"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
-
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
