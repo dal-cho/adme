@@ -1,6 +1,7 @@
 package com.dalcho.adme.controller.chat;
 
 import com.dalcho.adme.dto.chat.ChatMessage;
+import com.dalcho.adme.dto.chat.ChatMessage.MessageType;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.service.Impl.ChatServiceImpl;
@@ -21,39 +22,39 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Component
 @Slf4j
 public class WebSocketEventListener {
-	private final SimpMessageSendingOperations template;
-	private final ChatServiceImpl chatService;
-	private final RedisService redisService;
-	private final UserRepository userRepository;
-	private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
+    private final SimpMessageSendingOperations template;
+    private final ChatServiceImpl chatService;
+    private final RedisService redisService;
+    private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
-	@EventListener
-	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-		logger.info("Received a new web socket connection  ");
-	}
+    @EventListener
+    public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+        logger.info("Received a new web socket connection  ");
+    }
 
-	@EventListener
-	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
 
-		String nickname = token.getName();
-		userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
-		String role = token.getAuthorities().toString().replace("[","").replace("]","");
-		String roomId = redisService.getRedis(nickname);
-		if (roomId.startsWith("aaaa")) {
-			log.info("[랜덤 채팅] disconnected chat");
-		} else {
-			log.info("[고객센터] disconnected chat - {} 의 roomId : {}", nickname, redisService.getRedis(nickname));
-			ChatMessage chatMessage = new ChatMessage();
-			chatMessage.setType(ChatMessage.MessageType.LEAVE);
-			chatMessage.setSender(nickname);
-			chatMessage.setRoomId(roomId);
-			chatService.connectUser("Disconnect", roomId, chatMessage);
-			if (role.equals("ADMIN")){
-				redisService.deleteRedis(nickname);
-			}
-			template.convertAndSend("/topic/public/" + roomId, chatMessage);
-		}
-	}
+        String nickname = token.getName();
+        userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
+        String role = token.getAuthorities().toString().replace("[", "").replace("]", "");
+        String roomId = redisService.getRedis(nickname);
+        if (roomId.startsWith("aaaa")) {
+            log.info("[랜덤 채팅] disconnected chat");
+        } else {
+            log.info("[고객센터] disconnected chat - {} 의 roomId : {}", nickname, redisService.getRedis(nickname));
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setType(MessageType.LEAVE);
+            chatMessage.setSender(nickname);
+            chatMessage.setRoomId(roomId);
+            chatService.connectUser("Disconnect", roomId, chatMessage);
+            if (role.equals("ADMIN")) {
+                redisService.deleteRedis(nickname);
+            }
+            template.convertAndSend("/topic/public/" + roomId, chatMessage);
+        }
+    }
 }
