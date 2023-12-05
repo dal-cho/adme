@@ -32,7 +32,7 @@ public class RegistryServiceImpl implements RegistryService {
     private final RegistryRepository registryRepository;
     private final VideoRepository videoRepository;
     private final UserRepository userRepository;
-    private static final int PAGE_POST_COUNT = 12; // Registry : 한 페이지에 존재하는 게시글 수
+    private static final int REGISTRY_POST = 12; // Registry : 한 페이지에 존재하는 게시글 수
     private static final int MY_PAGE = 4; // MY_PAGE : 한 페이지에 존재하는 게시글 수
 
     // 게시글 등록
@@ -46,7 +46,7 @@ public class RegistryServiceImpl implements RegistryService {
 
     @Override // 작성 글 페이징
     public PagingDto<Registry> getBoards(int curPage) {
-        Pageable pageable = PageRequest.of(curPage - 1, PAGE_POST_COUNT);
+        Pageable pageable = PageRequest.of(curPage - 1, REGISTRY_POST);
         Page<Registry> boards = registryRepository.findAllByOrderByCreatedAtDesc(pageable);
         return PagingDto.of(boards);
     }
@@ -79,16 +79,16 @@ public class RegistryServiceImpl implements RegistryService {
         List<Registry> registryList = registryPage.getContent();
         List<VideoFile> videoList = videoPage.getContent();
 
-        List<Object> mergeList = new ArrayList<>();
-        mergeList.addAll(registryList);
-        mergeList.addAll(videoList);
+        List<Object> list = new ArrayList<>();
+        list.add(registryList);
+        list.add(videoList);
 
         long total = Math.max(registryPage.getTotalPages(), videoPage.getTotalPages());
 
         if(registryPage.getTotalPages()>=videoPage.getTotalPages()){
-            return PagingDto.of(registryPageable, mergeList, total);
+            return PagingDto.of(registryPageable, list, total);
         }
-        return PagingDto.of(videoPageable, mergeList, total);
+        return PagingDto.of(videoPageable, list, total);
     }
 
     @Override
