@@ -130,7 +130,7 @@ public class SignServiceImpl implements SignService {
         SignInResultDto signInResultDto = SignInResultDto.builder()
                 .role_check(authority)
                 .token(jwtTokenProvider.generateToken(user))
-                .username(user.getUsername())
+                .username(user.getNickname())
                 .build();
 
         log.info("[getSignInResult] SignInResultDto 객체에 값 주입");
