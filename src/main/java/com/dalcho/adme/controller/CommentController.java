@@ -18,7 +18,7 @@ public class CommentController {
 
     // 댓글 저장
     @PostMapping("/comment")
-    public CommentResponseDto postComment(@ModelAttribute CommentRequestDto commentDto) {
+    public CommentResponseDto postComment(@RequestBody CommentRequestDto commentDto) {
         return commentService.postComment(commentDto);
     }
 
@@ -47,7 +47,7 @@ public class CommentController {
         commentService.deleteComment(commentId, userDetails);
     }
 
-    @GetMapping("/needComment")
+    @GetMapping("/side-registry")
     public List<RegistryResponseDto> needComments() {
         return commentService.needComments();
     }

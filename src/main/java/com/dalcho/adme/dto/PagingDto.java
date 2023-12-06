@@ -28,7 +28,7 @@ public class PagingDto<T> {
     }
 
     public static <T> PagingDto<T> of(Page<T> page) {
-        return new PagingDto<>(page.getPageable(), page.getContent(), page.getTotalElements());
+        return new PagingDto<>(page.getPageable(), page.getContent(), page.getTotalPages());
     }
 
     public static <T> PagingDto<T> of(Pageable page, List<T> content, long total) {
