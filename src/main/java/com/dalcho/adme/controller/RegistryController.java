@@ -42,8 +42,8 @@ public class RegistryController {
     }
 
     //mypage 게시글 paging
-    @GetMapping("/mypage/{curPage}")
-    public PagingDto myPage(@PathVariable int curPage, @AuthenticationPrincipal UserDetails userDetails){
+    @GetMapping("/mypage")
+    public PagingDto myPage(@RequestParam int curPage, @AuthenticationPrincipal UserDetails userDetails){
         return registryService.myPage(curPage, userDetails);
     }
 
