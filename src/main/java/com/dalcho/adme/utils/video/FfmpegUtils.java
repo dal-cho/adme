@@ -33,7 +33,7 @@ public class FfmpegUtils {
         FFmpegBuilder builder = new FFmpegBuilder()
                 .overrideOutputFiles(true) // 출력이 있는경우 덮어쓰기
                 .setInput(originalLocation + videoFile.getVideoS3FileName()) // 썸네일 생성대상 파일
-                .addExtraArgs("-ss", String.valueOf(2)) // 썸네일 추출 시작점
+                .addExtraArgs("-ss", String.valueOf(videoFile.getSetTime())) // 썸네일 추출 시작점
                 .addOutput(thumbnailDirectory + videoFile.getUuid() + ".jpg") // 썸네일 파일을 저장할 위치
                 .setFrames(1) // 프레임 수
                 .done();
@@ -47,20 +47,20 @@ public class FfmpegUtils {
     }
 
     public void createTenVideo(VideoMultipartFile videoFile) {
-        createTenVideo(videoFile.getVideoS3FileName(), videoFile.getUuid() + ".mp4");
+        createTenVideo(videoFile.getVideoS3FileName(), videoFile.getUuid() + ".mp4", videoFile.getSetTime());
     }
 
-    public void createTenVideo(VideoFile videoFile) {
-        createTenVideo(videoFile.getS3FileName(), videoFile.getUuid() + ".mp4");
+    public void createTenVideo(VideoFile videoFile, int setTime) {
+        createTenVideo(videoFile.getS3FileName(), videoFile.getUuid() + ".mp4", setTime);
     }
 
-    private void createTenVideo(String inputFileName, String OutputFileName) {
+    private void createTenVideo(String inputFileName, String OutputFileName, int setTime) {
         log.info("[FfmpegUtils] createTenVideo");
 
         FFmpegBuilder fFmpegBuilder = new FFmpegBuilder()
                 .setInput(originalLocation + inputFileName) // 변환 할 파일 위치 설정
                 .overrideOutputFiles(true) // 덮어쓰기 설정
-                .addExtraArgs("-ss", String.valueOf(2)) // 영상 자를 위치 설정
+                .addExtraArgs("-ss", String.valueOf(setTime)) // 영상 자를 위치 설정
                 .addExtraArgs("-t", String.valueOf(10)) // 영상 길이 설정
                 .addOutput(tenVideoDirectory + OutputFileName) // 변환 된 파일 위치 설정
                 .setFormat("mp4") // 확장자

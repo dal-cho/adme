@@ -50,7 +50,7 @@ public class VideoServiceImpl implements VideoService {
         }
 
         User user = userRepository.findByNickname(userInfo.getUsername()).orElseThrow(UserNotFoundException::new);
-        VideoMultipartFile videoMultipartFile = new VideoMultipartFile(originalFile);
+        VideoMultipartFile videoMultipartFile = new VideoMultipartFile(originalFile, videoRequestDto.getSetTime());
 
         // 원본 동영상 로컬 저장
         localFileUtils.saveOriginalFile(videoMultipartFile);
@@ -62,7 +62,7 @@ public class VideoServiceImpl implements VideoService {
         File localThumbnailFile;
 
         // 썸네일 업로드 유무에 따른 생성 및 저장 후 S3 업로드
-        if (thumbnail.isEmpty()) {
+        if (thumbnail == null) {
             localThumbnailFile = ffmpegUtils.createThumbnail(videoMultipartFile);
         } else {
             localThumbnailFile = localFileUtils.saveThumbnailFile(videoMultipartFile.getUuid(), thumbnail);
@@ -110,7 +110,7 @@ public class VideoServiceImpl implements VideoService {
         videoFile.update(videoRequestDto.toUpdateEntity());
 
         // 1. 썸네일 변경
-        if (!thumbnail.isEmpty()) {
+        if (thumbnail != null) {
             // 기존 thumbnail 삭제
             localFileUtils.deleteThumbnailFile(videoFile.getThumbnailName());
             s3Utils.deleteThumbnail(videoFile.getThumbnailName());
@@ -147,7 +147,7 @@ public class VideoServiceImpl implements VideoService {
             log.info("[VideoServiceImpl] 기존 10초 비디오 삭제 수행");
 
             // 새로운 10초 영상 생성 (파일, S3)
-            ffmpegUtils.createTenVideo(videoFile);
+            ffmpegUtils.createTenVideo(videoFile, videoRequestDto.getSetTime());
             String s3TenVideoUrl = s3Utils.tenVideoUpload(videoFile);
             videoFile.updateTenVideoUrl(s3TenVideoUrl);
             log.info("[VideoServiceImpl] 변경된 10초 비디오 생성 및 저장 수행");
