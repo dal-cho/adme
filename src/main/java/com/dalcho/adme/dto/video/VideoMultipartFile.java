@@ -12,9 +12,11 @@ public class VideoMultipartFile {
     private final MultipartFile videoFile;
     private final UUID uuid;
     private final String videoS3FileName;
+    private final int setTime;
 
-    public VideoMultipartFile(MultipartFile videoFile) {
+    public VideoMultipartFile(MultipartFile videoFile, int setTime) {
         this.videoFile = videoFile;
+        this.setTime = setTime;
         int index = getOriginalFilename().lastIndexOf(".");
         String ext = getOriginalFilename().substring(index + 1);
         this.uuid = UUID.randomUUID();
