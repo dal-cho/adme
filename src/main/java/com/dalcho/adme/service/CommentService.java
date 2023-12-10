@@ -13,8 +13,6 @@ public interface CommentService {
 
     List<CommentResponseDto> getComment(Long idx);
 
-    Integer getCountComment(Long idx);
-
     CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, UserDetails userDetails);
 
     void deleteComment(Long commentId, UserDetails userDetails) ;

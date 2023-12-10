@@ -60,12 +60,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Integer getCountComment(Long idx) {
-        List<Comment> commentList = commentRepository.findAllByRegistry_Idx(idx);
-        return commentList.size();
-    }
-
-    @Override
     @Transactional
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto commentDto, UserDetails userDetails) {
         registryRepository.findById(commentDto.getRegistryIdx()).orElseThrow(RegistryNotFoundException::new);
