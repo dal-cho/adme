@@ -2,30 +2,35 @@ package com.dalcho.adme.utils.video;
 
 import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoMultipartFile;
-import lombok.RequiredArgsConstructor;
+import com.dalcho.adme.manager.OriginalFileManager;
+import com.dalcho.adme.manager.TenFileManager;
+import com.dalcho.adme.manager.ThumbnailFileManager;
 import lombok.extern.slf4j.Slf4j;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class FfmpegUtils {
     private final FFmpeg ffmpeg;
     private final FFprobe ffprobe;
 
-    @Value("${original.location}")
-    private String originalLocation;
-    @Value("${thumbnail.location}")
-    String thumbnailDirectory;
-    @Value("${ten.location}")
-    String tenVideoDirectory;
+    private final String originalLocation;
+    private final String thumbnailDirectory;
+    private final String tenVideoDirectory;
+
+    public FfmpegUtils(FFmpeg ffmpeg, FFprobe ffprobe, OriginalFileManager originalFileManager, ThumbnailFileManager thumbnailFileManager, TenFileManager tenFileManager) {
+        this.ffmpeg = ffmpeg;
+        this.ffprobe = ffprobe;
+        this.originalLocation = originalFileManager.getOriginalFolderPath();
+        this.thumbnailDirectory = thumbnailFileManager.getThumbnailFolderPath();
+        this.tenVideoDirectory = tenFileManager.getTenFolderPath();
+    }
 
     public File createThumbnail(VideoMultipartFile videoFile) {
         log.info("[FfmpegUtils] createThumbnail");

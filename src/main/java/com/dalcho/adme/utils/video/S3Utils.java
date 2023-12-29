@@ -7,7 +7,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoMultipartFile;
-import lombok.RequiredArgsConstructor;
+import com.dalcho.adme.manager.OriginalFileManager;
+import com.dalcho.adme.manager.TenFileManager;
+import com.dalcho.adme.manager.ThumbnailFileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,17 +22,22 @@ import java.nio.file.Files;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class S3Utils {
     private final AmazonS3Client amazonS3Client;
+    private final String originalLocation;
+    private final String thumbnailDirectory;
+    private final String tenVideoDirectory;
 
-    @Value("${thumbnail.location}")
-    String thumbnailDirectory;
-    @Value("${ten.location}")
-    String tenVideoDirectory;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
+    public S3Utils(AmazonS3Client amazonS3Client, OriginalFileManager originalFileManager, ThumbnailFileManager thumbnailFileManager, TenFileManager tenFileManager) {
+        this.amazonS3Client = amazonS3Client;
+        this.originalLocation = originalFileManager.getOriginalFolderPath();
+        this.thumbnailDirectory = thumbnailFileManager.getThumbnailFolderPath();
+        this.tenVideoDirectory = tenFileManager.getTenFolderPath();
+    }
 
     // S3 Thumbnail 저장
     public String thumbnailUpload(File thumbFile) throws IOException {

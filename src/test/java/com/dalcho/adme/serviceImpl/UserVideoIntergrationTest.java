@@ -5,7 +5,6 @@ import com.dalcho.adme.domain.VideoFile;
 import com.dalcho.adme.dto.video.VideoRequestDto;
 import com.dalcho.adme.repository.VideoRepository;
 import com.dalcho.adme.service.Impl.VideoServiceImpl;
-import com.dalcho.adme.system.OSValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +31,6 @@ public class UserVideoIntergrationTest {
     VideoServiceImpl videoService;
 
     @Mock MultipartFile multipartFile;
-    @Mock OSValidator osValidator;
 
 //    @Test
 //    @DisplayName("파일 업로드 test")
