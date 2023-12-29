@@ -6,7 +6,7 @@ WORKDIR /app
 COPY ./*-SNAPSHOT.jar ./app.jar
 
 RUN apt-get update
-RUN apt-get install ffmpeg
+RUN apt-get install -y ffmpeg
 
 EXPOSE 8080
 
