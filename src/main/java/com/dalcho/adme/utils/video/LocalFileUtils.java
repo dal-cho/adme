@@ -1,10 +1,11 @@
 package com.dalcho.adme.utils.video;
 
 import com.dalcho.adme.dto.video.VideoMultipartFile;
-import lombok.RequiredArgsConstructor;
+import com.dalcho.adme.manager.OriginalFileManager;
+import com.dalcho.adme.manager.TenFileManager;
+import com.dalcho.adme.manager.ThumbnailFileManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,15 +19,17 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class LocalFileUtils {
-    @Value("${original.location}")
-    private String originalLocation;
-    @Value("${thumbnail.location}")
-    String thumbnailDirectory;
-    @Value("${ten.location}")
-    String tenVideoDirectory;
+    private final String originalLocation;
+    private final String thumbnailDirectory;
+    private final String tenVideoDirectory;
+
+    public LocalFileUtils(OriginalFileManager originalFileManager, ThumbnailFileManager thumbnailFileManager, TenFileManager tenFileManager) {
+        this.originalLocation = originalFileManager.getOriginalFolderPath();
+        this.thumbnailDirectory = thumbnailFileManager.getThumbnailFolderPath();
+        this.tenVideoDirectory = tenFileManager.getTenFolderPath();
+    }
 
     public void saveOriginalFile(VideoMultipartFile videoFile) {
         log.info("[LocalFileUtils] SaveOriginalFile");
