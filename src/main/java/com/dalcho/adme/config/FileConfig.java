@@ -1,5 +1,6 @@
 package com.dalcho.adme.config;
 
+import com.dalcho.adme.manager.ChatFileManager;
 import com.dalcho.adme.manager.OriginalFileManager;
 import com.dalcho.adme.manager.TenFileManager;
 import com.dalcho.adme.manager.ThumbnailFileManager;
@@ -34,5 +35,13 @@ public class FileConfig {
         File root = resourceLoader.getResource("file:").getFile();
         String tenFolderPath = root.getAbsolutePath() + TEN_FOLDER_PATH;
         return new TenFileManager(tenFolderPath);
+    }
+
+    @Bean
+    public ChatFileManager chatFileManager(ResourceLoader resourceLoader) throws IOException {
+        String path = File.separator + "chat" + File.separator;
+        File root = resourceLoader.getResource("file:").getFile();
+        String folderPath = root.getAbsolutePath() + path;
+        return new ChatFileManager(folderPath);
     }
 }
