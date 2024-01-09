@@ -9,6 +9,7 @@ import com.dalcho.adme.dto.chat.ChatRoomDto;
 import com.dalcho.adme.dto.chat.ChatRoomMap;
 import com.dalcho.adme.exception.notfound.FileNotFoundException;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
+import com.dalcho.adme.manager.ChatFileManager;
 import com.dalcho.adme.repository.ChatRepository;
 import com.dalcho.adme.repository.UserRepository;
 import com.google.gson.Gson;
@@ -19,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
@@ -42,8 +42,10 @@ public class ChatServiceImpl {
     private Map<String, Integer> adminChat;
     private Map<String, Integer> userChat;
 
-    @Value("${chat.file}")
     private String chatUploadLocation;
+
+    private final ChatFileManager fileManager;
+
     private final UserRepository userRepository;
     private final Object lock = new Object();
 
@@ -55,6 +57,7 @@ public class ChatServiceImpl {
         this.adminChat = new HashMap<>();
         this.userChat = new HashMap<>();
         this.lastMessageMap = new HashMap<>();
+        this.chatUploadLocation = fileManager.getFolderPath();
     }
 
     public void connectUser(String status, String roomId, ChatMessage chatMessage) {
@@ -205,7 +208,7 @@ public class ChatServiceImpl {
             }
         } catch (IOException e) {
             log.error("[error] " + e);
-        }finally {
+        } finally {
             log.info(" [ save chatFile ] end ");
         }
     }
@@ -264,7 +267,7 @@ public class ChatServiceImpl {
         } catch (IOException | ParseException e) {
             log.error("[error] " + e);
             return null;
-        }finally {
+        } finally {
             log.info(" [readFile]  end ");
         }
     }
