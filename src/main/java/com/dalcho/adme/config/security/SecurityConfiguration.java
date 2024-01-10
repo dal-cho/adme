@@ -14,6 +14,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -26,16 +27,6 @@ public class SecurityConfiguration {
     private final OAuth2SuccessHandler successHandler;
     private final Oauth2FailureHandler failureHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-    public static final String[] USER_ENABLE = {
-            "/tenSeconds/videos",
-            "/tenSeconds/video/**",
-            "/registry/**",
-            "/comment/**",
-            "/chat/**",
-            "/10s/**",
-            "/space/**"
-    };
 
     public static final String[] VIEW_LIST = {
             "/static/**",
@@ -64,6 +55,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers(VIEW_LIST).permitAll()
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
+            .antMatchers("/health").permitAll()
             .antMatchers("/admin/**").hasAuthority("ADMIN")
             .anyRequest().authenticated();
 
@@ -98,9 +90,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));;
+        configuration.setAllowedOriginPatterns(List.of("https://www.admee.site","https://www.admee.site/"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
