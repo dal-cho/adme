@@ -27,16 +27,6 @@ public class SecurityConfiguration {
     private final Oauth2FailureHandler failureHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    public static final String[] USER_ENABLE = {
-            "/tenSeconds/videos",
-            "/tenSeconds/video/**",
-            "/registry/**",
-            "/comment/**",
-            "/chat/**",
-            "/10s/**",
-            "/space/**"
-    };
-
     public static final String[] VIEW_LIST = {
             "/static/**",
             "/css/**",
@@ -101,7 +91,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));;
+        configuration.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
