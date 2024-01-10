@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE"));
-        config.setAllowedOrigins(List.of("https://www.admee.site"));
+        config.setAllowedOrigins(List.of("https://www.admee.site","https://api.admee.site"));
 
         registry.addMapping("/**")
                 .combine(config);
