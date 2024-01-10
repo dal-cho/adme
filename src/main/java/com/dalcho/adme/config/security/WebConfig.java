@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT", "DELETE"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowedOrigins(List.of("https://www.admee.site"));
+        config.addAllowedOriginPattern("https://www.admee.site");
         config.setAllowCredentials(true);
 
         registry.addMapping("/**")
