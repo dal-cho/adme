@@ -8,6 +8,8 @@ import com.dalcho.adme.dto.video.VideoResultDto;
 import com.dalcho.adme.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +54,11 @@ public class VideoController {
     public void delete(@PathVariable Long id, @AuthenticationPrincipal UserDetails user) {
         log.info("[VideoController] delete");
         videoService.delete(id, user);
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<Void> healthCheck() {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
 
