@@ -90,8 +90,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("https://www.admee.site");
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
