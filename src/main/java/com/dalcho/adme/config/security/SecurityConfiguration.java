@@ -89,7 +89,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("https://www.admee.site");
+        configuration.addAllowedOriginPattern("https://www.admee.site");
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","OPTIONS"));
         configuration.setAllowCredentials(true);
