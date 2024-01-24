@@ -60,9 +60,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers("/admin/**").hasAuthority("ADMIN")
             .anyRequest().authenticated();
 
-    http.oauth2Login().loginPage("/oauth/login")
+    http.oauth2Login().loginPage("/user/login")
             .and()
-            .logout().logoutSuccessUrl("/taste")
+            .logout().logoutSuccessUrl("/user/login")
             .deleteCookies("TokenCookie");
 
     http.oauth2Login()
