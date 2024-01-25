@@ -18,6 +18,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         log.info("[ commence ] : " + "인증 실패");
         response.setHeader("Access-Control-Allow-Origin", "https://www.admee.site");
-        response.sendRedirect("https://www.admee.site/templates/login.html");
+        //response.sendRedirect("https://www.admee.site/templates/login.html");
     }
 }
