@@ -38,7 +38,8 @@ public class SecurityConfiguration {
             "/tenSeconds",
             "/",
             "/oauth2/**",
-            "/sign-up"
+            "/sign-up",
+            "templates/**"
     };
 
 @Bean
@@ -92,7 +93,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("https://www.admee.site", "https://www.admee.site/*"));
+        configuration.setAllowedOriginPatterns(List.of("https://www.admee.site", "https://www.admee.site/*", "https://api.admee.site"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
