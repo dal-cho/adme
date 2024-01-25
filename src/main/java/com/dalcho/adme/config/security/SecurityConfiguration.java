@@ -53,6 +53,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http.authorizeRequests()
             .antMatchers(VIEW_LIST).permitAll()
+            .antMatchers("/api/**").permitAll()
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
             .antMatchers("/oauth2/**").permitAll()
