@@ -58,7 +58,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers("/sign-in").permitAll()
             .antMatchers("/oauth2/**").permitAll()
             .antMatchers("/health").permitAll()
-            //.antMatchers("/ws/**").permitAll()
+            .antMatchers("/ws/**").permitAll()
             .antMatchers("/admin/**").hasAuthority("ADMIN")
             .anyRequest().authenticated();
 
