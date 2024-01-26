@@ -38,7 +38,8 @@ public class SecurityConfiguration {
             "/tenSeconds",
             "/",
             "/oauth2/**",
-            "/sign-up"
+            "/sign-up",
+            "/templates/**"
     };
 
 @Bean
@@ -57,12 +58,13 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers("/sign-in").permitAll()
             .antMatchers("/oauth2/**").permitAll()
             .antMatchers("/health").permitAll()
+            .antMatchers("/ws/**").permitAll()
             .antMatchers("/admin/**").hasAuthority("ADMIN")
             .anyRequest().authenticated();
 
-    http.oauth2Login().loginPage("/oauth/login")
+    http.oauth2Login().loginPage("/user/login")
             .and()
-            .logout().logoutSuccessUrl("/taste")
+            .logout().logoutSuccessUrl("/user/login")
             .deleteCookies("TokenCookie");
 
     http.oauth2Login()
@@ -91,7 +93,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("https://www.admee.site","https://www.admee.site/"));
+        configuration.setAllowedOriginPatterns(List.of("https://www.admee.site"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
