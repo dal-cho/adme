@@ -39,7 +39,7 @@ public class SecurityConfiguration {
             "/",
             "/oauth2/**",
             "/sign-up",
-            "templates/**"
+            "/templates/**"
     };
 
 @Bean
