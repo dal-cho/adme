@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -174,10 +175,10 @@ public class ChatServiceImpl {
         int month = now.getMonthValue();
         int day = now.getDayOfMonth();
 
-        ZoneId zoneId = ZoneId.of("Asia/Seoul");
         String pattern = "HH:mm";
-        String time = LocalDateTime.now().atZone(zoneId)
-                .format(DateTimeFormatter.ofPattern(pattern));
+        ZoneId zoneId = ZoneId.of("Asia/Seoul");
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.now(), zoneId);
+        String time = zonedDateTime.format(DateTimeFormatter.ofPattern(pattern));
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("roomId", chatMessage.getRoomId());
