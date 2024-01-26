@@ -73,7 +73,7 @@ public class ChatRoomController {
 
     @GetMapping("/room/publish")
     @Async // 비동기
-    public void publish(String sender, String roomId) {
+    public void publish(@RequestParam String sender, @RequestParam String roomId) {
         Set<String> deadIds = new HashSet<>();
         CLIENTS.forEach((id, emitter) -> {
             try {
