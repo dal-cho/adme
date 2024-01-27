@@ -74,8 +74,7 @@ public class ChatRoomController {
     @GetMapping("/room/publish")
     @Async // 비동기
     public void publish(String sender, String roomId) {
-        System.out.println(" = = = = = = = = = = = ");
-        System.out.println("sender : " + sender);
+        log.info("[SSE] - sender : " + sender);
         Set<String> deadIds = new HashSet<>();
         CLIENTS.forEach((id, emitter) -> {
             try {
