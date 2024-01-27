@@ -40,7 +40,7 @@ public class SecurityConfiguration {
             "/oauth2/**",
             "/sign-up",
             "/templates/**",
-            "/room/*"
+            "/room/**"
     };
 
 @Bean
