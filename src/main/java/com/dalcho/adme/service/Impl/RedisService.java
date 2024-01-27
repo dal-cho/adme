@@ -41,8 +41,12 @@ public class RedisService {
 		long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
 		redisTemplate.opsForValue().set(email, accessToken, remainingTimeInSeconds, TimeUnit.SECONDS);
 	}
-	@Cacheable(value = "accessToken")
-	public String getToken(String email){
-		return redisTemplate.opsForValue().get(email);
+
+	@Cacheable(key = "#sessionId", value = "nickname", unless = "#result == null || #accessToken == null")
+	public void addNickname(String sessionId, String nickname){
+		long expireTimeInSeconds = 24 * 60 * 60;
+		long creationTimeInMillis = System.currentTimeMillis();
+		long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
+		redisTemplate.opsForValue().set(sessionId, nickname, remainingTimeInSeconds, TimeUnit.SECONDS);
+
 	}
-}

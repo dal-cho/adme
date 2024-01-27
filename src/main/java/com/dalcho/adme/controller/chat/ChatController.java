@@ -48,6 +48,9 @@ public class ChatController {
 
 	@MessageMapping("/chat/addUser")
 	public void addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+		System.out.println();
+		System.out.println();
+		System.out.println("headerAccessor : " + headerAccessor);
 		String token = headerAccessor.getFirstNativeHeader("Authorization");
 		User user= jwtTokenProvider.getUserFromToken(token);
 		String roomId = chatMessage.getRoomId();
