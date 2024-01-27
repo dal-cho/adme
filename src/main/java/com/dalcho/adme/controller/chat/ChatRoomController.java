@@ -73,7 +73,7 @@ public class ChatRoomController {
 
     @GetMapping("/room/publish")
     @Async // 비동기
-    public void publish(@RequestParam String sender, @RequestParam String roomId) {
+    public void publish(String sender, String roomId) {
         System.out.println(" = = = = = = = = = = = ");
         System.out.println("sender : " + sender);
         Set<String> deadIds = new HashSet<>();
