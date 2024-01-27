@@ -38,8 +38,9 @@ public class WebSocketEventListener {
         System.out.println();
         System.out.println();
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        System.out.println("event.getMessage() : " + event.getMessage());
         System.out.println("headerAccessor :   " + headerAccessor);
+        System.out.println("getSessionAttributes" + headerAccessor.getSessionAttributes());
+
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
         System.out.println("token : " + token);
 
