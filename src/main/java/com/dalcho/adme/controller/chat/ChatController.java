@@ -50,7 +50,7 @@ public class ChatController {
 	public void addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
 		System.out.println();
 		System.out.println();
-		System.out.println("headerAccessor : " + headerAccessor);
+		System.out.println("headerAccessor : " + headerAccessor.getHeader("simpSessionId"));
 		String token = headerAccessor.getFirstNativeHeader("Authorization");
 		User user= jwtTokenProvider.getUserFromToken(token);
 		String roomId = chatMessage.getRoomId();
