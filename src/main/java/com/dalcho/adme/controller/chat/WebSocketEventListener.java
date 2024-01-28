@@ -1,11 +1,15 @@
 package com.dalcho.adme.controller.chat;
 
+import com.dalcho.adme.config.security.JwtTokenProvider;
+import com.dalcho.adme.domain.User;
+import com.dalcho.adme.domain.UserRole;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatMessage.MessageType;
 import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.repository.UserRepository;
 import com.dalcho.adme.service.Impl.ChatServiceImpl;
 import com.dalcho.adme.service.Impl.RedisService;
+import io.lettuce.core.ScriptOutputType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -26,6 +30,7 @@ public class WebSocketEventListener {
     private final ChatServiceImpl chatService;
     private final RedisService redisService;
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtProvider;
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
 
     @EventListener
@@ -35,19 +40,13 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        System.out.println();
-        System.out.println();
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        System.out.println("headerAccessor :   " + headerAccessor);
-        System.out.println("getSessionAttributes" + headerAccessor.getSessionAttributes());
         String sessionId = (String) headerAccessor.getHeader("simpSessionId");
-
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) headerAccessor.getHeader("simpUser");
-        System.out.println("token : " + token);
-
-        String nickname = token.getName();
+        String token = redisService.getSession(sessionId);
+        User user = jwtProvider.getUserFromToken(token);
+        String nickname = user.getNickname();
         userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
-        String role = token.getAuthorities().toString().replace("[", "").replace("]", "");
+        String role = user.getRole().toString();
         String roomId = redisService.getRedis(nickname);
         if (roomId.startsWith("aaaa")) {
             log.info("[랜덤 채팅] disconnected chat");

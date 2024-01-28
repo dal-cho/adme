@@ -48,10 +48,9 @@ public class ChatController {
 
 	@MessageMapping("/chat/addUser")
 	public void addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
-		System.out.println();
-		System.out.println();
-		System.out.println("headerAccessor : " + headerAccessor.getHeader("simpSessionId"));
+		String sessionId = (String) headerAccessor.getHeader("simpSessionId");
 		String token = headerAccessor.getFirstNativeHeader("Authorization");
+		redisService.addSession(sessionId, token);
 		User user= jwtTokenProvider.getUserFromToken(token);
 		String roomId = chatMessage.getRoomId();
 		ChannelTopic channel = new ChannelTopic("/topic/public/" + roomId);
