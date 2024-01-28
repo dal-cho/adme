@@ -83,6 +83,9 @@ public class ChatServiceImpl {
     public List<ChatRoomDto> findAllRoom() {
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
         List<Chat> all = chatRepository.findAll();
+        System.out.println();
+        System.out.println();
+        System.out.println("all : " + all);
         try {
             for (int i = 0; i < all.size(); i++) {
                 User user = userRepository.findById(all.get(i).getUser().getId()).orElseThrow(UserNotFoundException::new);
