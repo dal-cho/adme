@@ -85,6 +85,7 @@ public class ChatServiceImpl {
         List<Chat> all = chatRepository.findAll();
         System.out.println();
         System.out.println();
+        System.out.println(" = = = = = = = = = findAllRoom = = = = = = = = =");
         System.out.println("all : " + all);
         try {
             for (int i = 0; i < all.size(); i++) {
