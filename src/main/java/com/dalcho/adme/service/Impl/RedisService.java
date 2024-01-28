@@ -3,8 +3,6 @@ package com.dalcho.adme.service.Impl;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class RedisService {
     private final StringRedisTemplate redisTemplate;
-    
+
     public void addRedis(ChatMessage chatMessage) {
         log.info("[addRedis의 KEY] : " + chatMessage.getSender());
         long expireTimeInSeconds = 24 * 60 * 60;

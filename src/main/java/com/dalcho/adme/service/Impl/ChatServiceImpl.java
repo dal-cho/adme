@@ -172,11 +172,11 @@ public class ChatServiceImpl {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        int month = now.getMonthValue();
-        int day = now.getDayOfMonth();
+//        int month = now.getMonthValue();
+//        int day = now.getDayOfMonth();
 
-        String pattern = "HH:mm";
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern));
+//        String pattern = "HH:mm";
+//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern));
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("roomId", chatMessage.getRoomId());
@@ -187,7 +187,8 @@ public class ChatServiceImpl {
         }
         Integer adminCnt = adminChat.get(chatMessage.getRoomId());
         Integer userCnt = adminChat.get(chatMessage.getRoomId());
-        String days = month + "/" + day;
+        String days = chatMessage.getDay();
+        String time = chatMessage.getTime();
 
         jsonObject.addProperty("sender", chatMessage.getSender());
         jsonObject.addProperty("message", chatMessage.getMessage());
