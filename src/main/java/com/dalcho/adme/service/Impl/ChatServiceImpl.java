@@ -28,6 +28,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,6 +83,10 @@ public class ChatServiceImpl {
     public List<ChatRoomDto> findAllRoom() {
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
         List<Chat> all = chatRepository.findAll();
+        System.out.println();
+        System.out.println();
+        System.out.println(" = = = = = = = = = findAllRoom = = = = = = = = =");
+        System.out.println("all : " + all);
         try {
             for (int i = 0; i < all.size(); i++) {
                 User user = userRepository.findById(all.get(i).getUser().getId()).orElseThrow(UserNotFoundException::new);
@@ -170,10 +176,11 @@ public class ChatServiceImpl {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        int month = now.getMonthValue();
-        int day = now.getDayOfMonth();
-        String pattern = "HH:mm";
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern));
+//        int month = now.getMonthValue();
+//        int day = now.getDayOfMonth();
+
+//        String pattern = "HH:mm";
+//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern));
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("roomId", chatMessage.getRoomId());
@@ -184,7 +191,8 @@ public class ChatServiceImpl {
         }
         Integer adminCnt = adminChat.get(chatMessage.getRoomId());
         Integer userCnt = adminChat.get(chatMessage.getRoomId());
-        String days = month + "/" + day;
+        String days = chatMessage.getDay();
+        String time = chatMessage.getTime();
 
         jsonObject.addProperty("sender", chatMessage.getSender());
         jsonObject.addProperty("message", chatMessage.getMessage());
