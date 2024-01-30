@@ -62,10 +62,10 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated();
 
-    http.oauth2Login().loginPage("/templates/login.html")
-            .and()
-            .logout().logoutSuccessUrl("/templates/login.html")
-            .deleteCookies("TokenCookie");
+//    http.oauth2Login().loginPage("/templates/login.html")
+//            .and()
+//            .logout().logoutSuccessUrl("/templates/login.html")
+//            .deleteCookies("TokenCookie");
 
     http.oauth2Login()
             .userInfoEndpoint()
