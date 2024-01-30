@@ -27,6 +27,8 @@ public class SignController {
 
     @Value("${OAUTH_KAKAO_REST_API}")
     private String REST_API;
+    @Value("${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_SCOPE}")
+    private String scope;
 
     private final SignService signService;
 
@@ -71,6 +73,7 @@ public class SignController {
         List<String> list = new ArrayList<>();
         list.add(REDIRECTION_URL);
         list.add(REST_API);
+        list.add(scope);
         return list;
     }
 }
