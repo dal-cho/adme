@@ -25,7 +25,7 @@ public class SignController {
     @Value("${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_REDIRECT_URI}")
     private String REDIRECTION_URL;
 
-    @Value("${OAUTH2_KAKAO_JAVASCRIPT}")
+    @Value("${OAUTH_KAKAO_JAVASCRIPT}")
     private String JAVASCRIPT;
 
     private final SignService signService;
