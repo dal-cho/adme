@@ -66,7 +66,7 @@ public class SignController {
         return userDetails;
     }
 
-    @GetMapping("/oauth-kakao")
+    @GetMapping("/oauth2/kakao")
     public List<String> kakao(){
         List<String> list = new ArrayList<>();
         list.add(REDIRECTION_URL);
