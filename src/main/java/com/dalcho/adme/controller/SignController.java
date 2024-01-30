@@ -21,15 +21,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class SignController {
-
-    @Value("${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_REDIRECT_URI}")
-    private String REDIRECTION_URL;
-
-    @Value("${OAUTH_KAKAO_REST_API}")
-    private String REST_API;
-    @Value("${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_SCOPE}")
-    private String scope;
-
     private final SignService signService;
 
     @Autowired
@@ -66,14 +57,5 @@ public class SignController {
         log.info("[SignController]");
         log.info("[userInfo] 유저정보 조회");
         return userDetails;
-    }
-
-    @GetMapping("/oauth2/kakao")
-    public List<String> kakao(){
-        List<String> list = new ArrayList<>();
-        list.add(REDIRECTION_URL);
-        list.add(REST_API);
-        list.add(scope);
-        return list;
     }
 }
