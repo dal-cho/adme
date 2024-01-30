@@ -55,4 +55,9 @@ public class SignController {
         log.info("[userInfo] 유저정보 조회");
         return userDetails;
     }
+
+    @GetMapping("/oauth2-login")
+    public String startLogin(){
+        return "redirect:/oauth2/authorization/kakao";
+    }
 }
