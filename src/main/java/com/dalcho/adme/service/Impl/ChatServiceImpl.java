@@ -89,6 +89,8 @@ public class ChatServiceImpl {
         System.out.println("all : " + all);
         try {
             for (int i = 0; i < all.size(); i++) {
+                System.out.println(all.get(i).getUser().getId());
+                System.out.println(all.get(i).getRoomId());
                 User user = userRepository.findById(all.get(i).getUser().getId()).orElseThrow(UserNotFoundException::new);
                 chatRoomDtos.add(ChatRoomDto.of(all.get(i).getRoomId(), user, lastLine(all.get(i).getRoomId())));
             }
@@ -293,18 +295,19 @@ public class ChatServiceImpl {
                 try {
                     // 파일이 존재하지 않는 경우 새로 생성
                     file.createNewFile();
-                    return null;
+                    //return null;
                 } catch (IOException e) {
                     e.printStackTrace();
-                    return null;
+                    //return "";
                 }
             }
             try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-
+                System.out.println("1");
                 long fileLength = file.length();
                 if (fileLength <= 0) {
                     return null;
                 }
+                System.out.println("2");
                 randomAccessFile.seek(fileLength);
                 long pointer = fileLength - 2;
                 while (pointer > 0) {
@@ -317,13 +320,15 @@ public class ChatServiceImpl {
                 }
                 randomAccessFile.seek(pointer + 1);
                 String line = randomAccessFile.readLine();
+                System.out.println("3");
                 if (line == null || line.trim().isEmpty()) {
                     return null;
                 }
+                System.out.println("4");
                 if (line.startsWith(",")) {
                     line = line.substring(1);
                 }
-
+                System.out.println("5");
                 JsonParser parser = new JsonParser();
                 JsonObject json = parser.parse(line).getAsJsonObject();
                 int adminChat = json.get("adminChat").getAsInt();
@@ -332,7 +337,7 @@ public class ChatServiceImpl {
                 String messages = new String(message.getBytes("iso-8859-1"), "utf-8");
                 String day = json.get("day").getAsString();
                 String time = json.get("time").getAsString();
-
+                System.out.println("6");
                 ChatMessage chatMessage = new ChatMessage();
                 chatMessage.setRoomId(roomId);
                 chatMessage.setMessage(messages);
