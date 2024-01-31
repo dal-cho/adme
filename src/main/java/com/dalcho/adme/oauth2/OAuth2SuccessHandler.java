@@ -57,7 +57,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 	private String getRedirectionURI(String token, User user) {
 		if(user.getRole().name().equals(UserRole.USER.name())){
-			return UriComponentsBuilder.fromUriString(REDIRECTION_URL).queryParam("token", token).build().toUriString();
+			return UriComponentsBuilder.fromUriString(REDIRECTION_URL).queryParam("token", token).queryParam("name", user.getNickname()).build().toUriString();
 		}else if (user.getRole().name().equals(UserRole.ADMIN.name())){
 			return UriComponentsBuilder.fromUriString(ADMIN_REDIRECTION_URL).queryParam("token", token).build().toUriString();
 		}else{
