@@ -3,6 +3,7 @@ package com.dalcho.adme.dto;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -14,6 +15,9 @@ public class LastMessage {
     private String day;
     private String time;
 
+    public LastMessage(){
+
+    }
     public static LastMessage of(ChatMessage chatMessage, int adminChat, int userChat, String day, String time){
         return LastMessage.builder()
                 .roomId(chatMessage.getRoomId())
