@@ -1,5 +1,6 @@
 package com.dalcho.adme.config.security;
 
+import com.dalcho.adme.domain.UserRole;
 import com.dalcho.adme.oauth2.CustomOAuthService;
 import com.dalcho.adme.oauth2.OAuth2SuccessHandler;
 import com.dalcho.adme.oauth2.Oauth2FailureHandler;
@@ -59,13 +60,13 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers("/oauth2/**").permitAll()
             .antMatchers("/health").permitAll()
             .antMatchers("/ws/**").permitAll()
-            .antMatchers("/admin/**").hasRole("ADMIN")
+            .antMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
             .anyRequest().authenticated();
 
-    http.oauth2Login().loginPage("/user/login")
-            .and()
-            .logout().logoutSuccessUrl("/user/login")
-            .deleteCookies("TokenCookie");
+//    http.oauth2Login().loginPage("/templates/login.html")
+//            .and()
+//            .logout().logoutSuccessUrl("/templates/login.html")
+//            .deleteCookies("TokenCookie");
 
     http.oauth2Login()
             .userInfoEndpoint()
