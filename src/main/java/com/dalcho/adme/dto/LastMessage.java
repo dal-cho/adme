@@ -15,9 +15,6 @@ public class LastMessage {
     private String day;
     private String time;
 
-    public LastMessage(){
-
-    }
     public static LastMessage of(ChatMessage chatMessage, int adminChat, int userChat, String day, String time){
         return LastMessage.builder()
                 .roomId(chatMessage.getRoomId())

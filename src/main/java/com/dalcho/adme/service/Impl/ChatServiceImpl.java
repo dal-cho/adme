@@ -302,11 +302,8 @@ public class ChatServiceImpl {
                 }
             }
             try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-                System.out.println("1");
                 long fileLength = file.length();
-                if (fileLength <= 0) {
-                    return new LastMessage();
-                } else {
+                if (fileLength > 0) {
                     System.out.println("2");
                     randomAccessFile.seek(fileLength);
                     long pointer = fileLength - 2;
@@ -343,11 +340,17 @@ public class ChatServiceImpl {
                     chatMessage.setMessage(messages);
                     return LastMessage.of(chatMessage, adminChat, userChat, day, time);
                 }
+                else{
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.setRoomId(roomId);
+                    chatMessage.setMessage("");
+                    LastMessage.of(chatMessage, 0, 0, "", "");
+                }
             } catch (IOException | JsonSyntaxException e) {
                 e.printStackTrace();
                 return null;
             }
-
         }
+        return null;
     }
 }
