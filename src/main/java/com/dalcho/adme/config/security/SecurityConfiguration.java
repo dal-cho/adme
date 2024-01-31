@@ -60,7 +60,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers("/oauth2/**").permitAll()
             .antMatchers("/health").permitAll()
             .antMatchers("/ws/**").permitAll()
-            .antMatchers("/room").permitAll()
+            .antMatchers("/rooms").permitAll()
             .antMatchers("/templates/admin-chat.html").hasAuthority(UserRole.ADMIN.name())
             .anyRequest().authenticated();
 
