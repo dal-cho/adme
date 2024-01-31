@@ -317,15 +317,12 @@ public class ChatServiceImpl {
                     }
                     randomAccessFile.seek(pointer + 1);
                     String line = randomAccessFile.readLine();
-                    System.out.println("3");
                     if (line == null || line.trim().isEmpty()) {
                         return null;
                     }
-                    System.out.println("4");
                     if (line.startsWith(",")) {
                         line = line.substring(1);
                     }
-                    System.out.println("5");
                     JsonParser parser = new JsonParser();
                     JsonObject json = parser.parse(line).getAsJsonObject();
                     int adminChat = json.get("adminChat").getAsInt();
@@ -334,7 +331,6 @@ public class ChatServiceImpl {
                     String messages = new String(message.getBytes("iso-8859-1"), "utf-8");
                     String day = json.get("day").getAsString();
                     String time = json.get("time").getAsString();
-                    System.out.println("6");
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.setRoomId(roomId);
                     chatMessage.setMessage(messages);
@@ -344,13 +340,12 @@ public class ChatServiceImpl {
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.setRoomId(roomId);
                     chatMessage.setMessage("");
-                    LastMessage.of(chatMessage, 0, 0, "", "");
+                    return LastMessage.of(chatMessage, 0, 0, "", "");
                 }
             } catch (IOException | JsonSyntaxException e) {
                 e.printStackTrace();
                 return null;
             }
         }
-        return null;
     }
 }
