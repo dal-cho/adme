@@ -92,7 +92,10 @@ public class ChatServiceImpl {
                 System.out.println(all.get(i).getUser().getId());
                 System.out.println(all.get(i).getRoomId());
                 User user = userRepository.findById(all.get(i).getUser().getId()).orElseThrow(UserNotFoundException::new);
-                chatRoomDtos.add(ChatRoomDto.of(all.get(i).getRoomId(), user, lastLine(all.get(i).getRoomId())));
+                LastMessage lastMessage = lastLine(all.get(i).getRoomId());
+                if(!lastMessage.getMessage().equals("")){
+                    chatRoomDtos.add(ChatRoomDto.of(all.get(i).getRoomId(), user, lastLine(all.get(i).getRoomId())));
+                }
             }
         } catch (NullPointerException e) {
             log.info(" [현재 채팅방 db 없음!] " + e);
