@@ -34,11 +34,6 @@ public class RedisSubscriber implements MessageListener {
             ChatMessage chatMessage = objectMapper.readValue(msg, ChatMessage.class);
             log.info("chatMessage : " + chatMessage);
 
-            try (Jedis jedis = new Jedis("www.admee.site")) {
-                Map<String, String> stringStringMap = jedis.pubsubNumSub(channel);
-                log.info("구독자 수: " + stringStringMap.get(channel));
-            }
-
             if (chatMessage.getType().equals(MessageType.TALK)) {
                 messagingTemplate.convertAndSend(channel, chatMessage);
             }
