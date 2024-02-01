@@ -61,6 +61,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers("/health").permitAll()
             .antMatchers("/ws/**").permitAll()
             .antMatchers("/rooms").permitAll()
+            .antMatchers("/room/**").permitAll()
             .antMatchers("/templates/admin-chat.html").hasAuthority(UserRole.ADMIN.name())
             .anyRequest().authenticated();
 
