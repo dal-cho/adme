@@ -2,6 +2,7 @@ package com.dalcho.adme.config;
 
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatMessage.MessageType;
+import com.dalcho.adme.dto.chat.ChatRoomDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.Map;
 @Slf4j
 public class RedisSubscriber implements MessageListener {
     private final ObjectMapper objectMapper;
-    private final RedisTemplate<String, ChatMessage> redisTemplate;
+    private final RedisTemplate<String, ChatRoomDto> redisTemplate;
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Override
