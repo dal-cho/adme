@@ -38,7 +38,6 @@ public class SecurityConfiguration {
             "/taste",
             "/tenSeconds",
             "/",
-            "/oauth2/**",
             "/sign-up",
             "/templates/**"
     };
@@ -58,16 +57,13 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
             .antMatchers("/health").permitAll()
-//            .antMatchers("/ws/**").permitAll()
-//            .antMatchers("/rooms").permitAll()
- //           .antMatchers("/room/**").permitAll()
             .antMatchers("/templates/admin-chat").hasRole(UserRole.ADMIN.name())
             .anyRequest().authenticated();
 
-//    http.oauth2Login().loginPage("/templates/login.html")
-//            .and()
-//            .logout().logoutSuccessUrl("/templates/login.html")
-//            .deleteCookies("TokenCookie");
+    http.oauth2Login().loginPage("/templates/login.html")
+            .and()
+            .logout().logoutSuccessUrl("/templates/login.html")
+            .deleteCookies("TokenCookie");
 
     http.oauth2Login()
             .userInfoEndpoint()
