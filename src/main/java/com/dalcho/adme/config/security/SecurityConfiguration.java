@@ -57,12 +57,11 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .antMatchers(VIEW_LIST).permitAll()
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
-            .antMatchers("/oauth2/**").permitAll()
             .antMatchers("/health").permitAll()
-            .antMatchers("/ws/**").permitAll()
-            .antMatchers("/rooms").permitAll()
-            .antMatchers("/room/**").permitAll()
-            .antMatchers("/templates/admin-chat.html").hasAuthority(UserRole.ADMIN.name())
+//            .antMatchers("/ws/**").permitAll()
+//            .antMatchers("/rooms").permitAll()
+ //           .antMatchers("/room/**").permitAll()
+            .antMatchers("/templates/admin-chat").hasRole(UserRole.ADMIN.name())
             .anyRequest().authenticated();
 
 //    http.oauth2Login().loginPage("/templates/login.html")
@@ -96,6 +95,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("https://api.admee.site");
         configuration.setAllowedOriginPatterns(List.of("https://www.admee.site"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));

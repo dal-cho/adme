@@ -170,14 +170,6 @@ public class ChatServiceImpl {
                 countChat(chatMessage.getSender(), chatMessage.getRoomId());
             }
         }
-
-        LocalDateTime now = LocalDateTime.now();
-//        int month = now.getMonthValue();
-//        int day = now.getDayOfMonth();
-
-//        String pattern = "HH:mm";
-//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern));
-
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("roomId", chatMessage.getRoomId());
         if (chatMessage.getType() == MessageType.JOIN) {
@@ -264,7 +256,7 @@ public class ChatServiceImpl {
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(jsonString);
             long stopTime = System.currentTimeMillis();
-            log.info("readFile : " + (stopTime - startTime) + " 초");
+            log.info("readFile : " + (stopTime - startTime)/1000 + " 초");
             return obj;
         } catch (NoSuchFileException e) {
             throw new FileNotFoundException();
