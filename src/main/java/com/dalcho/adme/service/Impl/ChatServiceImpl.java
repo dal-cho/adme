@@ -83,14 +83,8 @@ public class ChatServiceImpl {
     public List<ChatRoomDto> findAllRoom() {
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
         List<Chat> all = chatRepository.findAll();
-        System.out.println();
-        System.out.println();
-        System.out.println(" = = = = = = = = = findAllRoom = = = = = = = = =");
-        System.out.println("all : " + all);
         try {
             for (int i = 0; i < all.size(); i++) {
-                System.out.println(all.get(i).getUser().getId());
-                System.out.println(all.get(i).getRoomId());
                 User user = userRepository.findById(all.get(i).getUser().getId()).orElseThrow(UserNotFoundException::new);
                 LastMessage lastMessage = lastLine(all.get(i).getRoomId());
                 if(!lastMessage.getMessage().equals("")){
@@ -125,10 +119,6 @@ public class ChatServiceImpl {
             String roomId = findChat.get().getRoomId();
             chatRoom.setRoomId(findChat.get().getRoomId());
 
-//            if (!isChatFileExists(roomId)) {
-//                return null;
-//            }
-
             LastMessage lastLine = lastLine(roomId);
             if (lastLine == null) {
                 lastLine = LastMessage.builder()
@@ -156,13 +146,11 @@ public class ChatServiceImpl {
         log.info("[SSE] chatAlarm");
         ChatMessage chatMessage = new ChatMessage();
         if (Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
-            log.info("[SSE] SENDER ADMIN");
             chatMessage.setRoomId(roomId);
             chatMessage.setSender(sender);
             chatMessage.setMessage("고객센터에 문의한 글에 답글이 달렸습니다.");
             return chatMessage;
         } else if (!Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
-            log.info("[SSE] SENDER USER");
             chatMessage.setRoomId(roomId);
             chatMessage.setSender(sender);
             chatMessage.setMessage(sender + " 님이 답을 기다리고 있습니다.");
@@ -310,7 +298,6 @@ public class ChatServiceImpl {
             try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
                 long fileLength = file.length();
                 if (fileLength > 0) {
-                    System.out.println("2");
                     randomAccessFile.seek(fileLength);
                     long pointer = fileLength - 2;
                     while (pointer > 0) {

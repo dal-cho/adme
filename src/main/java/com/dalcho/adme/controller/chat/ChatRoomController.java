@@ -82,9 +82,8 @@ public class ChatRoomController {
         CLIENTS.forEach((id, emitter) -> {
             try {
                 ChatMessage chatMessage = chatService.chatAlarm(sender, roomId);
-                System.out.println("[SSE] chatMessage : " + chatMessage);
                 emitter.send(chatMessage, MediaType.APPLICATION_JSON);
-                System.out.println("[SSE] send 완료");
+                log.info("[SSE] send 완료");
             } catch (Exception e) {
                 log.error("[error]  " + e);
                 deadIds.add(id);
