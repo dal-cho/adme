@@ -54,10 +54,10 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http.authorizeRequests()
             .antMatchers("/templates/admin-chat.html").hasAuthority("ADMIN")
-            .antMatchers(VIEW_LIST).permitAll()
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
             .antMatchers("/health").permitAll()
+            .antMatchers(VIEW_LIST).permitAll()
             .anyRequest().authenticated();
 
     http.oauth2Login().loginPage("/templates/login.html")
