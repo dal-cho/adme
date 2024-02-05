@@ -53,7 +53,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .disable();
 
     http.authorizeRequests()
-            .antMatchers("/templates/admin-chat.html").hasAuthority(UserRole.ADMIN.name())
+            .antMatchers("/templates/admin-chat.html").hasAuthority("ADMIN")
             .antMatchers(VIEW_LIST).permitAll()
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
