@@ -58,7 +58,7 @@ public class SignServiceImpl implements SignService {
             throw new UserDuplicateIdException();
         }
         if(nickname.equals("admin")){
-            log.info("[getSignUpResult] 해당 nickname은 사용할 수 없음 ");
+            log.warn("[getSignUpResult] 해당 nickname은 사용할 수 없음 ");
             throw new InvalidNicknameException();
         }
         log.info("[getSignUpResult] 회원 정보 유무 확인 완료");
