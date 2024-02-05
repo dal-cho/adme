@@ -56,6 +56,9 @@ public class SignServiceImpl implements SignService {
         if (userRepository.existsByNickname(nickname)) {
             throw new UserDuplicateIdException();
         }
+        if(nickname.equals("admin")){
+            throw new UserDuplicateIdException();
+        }
         log.info("[getSignUpResult] 회원 정보 유무 확인 완료");
 
         try {
