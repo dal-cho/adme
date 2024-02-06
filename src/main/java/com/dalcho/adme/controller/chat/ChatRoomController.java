@@ -27,6 +27,12 @@ public class ChatRoomController {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private static final Map<String, SseEmitter> CLIENTS = new ConcurrentHashMap<>();
     private final JwtTokenProvider jwtTokenProvider;
+
+    @GetMapping("/check-user")
+    public String check(){
+        return "success";
+    }
+
     // 모든 채팅방 목록 반환(관리자)
     @GetMapping("/rooms")
     public List<ChatRoomDto> room() {
