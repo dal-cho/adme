@@ -36,9 +36,9 @@ public class RegistryController {
         return registryService.getIdxRegistry(idx);
     }
 
-    @PutMapping("/registry")
-    public RegistryResponseDto updateRegistry(Long id, RegistryRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails){
-        return registryService.updateRegistry(id, requestDto,  userDetails);
+    @PutMapping("/registry/{registryId}")
+    public RegistryResponseDto updateRegistry(@PathVariable Long registryId, @RequestBody RegistryRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails){
+        return registryService.updateRegistry(registryId, requestDto,  userDetails);
     }
 
     //mypage 게시글 paging
