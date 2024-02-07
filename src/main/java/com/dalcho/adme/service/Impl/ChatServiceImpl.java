@@ -83,14 +83,13 @@ public class ChatServiceImpl {
     public List<ChatRoomDto> findAllRoom() {
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
         List<Chat> all = chatRepository.findAll();
-        System.out.println();
-        System.out.println();
-        System.out.println(" = = = = = = = = = findAllRoom = = = = = = = = =");
-        System.out.println("all : " + all);
         try {
             for (int i = 0; i < all.size(); i++) {
                 User user = userRepository.findById(all.get(i).getUser().getId()).orElseThrow(UserNotFoundException::new);
-                chatRoomDtos.add(ChatRoomDto.of(all.get(i).getRoomId(), user, lastLine(all.get(i).getRoomId())));
+                LastMessage lastMessage = lastLine(all.get(i).getRoomId());
+                if(!lastMessage.getMessage().equals("")){
+                    chatRoomDtos.add(ChatRoomDto.of(all.get(i).getRoomId(), user, lastLine(all.get(i).getRoomId())));
+                }
             }
         } catch (NullPointerException e) {
             log.info(" [현재 채팅방 db 없음!] " + e);
@@ -120,10 +119,6 @@ public class ChatServiceImpl {
             String roomId = findChat.get().getRoomId();
             chatRoom.setRoomId(findChat.get().getRoomId());
 
-//            if (!isChatFileExists(roomId)) {
-//                return null;
-//            }
-
             LastMessage lastLine = lastLine(roomId);
             if (lastLine == null) {
                 lastLine = LastMessage.builder()
@@ -148,6 +143,7 @@ public class ChatServiceImpl {
     }
 
     public ChatMessage chatAlarm(String sender, String roomId) {
+        log.info("[SSE] chatAlarm");
         ChatMessage chatMessage = new ChatMessage();
         if (Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
             chatMessage.setRoomId(roomId);
@@ -174,14 +170,6 @@ public class ChatServiceImpl {
                 countChat(chatMessage.getSender(), chatMessage.getRoomId());
             }
         }
-
-        LocalDateTime now = LocalDateTime.now();
-//        int month = now.getMonthValue();
-//        int day = now.getDayOfMonth();
-
-//        String pattern = "HH:mm";
-//        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern));
-
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("roomId", chatMessage.getRoomId());
         if (chatMessage.getType() == MessageType.JOIN) {
@@ -268,7 +256,7 @@ public class ChatServiceImpl {
             JSONParser parser = new JSONParser();
             Object obj = parser.parse(jsonString);
             long stopTime = System.currentTimeMillis();
-            log.info("readFile : " + (stopTime - startTime) + " 초");
+            log.info("readFile : " + (stopTime - startTime)/1000 + " 초");
             return obj;
         } catch (NoSuchFileException e) {
             throw new FileNotFoundException();
@@ -293,50 +281,52 @@ public class ChatServiceImpl {
                 try {
                     // 파일이 존재하지 않는 경우 새로 생성
                     file.createNewFile();
-                    return null;
+                    //return null;
                 } catch (IOException e) {
                     e.printStackTrace();
-                    return null;
+                    //return "";
                 }
             }
             try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-
                 long fileLength = file.length();
-                if (fileLength <= 0) {
-                    return null;
-                }
-                randomAccessFile.seek(fileLength);
-                long pointer = fileLength - 2;
-                while (pointer > 0) {
-                    randomAccessFile.seek(pointer);
-                    char c = (char) randomAccessFile.read();
-                    if (c == '\n') {
-                        break;
+                if (fileLength > 0) {
+                    randomAccessFile.seek(fileLength);
+                    long pointer = fileLength - 2;
+                    while (pointer > 0) {
+                        randomAccessFile.seek(pointer);
+                        char c = (char) randomAccessFile.read();
+                        if (c == '\n') {
+                            break;
+                        }
+                        pointer--;
                     }
-                    pointer--;
+                    randomAccessFile.seek(pointer + 1);
+                    String line = randomAccessFile.readLine();
+                    if (line == null || line.trim().isEmpty()) {
+                        return null;
+                    }
+                    if (line.startsWith(",")) {
+                        line = line.substring(1);
+                    }
+                    JsonParser parser = new JsonParser();
+                    JsonObject json = parser.parse(line).getAsJsonObject();
+                    int adminChat = json.get("adminChat").getAsInt();
+                    int userChat = json.get("userChat").getAsInt();
+                    String message = json.get("message").getAsString().trim();
+                    String messages = new String(message.getBytes("iso-8859-1"), "utf-8");
+                    String day = json.get("day").getAsString();
+                    String time = json.get("time").getAsString();
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.setRoomId(roomId);
+                    chatMessage.setMessage(messages);
+                    return LastMessage.of(chatMessage, adminChat, userChat, day, time);
                 }
-                randomAccessFile.seek(pointer + 1);
-                String line = randomAccessFile.readLine();
-                if (line == null || line.trim().isEmpty()) {
-                    return null;
+                else{
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.setRoomId(roomId);
+                    chatMessage.setMessage("");
+                    return LastMessage.of(chatMessage, 0, 0, "", "");
                 }
-                if (line.startsWith(",")) {
-                    line = line.substring(1);
-                }
-
-                JsonParser parser = new JsonParser();
-                JsonObject json = parser.parse(line).getAsJsonObject();
-                int adminChat = json.get("adminChat").getAsInt();
-                int userChat = json.get("userChat").getAsInt();
-                String message = json.get("message").getAsString().trim();
-                String messages = new String(message.getBytes("iso-8859-1"), "utf-8");
-                String day = json.get("day").getAsString();
-                String time = json.get("time").getAsString();
-
-                ChatMessage chatMessage = new ChatMessage();
-                chatMessage.setRoomId(roomId);
-                chatMessage.setMessage(messages);
-                return LastMessage.of(chatMessage, adminChat, userChat, day, time);
             } catch (IOException | JsonSyntaxException e) {
                 e.printStackTrace();
                 return null;

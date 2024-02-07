@@ -3,6 +3,7 @@ package com.dalcho.adme.dto;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder

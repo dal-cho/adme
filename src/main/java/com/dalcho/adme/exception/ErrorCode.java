@@ -9,6 +9,7 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 관리자 암호입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "잘못된 패스워드입니다."),
     INVALID_PATTERN(HttpStatus.UNAUTHORIZED, "잘못된 형식의 패턴입니다."),
+    INVALID_NICKNAME(HttpStatus.UNAUTHORIZED, "사용할 수 없는 nickname 입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."),
     USER_DUPLICATE_ID(HttpStatus.CONFLICT, "중복된 Nickname 이 존재합니다."),
     PERMISSION_DENIED(HttpStatus.UNAUTHORIZED, "사용자 권한이 없습니다."),

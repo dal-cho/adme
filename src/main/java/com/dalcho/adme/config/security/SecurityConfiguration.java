@@ -38,7 +38,6 @@ public class SecurityConfiguration {
             "/taste",
             "/tenSeconds",
             "/",
-            "/oauth2/**",
             "/sign-up",
             "/templates/**"
     };
@@ -54,19 +53,18 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .disable();
 
     http.authorizeRequests()
-            .antMatchers(VIEW_LIST).permitAll()
+            .antMatchers("/rooms").hasAuthority(UserRole.ADMIN.name())
+            .antMatchers("/check-user").hasAuthority(UserRole.ADMIN.name())
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
-            .antMatchers("/oauth2/**").permitAll()
             .antMatchers("/health").permitAll()
-            .antMatchers("/ws/**").permitAll()
-            .antMatchers("/admin/**").hasRole(UserRole.ADMIN.name())
+            .antMatchers(VIEW_LIST).permitAll()
             .anyRequest().authenticated();
 
-//    http.oauth2Login().loginPage("/templates/login.html")
-//            .and()
-//            .logout().logoutSuccessUrl("/templates/login.html")
-//            .deleteCookies("TokenCookie");
+    http.oauth2Login().loginPage("/templates/login.html")
+            .and()
+            .logout().logoutSuccessUrl("/templates/login.html")
+            .deleteCookies("TokenCookie");
 
     http.oauth2Login()
             .userInfoEndpoint()
@@ -94,7 +92,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("https://www.admee.site"));
+        configuration.setAllowedOriginPatterns(List.of("https://www.admee.site","https://api.admee.site","wss://api.admee.site"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);

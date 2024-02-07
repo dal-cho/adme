@@ -27,6 +27,7 @@ public class ChatRoomController {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private static final Map<String, SseEmitter> CLIENTS = new ConcurrentHashMap<>();
     private final JwtTokenProvider jwtTokenProvider;
+
     // 모든 채팅방 목록 반환(관리자)
     @GetMapping("/rooms")
     public List<ChatRoomDto> room() {
@@ -62,12 +63,15 @@ public class ChatRoomController {
 
     @GetMapping("/room/subscribe")
     public SseEmitter subscribe(String id) throws IOException {
+        log.info("[SSE] SUBSCRIBE");
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         CLIENTS.put(id, emitter);
+        log.info("[SSE] - " + CLIENTS.get(id));
         emitter.send(SseEmitter.event().name("connect") // 해당 이벤트의 이름 지정
                 .data("connected!")); // 503 에러 방지를 위한 더미 데이터
         emitter.onTimeout(() -> CLIENTS.remove(id));
         emitter.onCompletion(() -> CLIENTS.remove(id));
+
         return emitter;
     }
 
@@ -80,6 +84,7 @@ public class ChatRoomController {
             try {
                 ChatMessage chatMessage = chatService.chatAlarm(sender, roomId);
                 emitter.send(chatMessage, MediaType.APPLICATION_JSON);
+                log.info("[SSE] send 완료");
             } catch (Exception e) {
                 log.error("[error]  " + e);
                 deadIds.add(id);

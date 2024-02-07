@@ -9,6 +9,7 @@ import com.dalcho.adme.dto.sign.SignInResultDto;
 import com.dalcho.adme.dto.sign.SignUpRequestDto;
 import com.dalcho.adme.dto.sign.SignUpResultDto;
 import com.dalcho.adme.exception.duplicate.UserDuplicateIdException;
+import com.dalcho.adme.exception.invalid.InvalidNicknameException;
 import com.dalcho.adme.exception.invalid.InvalidPasswordException;
 import com.dalcho.adme.exception.invalid.InvalidPatternException;
 import com.dalcho.adme.exception.invalid.InvalidTokenException;
@@ -55,6 +56,10 @@ public class SignServiceImpl implements SignService {
         log.info("[getSignUpResult] 회원 정보 유무 확인");
         if (userRepository.existsByNickname(nickname)) {
             throw new UserDuplicateIdException();
+        }
+        if(nickname.equals("admin")){
+            log.warn("[getSignUpResult] 해당 nickname은 사용할 수 없음 ");
+            throw new InvalidNicknameException();
         }
         log.info("[getSignUpResult] 회원 정보 유무 확인 완료");
 
