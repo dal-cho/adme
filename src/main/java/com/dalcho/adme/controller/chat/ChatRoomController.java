@@ -28,10 +28,10 @@ public class ChatRoomController {
     private static final Map<String, SseEmitter> CLIENTS = new ConcurrentHashMap<>();
     private final JwtTokenProvider jwtTokenProvider;
 
-//    @GetMapping("/check-user")
-//    public String check(){
-//        return "success";
-//    }
+    @GetMapping("/check-user")
+    public String check(){
+        return "success";
+    }
 
     // 모든 채팅방 목록 반환(관리자)
     @GetMapping("/rooms")
