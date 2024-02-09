@@ -62,7 +62,7 @@ public class ChatRoomController {
     }
 
     @GetMapping("/room/subscribe")
-    public SseEmitter subscribe(String id) throws IOException {
+    public SseEmitter subscribe(@RequestParam String id) throws IOException {
         log.info("[SSE] SUBSCRIBE");
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         CLIENTS.put(id, emitter);
