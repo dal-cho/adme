@@ -61,8 +61,8 @@ public class ChatRoomController {
         return jwtTokenProvider.getNickname(token);
     }
 
-    @GetMapping("/room/subscribe")
-    public SseEmitter subscribe(@RequestParam String id) throws IOException {
+    @GetMapping("/room/subscribe/{id}")
+    public SseEmitter subscribe(@PathVariable String id) throws IOException {
         log.info("[SSE] SUBSCRIBE");
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         CLIENTS.put(id, emitter);
