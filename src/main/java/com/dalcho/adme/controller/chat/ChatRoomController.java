@@ -75,7 +75,7 @@ public class ChatRoomController {
         return emitter;
     }
 
-    @GetMapping("/alarm/publish")
+    @GetMapping(value = "/alarm/publish", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Async // 비동기
     public void publish(String sender, String roomId) {
         log.info("[SSE] - sender : " + sender);
