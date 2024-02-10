@@ -39,7 +39,8 @@ public class SecurityConfiguration {
             "/tenSeconds",
             "/",
             "/sign-up",
-            "/templates/**"
+            "/templates/**",
+            "/ws/**"
     };
 
 @Bean
