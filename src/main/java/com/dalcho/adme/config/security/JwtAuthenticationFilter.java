@@ -30,6 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // UserDetails 값 유무
         try {
+            System.out.println(" token : " + token);
+            System.out.println(" : " + jwtTokenProvider.validateToken(token));
             if (token != null && auth != null) {
                 log.info("[doFilterInternal] login 완료");
             } else if (token != null && jwtTokenProvider.validateToken(token)) {
