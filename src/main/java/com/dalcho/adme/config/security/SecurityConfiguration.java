@@ -40,7 +40,8 @@ public class SecurityConfiguration {
             "/",
             "/sign-up",
             "/templates/**",
-            "/ws/**"
+            "/ws/**",
+            "/alarm/**"
     };
 
 @Bean
