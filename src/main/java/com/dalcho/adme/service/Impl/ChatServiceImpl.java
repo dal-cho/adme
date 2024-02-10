@@ -149,11 +149,13 @@ public class ChatServiceImpl {
             chatMessage.setRoomId(roomId);
             chatMessage.setSender(sender);
             chatMessage.setMessage("고객센터에 문의한 글에 답글이 달렸습니다.");
+            log.info("고객센터에 문의한 글에 답글이 달렸습니다.");
             return chatMessage;
         } else if (!Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
             chatMessage.setRoomId(roomId);
             chatMessage.setSender(sender);
             chatMessage.setMessage(sender + " 님이 답을 기다리고 있습니다.");
+            log.info(sender + " 님이 답을 기다리고 있습니다.");
             return chatMessage;
         } else {
             return chatMessage;
