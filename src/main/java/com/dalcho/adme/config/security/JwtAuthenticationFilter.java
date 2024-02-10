@@ -23,14 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse servletResponse,
             FilterChain filterChain) throws ServletException, IOException {
 
-        System.out.println(" ");
-        System.out.println(" ");
-        System.out.println(" doFilterInternal ");
-        System.out.println(servletRequest);
-        System.out.println(servletRequest.getHeaderNames());
-        System.out.println(servletRequest.getHeader("Authorization"));
-        System.out.println(" ");
-        System.out.println(" ");
         // servletRequest 에서 token 추출
         String token = jwtTokenProvider.resolveToken(servletRequest);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
