@@ -61,7 +61,7 @@ public class ChatRoomController {
         return jwtTokenProvider.getNickname(token);
     }
 
-    @GetMapping("/room/subscribe/{id}")
+    @GetMapping("/room/alarm/{id}")
     public SseEmitter subscribe(@PathVariable String id) throws IOException {
         log.info("[SSE] SUBSCRIBE");
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
@@ -75,7 +75,7 @@ public class ChatRoomController {
         return emitter;
     }
 
-    @GetMapping("/room/publish")
+    @GetMapping("/alarm/publish")
     @Async // 비동기
     public void publish(String sender, String roomId) {
         log.info("[SSE] - sender : " + sender);
