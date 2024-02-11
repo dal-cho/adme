@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
@@ -55,6 +56,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .disable();
 
     http.authorizeRequests()
+            .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/rooms").hasAuthority(UserRole.ADMIN.name())
             .antMatchers("/check-user").hasAuthority(UserRole.ADMIN.name())
             .antMatchers("/sign-up").permitAll()
