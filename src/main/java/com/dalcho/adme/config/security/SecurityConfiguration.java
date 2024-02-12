@@ -99,6 +99,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         configuration.setAllowedOriginPatterns(List.of("https://www.admee.site","https://api.admee.site","wss://api.admee.site"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setMaxAge(3600L);
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
