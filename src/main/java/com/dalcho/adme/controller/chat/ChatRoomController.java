@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -82,10 +84,11 @@ public class ChatRoomController {
 
     @GetMapping( "/alarm/publish")
     @Async // 비동기
-    public void publish(@RequestParam String sender, @RequestParam String roomId) {
+    public void publish(@RequestParam String sender, @RequestParam String roomId, @AuthenticationPrincipal UserDetails userDetails) {
         Set<String> deadIds = new HashSet<>();
         CLIENTS.forEach((id, emitter) -> {
             try {
+                System.out.println("publish  auth : " + userDetails.getAuthorities());
                 ChatMessage chatMessage = chatService.chatAlarm(sender, roomId);
                 emitter.send(chatMessage, MediaType.APPLICATION_JSON);
                 log.info("[SSE] send 완료");
