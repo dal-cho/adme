@@ -34,6 +34,11 @@ public class ChatRoomController {
         return chatService.findAllRoom();
     }
 
+    @GetMapping("/check-user")
+    public String check(){
+        return "success";
+    }
+
     // 채팅방 생성
     @PostMapping("/room")
     public ChatRoomDto createRoom(@RequestBody String nickname) {
