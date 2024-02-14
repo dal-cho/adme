@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -142,8 +143,9 @@ public class ChatServiceImpl {
         return file.exists();
     }
 
-    public ChatMessage chatAlarm(String sender, String roomId) {
+    public ChatMessage chatAlarm(String sender, String roomId, UserDetails userDetails) {
         log.info("[SSE] chatAlarm");
+        System.out.println("userDetails : " + userDetails.getAuthorities());
         ChatMessage chatMessage = new ChatMessage();
         if (Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
             chatMessage.setRoomId(roomId);

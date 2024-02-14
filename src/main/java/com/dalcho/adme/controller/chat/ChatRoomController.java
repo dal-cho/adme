@@ -9,16 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController // @Controller + @ResponseBody
@@ -73,7 +71,6 @@ public class ChatRoomController {
         log.info("[SSE] SUBSCRIBE");
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         CLIENTS.put(id, emitter);
-        log.info("[SSE] - " + CLIENTS.get(id));
         emitter.send(SseEmitter.event().name("connect") // 해당 이벤트의 이름 지정
                 .data("connected!")); // 503 에러 방지를 위한 더미 데이터
         emitter.onTimeout(() -> CLIENTS.remove(id));
@@ -89,7 +86,7 @@ public class ChatRoomController {
         CLIENTS.forEach((id, emitter) -> {
             try {
                 System.out.println("publish  auth : " + userDetails.getAuthorities());
-                ChatMessage chatMessage = chatService.chatAlarm(sender, roomId);
+                ChatMessage chatMessage = chatService.chatAlarm(sender, roomId, userDetails);
                 emitter.send(chatMessage, MediaType.APPLICATION_JSON);
                 log.info("[SSE] send 완료");
             } catch (Exception e) {
