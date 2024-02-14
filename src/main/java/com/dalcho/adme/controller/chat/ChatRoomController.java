@@ -87,7 +87,6 @@ public class ChatRoomController {
         Set<String> deadIds = new HashSet<>();
         CLIENTS.forEach((id, emitter) -> {
             try {
-                System.out.println("publish  auth : " + userDetails.getAuthorities());
                 ChatMessage chatMessage = chatService.chatAlarm(sender, roomId, userDetails.getAuthorities().toString());
                 emitter.send(chatMessage, MediaType.APPLICATION_JSON);
                 log.info("[SSE] send 완료");

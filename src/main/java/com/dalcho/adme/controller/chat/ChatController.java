@@ -60,7 +60,6 @@ public class ChatController {
 		chatMessage.setSender(user.getNickname());
 		chatMessage.setType(MessageType.JOIN);
 		chatMessage.setAuth(user.getRole().name());
-		System.out.println("[addUser auth] : " + user.getRole().name());
 		redisService.addRedis(chatMessage);
 		chatService.connectUser("Connect", roomId, chatMessage);
 		template.convertAndSend("/topic/public/" + roomId, chatMessage);

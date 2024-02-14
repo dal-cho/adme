@@ -57,7 +57,6 @@ public class WebSocketEventListener {
             chatMessage.setSender(nickname);
             chatMessage.setRoomId(roomId);
             chatMessage.setAuth(role);
-            System.out.println("[disconnect auth] : " + role);
             chatService.connectUser("Disconnect", roomId, chatMessage);
             if (role.equals("ADMIN")) {
                 redisService.deleteRedis(nickname);

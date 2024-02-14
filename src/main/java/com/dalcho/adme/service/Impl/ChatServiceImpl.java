@@ -145,7 +145,6 @@ public class ChatServiceImpl {
 
     public ChatMessage chatAlarm(String sender, String roomId, String auth) {
         log.info("[SSE] chatAlarm");
-        System.out.println("auth : " + auth);
         ChatMessage chatMessage = new ChatMessage();
         if (Objects.equals(auth, "ADMIN") && connectUsers.get(roomId) == 1) {
             chatMessage.setRoomId(roomId);
@@ -169,10 +168,8 @@ public class ChatServiceImpl {
         log.info(" [ save chatFile ] start ");
         if (connectUsers.get(chatMessage.getRoomId()) != 0) {
             if (chatMessage.getType() == MessageType.JOIN) {
-                System.out.println("[ save file reset ] : " + chatMessage.getAuth());
                 reset(chatMessage.getRoomId(), chatMessage.getAuth());
             } else {
-                System.out.println("[ save file countChat ] : " + chatMessage.getAuth());
                 countChat(chatMessage.getRoomId(), chatMessage.getAuth());
             }
         }
