@@ -46,7 +46,7 @@ public class WebSocketEventListener {
         User user = jwtProvider.getUserFromToken(token);
         String nickname = user.getNickname();
         userRepository.findByNickname(nickname).orElseThrow(UserNotFoundException::new);
-        String role = user.getRole().toString();
+        String role = user.getRole().name();
         String roomId = redisService.getRedis(nickname);
         if (roomId.startsWith("aaaa")) {
             log.info("[랜덤 채팅] disconnected chat");
@@ -56,6 +56,8 @@ public class WebSocketEventListener {
             chatMessage.setType(MessageType.LEAVE);
             chatMessage.setSender(nickname);
             chatMessage.setRoomId(roomId);
+            chatMessage.setAuth(role);
+            System.out.println("[disconnect auth] : " + role);
             chatService.connectUser("Disconnect", roomId, chatMessage);
             if (role.equals("ADMIN")) {
                 redisService.deleteRedis(nickname);

@@ -202,6 +202,7 @@ public class ChatServiceImpl {
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt", true)))) {
             if (new File(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt").length() == 0) {
                 out.println(json);
+                System.out.println("[ save file auth ] : " + chatMessage.getAuth());
                 chatAlarm(chatMessage.getSender(), chatMessage.getRoomId(), chatMessage.getAuth());
             } else {
                 out.println("," + json);
