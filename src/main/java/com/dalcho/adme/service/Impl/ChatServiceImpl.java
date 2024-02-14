@@ -147,13 +147,13 @@ public class ChatServiceImpl {
         log.info("[SSE] chatAlarm");
         System.out.println("auth : " + auth);
         ChatMessage chatMessage = new ChatMessage();
-        if (Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
+        if (Objects.equals(auth, "ADMIN") && connectUsers.get(roomId) == 1) {
             chatMessage.setRoomId(roomId);
             chatMessage.setSender(sender);
             chatMessage.setMessage("고객센터에 문의한 글에 답글이 달렸습니다.");
             log.info("고객센터에 문의한 글에 답글이 달렸습니다.");
             return chatMessage;
-        } else if (!Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
+        } else if (!Objects.equals(auth, "ADMIN") && connectUsers.get(roomId) == 1) {
             chatMessage.setRoomId(roomId);
             chatMessage.setSender(sender);
             chatMessage.setMessage(sender + " 님이 답을 기다리고 있습니다.");
@@ -169,9 +169,11 @@ public class ChatServiceImpl {
         log.info(" [ save chatFile ] start ");
         if (connectUsers.get(chatMessage.getRoomId()) != 0) {
             if (chatMessage.getType() == MessageType.JOIN) {
-                reset(chatMessage.getSender(), chatMessage.getRoomId());
+                System.out.println("[ save file reset ] : " + chatMessage.getAuth());
+                reset(chatMessage.getRoomId(), chatMessage.getAuth());
             } else {
-                countChat(chatMessage.getSender(), chatMessage.getRoomId());
+                System.out.println("[ save file countChat ] : " + chatMessage.getAuth());
+                countChat(chatMessage.getRoomId(), chatMessage.getAuth());
             }
         }
         JsonObject jsonObject = new JsonObject();
@@ -202,7 +204,6 @@ public class ChatServiceImpl {
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt", true)))) {
             if (new File(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt").length() == 0) {
                 out.println(json);
-                System.out.println("[ save file auth ] : " + chatMessage.getAuth());
                 chatAlarm(chatMessage.getSender(), chatMessage.getRoomId(), chatMessage.getAuth());
             } else {
                 out.println("," + json);
@@ -215,8 +216,8 @@ public class ChatServiceImpl {
     }
 
 
-    public void reset(String sender, String roomId) {
-        if (sender.equals("admin")) {
+    public void reset(String roomId, String auth) {
+        if (auth.equals("ADMIN")) {
             adminChat.putIfAbsent(roomId, 0);
             userChat.putIfAbsent(roomId, 0);
             adminChat.put(roomId, 0);
@@ -227,8 +228,8 @@ public class ChatServiceImpl {
         }
     }
 
-    public void countChat(String sender, String roomId) {
-        if (sender.equals("admin")) {
+    public void countChat(String roomId, String auth) {
+        if (auth.equals("ADMIN")) {
             userChat.putIfAbsent(roomId, 0);
             int num = userChat.get(roomId);
             userChat.put(roomId, num + 1);
