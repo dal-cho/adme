@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -53,7 +54,8 @@ public class ChatRoomController {
 
     // 채팅방 기록 저장하기
     @PostMapping("/room/enter/{roomId}/{roomName}")
-    public void saveFile(@PathVariable String roomId, @PathVariable String roomName, @RequestBody ChatMessage chatMessage){
+    public void saveFile(@PathVariable String roomId, @PathVariable String roomName, @RequestBody ChatMessage chatMessage, @AuthenticationPrincipal UserDetails userDetails){
+        chatMessage.setAuth(userDetails.getAuthorities().toString());
         chatService.saveFile(chatMessage);
     }
     @GetMapping ("/room/enter/{roomId}")
@@ -86,7 +88,7 @@ public class ChatRoomController {
         CLIENTS.forEach((id, emitter) -> {
             try {
                 System.out.println("publish  auth : " + userDetails.getAuthorities());
-                ChatMessage chatMessage = chatService.chatAlarm(sender, roomId, userDetails);
+                ChatMessage chatMessage = chatService.chatAlarm(sender, roomId, userDetails.getAuthorities().toString());
                 emitter.send(chatMessage, MediaType.APPLICATION_JSON);
                 log.info("[SSE] send 완료");
             } catch (Exception e) {

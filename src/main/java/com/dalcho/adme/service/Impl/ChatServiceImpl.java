@@ -143,9 +143,9 @@ public class ChatServiceImpl {
         return file.exists();
     }
 
-    public ChatMessage chatAlarm(String sender, String roomId, UserDetails userDetails) {
+    public ChatMessage chatAlarm(String sender, String roomId, String auth) {
         log.info("[SSE] chatAlarm");
-        System.out.println("userDetails : " + userDetails.getAuthorities());
+        System.out.println("auth : " + auth);
         ChatMessage chatMessage = new ChatMessage();
         if (Objects.equals(sender, "admin") && connectUsers.get(roomId) == 1) {
             chatMessage.setRoomId(roomId);
@@ -202,7 +202,7 @@ public class ChatServiceImpl {
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt", true)))) {
             if (new File(chatUploadLocation + "/" + chatMessage.getRoomId() + ".txt").length() == 0) {
                 out.println(json);
-                chatAlarm(chatMessage.getSender(), chatMessage.getRoomId());
+                chatAlarm(chatMessage.getSender(), chatMessage.getRoomId(), chatMessage.getAuth());
             } else {
                 out.println("," + json);
             }

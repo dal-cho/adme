@@ -20,4 +20,5 @@ public class ChatMessage {
 	private String message; // 내용(message)
 	private String day; //  month + "/" + days
 	private String time; // hour + ":" + minute
+	private String auth;
 }

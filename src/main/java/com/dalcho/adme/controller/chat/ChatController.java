@@ -59,6 +59,7 @@ public class ChatController {
 		log.info("[chat] addUser token 검사: " + user.getNickname());
 		chatMessage.setSender(user.getNickname());
 		chatMessage.setType(MessageType.JOIN);
+		chatMessage.setAuth("USER");
 		redisService.addRedis(chatMessage);
 		chatService.connectUser("Connect", roomId, chatMessage);
 		template.convertAndSend("/topic/public/" + roomId, chatMessage);
