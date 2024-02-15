@@ -49,8 +49,7 @@ public class ChatRoomController {
         if(nickname.equals(userDetails.getUsername())){
             return chatService.createRoom(nickname);
         }else{
-            new UserNotFoundException();
-            return new ChatRoomDto();
+            return chatService.createRoom(userDetails.getUsername());
         }
     }
 
