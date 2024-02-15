@@ -17,8 +17,9 @@
 
 ## Member
 
-|[Haedal-uni](https://github.com/haedal-uni)|[Great-psycho](https://github.com/great-psycho?tab=repositories)|
+|<img width="170px" src="https://github.com/dal-cho/adme/assets/90807141/dc44d9d3-df9e-4667-ad97-ad4b24435ea1">|<img width="150px" src="https://github.com/dal-cho/adme/assets/90807141/2e060944-818a-4f1f-99ca-c1c05b453034">|
 |:--:|:--:|
+|[Haedal-uni](https://github.com/haedal-uni)|[Great-psycho](https://github.com/great-psycho?tab=repositories)|
 |실시간 채팅|동영상 인코딩 및 게시글 CRUD|
 |소셜 로그인|폼 로그인 및 회원가입|
 |실시간 알림 MSG|원본 동영상 관리 (Batch)|
