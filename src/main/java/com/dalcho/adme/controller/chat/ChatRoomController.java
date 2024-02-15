@@ -47,14 +47,14 @@ public class ChatRoomController {
     }
 
     // 채팅방 기록 갖고오기
-    @GetMapping("/room/enter/{roomId}/{roomName}")
-    public Object readFile(@PathVariable String roomId, @PathVariable String roomName) {
+    @GetMapping("/room/enter/{roomId}")
+    public Object readFile(@PathVariable String roomId) {
         return chatService.readFile(roomId);
     }
 
     // 채팅방 기록 저장하기
-    @PostMapping("/room/enter/{roomId}/{roomName}")
-    public void saveFile(@PathVariable String roomId, @PathVariable String roomName, @RequestBody ChatMessage chatMessage, @AuthenticationPrincipal UserDetails userDetails){
+    @PostMapping("/room/enter/file")
+    public void saveFile(@RequestBody ChatMessage chatMessage, @AuthenticationPrincipal UserDetails userDetails){
         chatMessage.setAuth(userDetails.getAuthorities().toString());
         chatService.saveFile(chatMessage);
     }
