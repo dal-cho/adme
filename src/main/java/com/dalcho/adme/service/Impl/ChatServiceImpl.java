@@ -107,7 +107,7 @@ public class ChatServiceImpl {
         long stopTime;
         if (!chatRepository.existsByUserId(user.getId())) {
             log.info("[createRoom] roomId 값이 없음");
-            chatRoom = ChatRoomDto.create(nickname);
+            chatRoom = ChatRoomDto.create();
             ChatRoomMap.getInstance().getChatRooms().put(chatRoom.getRoomId(), chatRoom);
             Chat chat = new Chat(chatRoom.getRoomId(), user);
             chatRepository.save(chat);
