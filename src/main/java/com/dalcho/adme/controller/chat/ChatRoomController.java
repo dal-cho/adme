@@ -47,7 +47,7 @@ public class ChatRoomController {
     }
 
     // 채팅방 기록 갖고오기
-    @GetMapping("/room/enter/{roomId}")
+    @GetMapping("/room/enter/file/{roomId}")
     public Object readFile(@PathVariable String roomId) {
         return chatService.readFile(roomId);
     }
