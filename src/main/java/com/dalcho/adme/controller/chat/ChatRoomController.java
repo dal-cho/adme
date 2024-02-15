@@ -37,6 +37,7 @@ public class ChatRoomController {
         return chatService.findAllRoom();
     }
 
+    // 관리자 확인용
     @GetMapping("/check-user")
     public String check(){
         return "success";
