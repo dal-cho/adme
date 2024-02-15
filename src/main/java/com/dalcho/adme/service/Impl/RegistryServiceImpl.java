@@ -58,6 +58,7 @@ public class RegistryServiceImpl implements RegistryService {
     }
 
     @Override
+    @Transactional
     public RegistryResponseDto updateRegistry(Long id, RegistryRequestDto requestDto, UserDetails userDetails){
         User user = userRepository.findByNickname(userDetails.getUsername()).orElseThrow(UserNotFoundException::new);
         Registry registry = registryRepository.findById(id).orElseThrow(RegistryNotFoundException::new);

@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
@@ -39,7 +40,9 @@ public class SecurityConfiguration {
             "/tenSeconds",
             "/",
             "/sign-up",
-            "/templates/**"
+            "/templates/**",
+            "/ws/**",
+            "/alarm/**"
     };
 
 @Bean
@@ -53,6 +56,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .disable();
 
     http.authorizeRequests()
+            .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/rooms").hasAuthority(UserRole.ADMIN.name())
             .antMatchers("/check-user").hasAuthority(UserRole.ADMIN.name())
             .antMatchers("/sign-up").permitAll()
@@ -94,7 +98,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("https://www.admee.site","https://api.admee.site","wss://api.admee.site"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setMaxAge(3600L);
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
