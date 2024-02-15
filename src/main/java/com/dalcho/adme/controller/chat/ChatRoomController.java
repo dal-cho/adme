@@ -4,20 +4,22 @@ import com.dalcho.adme.config.security.JwtTokenProvider;
 import com.dalcho.adme.dto.LastMessage;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatRoomDto;
+import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.service.Impl.ChatServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController // @Controller + @ResponseBody
@@ -42,8 +44,13 @@ public class ChatRoomController {
 
     // 채팅방 생성
     @PostMapping("/room")
-    public ChatRoomDto createRoom(@RequestBody String nickname) {
-        return chatService.createRoom(nickname);
+    public ChatRoomDto createRoom(@RequestBody String nickname, @AuthenticationPrincipal UserDetails userDetails) {
+        if(nickname.equals(userDetails.getUsername())){
+            return chatService.createRoom(nickname);
+        }else{
+            new UserNotFoundException();
+            return new ChatRoomDto();
+        }
     }
 
     // 채팅방 기록 갖고오기
