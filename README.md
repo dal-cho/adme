@@ -10,20 +10,37 @@
 </div>
 
 <br>
-
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fdal-cho%2Fadme&count_bg=%2398C1E5&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
-
 <br>
 
-## Member
+## PREVIEW
 
-|<img width="170px" src="https://github.com/dal-cho/adme/assets/90807141/dc44d9d3-df9e-4667-ad97-ad4b24435ea1">|<img width="150px" src="https://github.com/dal-cho/adme/assets/90807141/2e060944-818a-4f1f-99ca-c1c05b453034">|
-|:--:|:--:|
-|[Haedal-uni](https://github.com/haedal-uni)|[Great-psycho](https://github.com/great-psycho?tab=repositories)|
-|실시간 채팅|동영상 인코딩 및 게시글 CRUD|
-|소셜 로그인|폼 로그인 및 회원가입|
-|실시간 알림 MSG|원본 동영상 관리 (Batch)|
-|게시글 및 댓글 CRUD|FE(10 페이지) 디자인|
+|폼 로그인 & 회원가입|
+|:--:|
+||
+
+|소셜 로그인|
+|:--:|
+||
+
+|Everyone's Record|
+|:--:|
+||
+
+|Empathy Space|
+|:--:|
+||
+
+|동영상 게시글 관리|
+|:--:|
+||
+
+|공감공간 게시글 관리|
+|:--:|
+||
+
+|채팅|
+|:--:|
+||
 
 <br>
 
@@ -62,3 +79,15 @@
 <br>
 
 <img width="100%" src="https://github.com/dal-cho/adme/assets/90807141/8d17c86a-d690-4890-a242-e2298f52f435">
+
+<br>
+
+## Member
+
+|<img width="170px" src="https://github.com/dal-cho/adme/assets/90807141/dc44d9d3-df9e-4667-ad97-ad4b24435ea1">|<img width="150px" src="https://github.com/dal-cho/adme/assets/90807141/2e060944-818a-4f1f-99ca-c1c05b453034">|
+|:--:|:--:|
+|[Haedal-uni](https://github.com/haedal-uni)|[Great-psycho](https://github.com/great-psycho?tab=repositories)|
+|실시간 채팅|동영상 인코딩 및 게시글 CRUD|
+|소셜 로그인|폼 로그인 및 회원가입|
+|실시간 알림 MSG|원본 동영상 관리 (Batch)|
+|게시글 및 댓글 CRUD|FE(10 페이지) 디자인|
