@@ -4,7 +4,6 @@ import com.dalcho.adme.config.security.JwtTokenProvider;
 import com.dalcho.adme.dto.LastMessage;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatRoomDto;
-import com.dalcho.adme.exception.notfound.UserNotFoundException;
 import com.dalcho.adme.service.Impl.ChatServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

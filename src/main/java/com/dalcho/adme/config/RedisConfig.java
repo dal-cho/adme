@@ -59,21 +59,12 @@ public class RedisConfig {
 
 	@Bean
 	public CacheManager cacheManager() {
-		long expireTimeInSeconds = 24 * 60 * 60;
-		long creationTimeInMillis = System.currentTimeMillis();
-		long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
 		RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
-				.entryTtl(Duration.ofSeconds(remainingTimeInSeconds))
-				.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-				.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-		RedisCacheConfiguration cacheConfigWithoutNullValues = RedisCacheConfiguration.defaultCacheConfig()
-				.disableCachingNullValues()
+				.entryTtl(Duration.ofHours(3))
 				.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
 				.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
 		return RedisCacheManager.builder(redisConnectionFactory())
-				.cacheDefaults(cacheConfigWithoutNullValues)
-				.withCacheConfiguration("roomId", cacheConfig)
-				.withCacheConfiguration("createRoom", cacheConfig)
+				.cacheDefaults(cacheConfig) // 기본 캐시에 TTL 적용
 				.build();
 	}
 }
