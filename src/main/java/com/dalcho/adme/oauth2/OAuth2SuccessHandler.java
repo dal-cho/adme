@@ -48,7 +48,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 		UserDetails userDetails = userDetailService.loadUserByUsername(jwtProvider.getNickname(token));
 		UsernamePasswordAuthenticationToken auth =
-				new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+				new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		response.sendRedirect(getRedirectionURI(token, user));
 	}

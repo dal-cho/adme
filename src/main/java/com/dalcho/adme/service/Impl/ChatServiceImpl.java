@@ -110,7 +110,7 @@ public class ChatServiceImpl {
             Chat chat = new Chat(chatRoom.getRoomId(), user);
             chatRepository.save(chat);
             stopTime = System.currentTimeMillis();
-            log.info("roomId 생성 : " + (stopTime - startTime) + " 초");
+            log.info("roomId 생성 : " + (stopTime - startTime)/1000 + " 초");
             return chatRoom;
         } else {
             log.info("[createRoom] roomId 값은 있지만 cache 적용 안됨");
@@ -130,7 +130,7 @@ public class ChatServiceImpl {
                         .build();
             }
             stopTime = System.currentTimeMillis();
-            log.info("채팅방 생성 소요 시간 : " + (stopTime - startTime) + " 초");
+            log.info("채팅방 생성 소요 시간 : " + (stopTime - startTime)/1000 + " 초");
             return ChatRoomDto.of(roomId, user, lastLine);
         }
     }
