@@ -1,6 +1,6 @@
 package com.dalcho.adme.config;
 
-import com.dalcho.adme.dto.chat.ChatRoomDto;
+import com.dalcho.adme.dto.chat.ChatMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -13,7 +13,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -40,13 +39,12 @@ public class RedisConfig {
 		redisTemplate.setValueSerializer(new StringRedisSerializer());
 		return redisTemplate;
 	}
-
 	@Bean
-	public RedisTemplate<String, ChatRoomDto> redisTemplate(RedisConnectionFactory connectionFactory) {
-		RedisTemplate<String, ChatRoomDto> redisTemplate = new RedisTemplate<>();
+	public RedisTemplate<String, ChatMessage> messageRedisTemplate(RedisConnectionFactory connectionFactory) {
+		RedisTemplate<String, ChatMessage> redisTemplate = new RedisTemplate<>();
 		redisTemplate.setConnectionFactory(connectionFactory);
 		redisTemplate.setKeySerializer(new StringRedisSerializer());
-		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatRoomDto.class));
+		redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 		return redisTemplate;
 	}
 
