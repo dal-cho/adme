@@ -18,25 +18,57 @@
 |:--:|
 ||
 
+https://github.com/dal-cho/adme/assets/74857364/8b1636e8-337d-4931-bfc5-f3538bf4274f
+
+<br>
+
 |소셜 로그인|
 |:--:|
 ||
+
+<br>
 
 |Everyone's Record|
 |:--:|
 ||
 
+[업로드]                 
+
+https://github.com/dal-cho/adme/assets/74857364/2c85b4a9-bf54-4c8d-b189-c8fee58c827d
+
+[썸네일x 수정]
+ 
+https://github.com/dal-cho/adme/assets/74857364/d2898bee-5756-4790-8efa-93ac204c8b6f
+
+[썸네일 수정 및 삭제]
+
+https://github.com/dal-cho/adme/assets/74857364/7b3c3e15-1301-4480-a347-7de81a5290d1
+
+
+<br>
+
 |Empathy Space|
 |:--:|
 ||
 
-|동영상 게시글 관리|
-|:--:|
-||
+[업로드]                 
 
-|공감공간 게시글 관리|
-|:--:|
-||
+https://github.com/dal-cho/adme/assets/74857364/4d0f00f9-c95f-4994-abc4-587bf3dc042b
+
+
+[수정]
+
+https://github.com/dal-cho/adme/assets/74857364/fcd3b45f-f93f-4640-93d6-5b0f20615a06
+
+[삭제]
+
+https://github.com/dal-cho/adme/assets/74857364/00b3bd0d-04dd-4479-a326-8cca76dc2493
+
+[공감공간 사이드 - 공감이 필요해요]
+
+https://github.com/dal-cho/adme/assets/74857364/b2f1fbe7-7695-4fa5-a856-198f3cbbfe74
+
+<br>
 
 |채팅|
 |:--:|
