@@ -65,8 +65,8 @@ public class ChatServiceImpl {
 
     public void connectUser(String status, String roomId, ChatMessage chatMessage) {
         int num = 0;
-        log.info("[ ConnectUser ] roomId : " + roomId);
         if (Objects.equals(status, "Connect")) {
+            log.info("[ ConnectUser ] roomId : " + roomId);
             num = connectUsers.getOrDefault(roomId, 0);
             connectUsers.put(roomId, (num + 1));
             saveFile(chatMessage);
