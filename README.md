@@ -26,7 +26,10 @@ https://github.com/dal-cho/adme/assets/74857364/8b1636e8-337d-4931-bfc5-f3538bf4
 |:--:|
 ||
 
-<br>
+<img src = https://github.com/dal-cho/adme/assets/74857364/4e691151-460a-4aba-88a1-edb67592022e width="80%">  
+
+
+<br><br>
 
 |Everyone's Record|
 |:--:|
