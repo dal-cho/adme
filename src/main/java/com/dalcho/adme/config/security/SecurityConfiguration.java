@@ -5,12 +5,14 @@ import com.dalcho.adme.oauth2.CustomOAuthService;
 import com.dalcho.adme.oauth2.OAuth2SuccessHandler;
 import com.dalcho.adme.oauth2.Oauth2FailureHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
@@ -56,9 +58,11 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .disable();
 
     http.authorizeRequests()
+            .requestMatchers(PathRequest.toStaticResources().atCommonLocations(), new AntPathRequestMatcher("/api.admee.site/alarm/**")).permitAll()
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/rooms").hasAuthority(UserRole.ADMIN.name())
             .antMatchers("/check-user").hasAuthority(UserRole.ADMIN.name())
+            .antMatchers("http://api.admee.site/alarm/**").permitAll()
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
             .antMatchers("/health").permitAll()
