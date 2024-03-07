@@ -96,7 +96,7 @@ public class ChatRoomController {
         System.out.println("roomId = " + roomId);
         System.out.println("userDetails = " + userDetails);
         String auth;
-        if(userDetails.getAuthorities().toString()==null){
+        if(userDetails==null){
             auth = redisService.getAuth(sender);
         }else{
             auth = userDetails.getAuthorities().toString();
