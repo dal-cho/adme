@@ -176,7 +176,7 @@ public class ChatServiceImpl {
         if (connectUsers.get(chatMessage.getRoomId()) != 0) {
             if (chatMessage.getType() == MessageType.JOIN) {
                 reset(chatMessage.getRoomId(), chatMessage.getAuth());
-            } else {
+            } else if(chatMessage.getType() == MessageType.TALK) {
                 countChat(chatMessage.getRoomId(), chatMessage.getAuth());
             }
         }
@@ -242,12 +242,12 @@ public class ChatServiceImpl {
             userChat.putIfAbsent(roomId, 0);
             int num = userChat.get(roomId);
             userChat.put(roomId, num + 1);
-            adminChat.put(roomId, 0);
+            adminChat.putIfAbsent(roomId, 0);
         } else {
             adminChat.putIfAbsent(roomId, 0);
             int num = adminChat.get(roomId);
             adminChat.put(roomId, num + 1);
-            userChat.put(roomId, 0);
+            userChat.putIfAbsent(roomId, 0);
         }
     }
 
