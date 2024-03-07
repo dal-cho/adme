@@ -90,6 +90,9 @@ public class ChatRoomController {
     @GetMapping( "/alarm/publish")
     @Async // 비동기
     public void publish(@RequestParam String sender, @RequestParam String roomId, @AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println("sender = " + sender);
+        System.out.println("roomId = " + roomId);
+        System.out.println("userDetails = " + userDetails);;
         Set<String> deadIds = new HashSet<>();
         CLIENTS.forEach((id, emitter) -> {
             try {

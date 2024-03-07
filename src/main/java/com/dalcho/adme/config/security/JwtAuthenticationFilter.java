@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } else {
                 log.info("[doFilterInternal] 유효한 JWT 토큰이 없습니다, uri: {}", servletRequest.getRequestURL());
             }
-        } catch (AuthenticationException | NullPointerException e) {
+        } catch (NullPointerException e) {
             log.info("doFilterInternal");
         } finally {
             filterChain.doFilter(servletRequest, servletResponse);
