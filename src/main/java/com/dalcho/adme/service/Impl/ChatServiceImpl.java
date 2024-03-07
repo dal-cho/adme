@@ -72,7 +72,12 @@ public class ChatServiceImpl {
             saveFile(chatMessage);
         } else if (Objects.equals(status, "Disconnect")) {
             log.info("[ DisconnectUser ] roomId : " + roomId);
-            num = connectUsers.get(roomId);
+            if(connectUsers.get(roomId)==null){
+                System.out.println("num = connectUsers.get(roomId) null ");
+            }else{
+                num = connectUsers.get(roomId);
+            }
+
             if(num>0){
                 connectUsers.put(roomId, (num - 1));
             }else{
