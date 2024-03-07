@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -46,7 +47,15 @@ public class SecurityConfiguration {
             "/ws/**",
             "/alarm/**"
     };
-
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> {
+            web.ignoring()
+                    .antMatchers(
+                            "/alarm/**"
+                    );
+        };
+    }
 @Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors().configurationSource(corsConfigurationSource());
@@ -58,11 +67,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .disable();
 
     http.authorizeRequests()
-            .requestMatchers(PathRequest.toStaticResources().atCommonLocations(), new AntPathRequestMatcher("/api.admee.site/alarm/**")).permitAll()
             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/rooms").hasAuthority(UserRole.ADMIN.name())
             .antMatchers("/check-user").hasAuthority(UserRole.ADMIN.name())
-            .antMatchers("http://api.admee.site/alarm/**").permitAll()
             .antMatchers("/sign-up").permitAll()
             .antMatchers("/sign-in").permitAll()
             .antMatchers("/health").permitAll()
