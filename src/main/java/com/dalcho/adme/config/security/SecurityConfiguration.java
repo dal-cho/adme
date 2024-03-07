@@ -47,15 +47,7 @@ public class SecurityConfiguration {
             "/ws/**",
             "/alarm/**"
     };
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> {
-            web.ignoring()
-                    .antMatchers(
-                            "/alarm/**"
-                    );
-        };
-    }
+
 @Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors().configurationSource(corsConfigurationSource());
