@@ -5,6 +5,7 @@ import com.dalcho.adme.dto.LastMessage;
 import com.dalcho.adme.dto.chat.ChatMessage;
 import com.dalcho.adme.dto.chat.ChatRoomDto;
 import com.dalcho.adme.service.Impl.ChatServiceImpl;
+import com.dalcho.adme.service.Impl.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -29,6 +30,7 @@ public class ChatRoomController {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private static final Map<String, SseEmitter> CLIENTS = new ConcurrentHashMap<>();
     private final JwtTokenProvider jwtTokenProvider;
+    public final RedisService redisService;
 
     // 모든 채팅방 목록 반환(관리자)
     @GetMapping("/rooms")
@@ -92,11 +94,17 @@ public class ChatRoomController {
     public void publish(@RequestParam String sender, @RequestParam String roomId, @AuthenticationPrincipal UserDetails userDetails) {
         System.out.println("sender = " + sender);
         System.out.println("roomId = " + roomId);
-        System.out.println("userDetails = " + userDetails);;
+        System.out.println("userDetails = " + userDetails);
+        String auth;
+        if(userDetails.getAuthorities().toString()==null){
+            auth = redisService.getAuth(sender);
+        }else{
+            auth = userDetails.getAuthorities().toString();
+        }
         Set<String> deadIds = new HashSet<>();
         CLIENTS.forEach((id, emitter) -> {
             try {
-                ChatMessage chatMessage = chatService.chatAlarm(sender, roomId, userDetails.getAuthorities().toString());
+                ChatMessage chatMessage = chatService.chatAlarm(sender, roomId, auth);
                 emitter.send(chatMessage, MediaType.APPLICATION_JSON);
                 log.info("[SSE] send 완료");
             } catch (Exception e) {
