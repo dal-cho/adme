@@ -58,7 +58,7 @@ public class ChatServiceImpl {
     private void setUp() {
         this.connectUsers = new ConcurrentHashMap<>();
         this.adminChat = new HashMap<>();
-        this.userChat = new HashMap<>();
+        this.userChat = new ConcurrentHashMap<>();
         this.lastMessageMap = new HashMap<>();
         this.chatUploadLocation = fileManager.getFolderPath();
     }
