@@ -14,32 +14,25 @@
 
 ## PREVIEW
 
-|폼 로그인 & 회원가입|
-|:--:|
-||
+### 폼 로그인 & 회원가입
 
 https://github.com/dal-cho/adme/assets/74857364/8b1636e8-337d-4931-bfc5-f3538bf4274f
 
 <br>
 
-|소셜 로그인|
-|:--:|
-||
+### 소셜 로그인
 
 <img src = https://github.com/dal-cho/adme/assets/74857364/4e691151-460a-4aba-88a1-edb67592022e width="80%">  
 
-
 <br><br>
 
-|Everyone's Record|
-|:--:|
-||
+### Everyone's Record
 
 [업로드]                 
 
 https://github.com/dal-cho/adme/assets/74857364/2c85b4a9-bf54-4c8d-b189-c8fee58c827d
 
-[썸네일x 수정]
+[썸네일 변경 없는 수정]
 
 https://github.com/dal-cho/adme/assets/74857364/d2898bee-5756-4790-8efa-93ac204c8b6f
 
@@ -49,9 +42,8 @@ https://github.com/dal-cho/adme/assets/74857364/7b3c3e15-1301-4480-a347-7de81a52
 
 <br>
 
-|Empathy Space|
-|:--:|
-||
+### Empathy Space
+
 
 [업로드]                 
 
@@ -71,9 +63,7 @@ https://github.com/dal-cho/adme/assets/74857364/b2f1fbe7-7695-4fa5-a856-198f3cbb
 
 <br>
 
-|채팅|
-|:--:|
-||
+### 채팅  
 
 https://github.com/dal-cho/adme/assets/74857364/a4219d60-53a0-4bb6-aee5-02fb17ed1cf5
 
