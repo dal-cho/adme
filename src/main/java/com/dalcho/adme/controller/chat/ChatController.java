@@ -42,7 +42,7 @@ public class ChatController {
 	}
 	@MessageMapping("/chat/sendMessage")
 	public void sendMessage(@Payload ChatMessage chatMessage) {
-		ChannelTopic channel = channels.get(chatMessage.getRoomId());
+		ChannelTopic channel = channels.get("/topic/public/" + chatMessage.getRoomId());
 		redisPublisher.publish(channel, chatMessage);
 	}
 
@@ -55,12 +55,13 @@ public class ChatController {
 		String roomId = chatMessage.getRoomId();
 		ChannelTopic channel = new ChannelTopic("/topic/public/" + roomId);
 		redisMessageListener.addMessageListener(redisSubscriber, channel);
-		channels.put(roomId, channel);
+		channels.put("/topic/public/"+roomId, channel);
 		log.info("[chat] addUser token 검사: " + user.getNickname());
 		chatMessage.setSender(user.getNickname());
 		chatMessage.setType(MessageType.JOIN);
 		chatMessage.setAuth(user.getRole().name());
 		redisService.addRedis(chatMessage);
+		redisService.addAuth(chatMessage);
 		chatService.connectUser("Connect", roomId, chatMessage);
 		template.convertAndSend("/topic/public/" + roomId, chatMessage);
 	}

@@ -30,6 +30,16 @@ public class RedisService {
         redisTemplate.delete(nickname);
     }
 
+    public void addAuth(ChatMessage chatMessage){
+        long expireTimeInSeconds = 24 * 60 * 60;
+        long creationTimeInMillis = System.currentTimeMillis();
+        long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
+        redisTemplate.opsForValue().set(chatMessage.getSender(), chatMessage.getAuth(), remainingTimeInSeconds, TimeUnit.SECONDS);
+    }
+    public String getAuth(String nickname){
+        return redisTemplate.opsForValue().get(nickname);
+    }
+
     public void addToken(String email, String accessToken) {
         long expireTimeInSeconds = 24 * 60 * 60;
         long creationTimeInMillis = System.currentTimeMillis();

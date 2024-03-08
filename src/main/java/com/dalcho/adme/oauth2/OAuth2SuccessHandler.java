@@ -46,12 +46,14 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		User user = UserMapper.of(oAuth2User, nickname);
 		String token = jwtProvider.generateToken(user);
 
-		log.info("[Oauth Success Handler] 쿠키 생성");
+		//UserDetails userDetails = userDetailService.loadUserByUsername(jwtProvider.getNickname(token));
 
-		UserDetails userDetails = userDetailService.loadUserByUsername(jwtProvider.getNickname(token));
-		UsernamePasswordAuthenticationToken auth =
-				new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+		Authentication auth = jwtProvider.getAuthentication(token);
 		SecurityContextHolder.getContext().setAuthentication(auth);
+
+//		UsernamePasswordAuthenticationToken auth =
+//				new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+//		SecurityContextHolder.getContext().setAuthentication(auth);
 		response.sendRedirect(getRedirectionURI(token, user));
 	}
 
@@ -71,5 +73,5 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		}else{
 			throw new RuntimeException("[error] 잘못된 권한입니다.");
 		}
-	};
+	}
 }

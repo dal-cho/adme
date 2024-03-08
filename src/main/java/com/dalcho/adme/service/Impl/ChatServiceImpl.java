@@ -57,27 +57,34 @@ public class ChatServiceImpl {
     @PostConstruct
     private void setUp() {
         this.connectUsers = new ConcurrentHashMap<>();
-        this.adminChat = new HashMap<>();
-        this.userChat = new HashMap<>();
+        this.adminChat = new ConcurrentHashMap<>();
+        this.userChat = new ConcurrentHashMap<>();
         this.lastMessageMap = new HashMap<>();
         this.chatUploadLocation = fileManager.getFolderPath();
     }
 
     public void connectUser(String status, String roomId, ChatMessage chatMessage) {
         int num = 0;
-        synchronized (lock) {
+        if (Objects.equals(status, "Connect")) {
             log.info("[ ConnectUser ] roomId : " + roomId);
-            if (Objects.equals(status, "Connect")) {
-                num = connectUsers.getOrDefault(roomId, 0);
-                connectUsers.put(roomId, (num + 1));
-                saveFile(chatMessage);
-            } else if (Objects.equals(status, "Disconnect")) {
-                log.info("[ DisconnectUser ] roomId : " + roomId);
+            num = connectUsers.getOrDefault(roomId, 0);
+            connectUsers.put(roomId, (num + 1));
+            saveFile(chatMessage);
+        } else if (Objects.equals(status, "Disconnect")) {
+            log.info("[ DisconnectUser ] roomId : " + roomId);
+            if(connectUsers.get(roomId)==null){
+                System.out.println("num = connectUsers.get(roomId) null ");
+            }else{
                 num = connectUsers.get(roomId);
-                connectUsers.put(roomId, (num - 1));
             }
-            log.info("현재 인원 : " + connectUsers.get(roomId));
+
+            if(num>0){
+                connectUsers.put(roomId, (num - 1));
+            }else{
+                connectUsers.put(roomId, 0);
+            }
         }
+        log.info("현재 인원 : " + connectUsers.get(roomId));
     }
 
     //채팅방 불러오기
@@ -112,7 +119,7 @@ public class ChatServiceImpl {
             Chat chat = new Chat(chatRoom.getRoomId(), user);
             chatRepository.save(chat);
             stopTime = System.currentTimeMillis();
-            log.info("roomId 생성 : " + (stopTime - startTime) + " 초");
+            log.info("roomId 생성 : " + (stopTime - startTime)/1000 + " 초");
             return chatRoom;
         } else {
             log.info("[createRoom] roomId 값은 있지만 cache 적용 안됨");
@@ -132,7 +139,7 @@ public class ChatServiceImpl {
                         .build();
             }
             stopTime = System.currentTimeMillis();
-            log.info("채팅방 생성 소요 시간 : " + (stopTime - startTime) + " 초");
+            log.info("채팅방 생성 소요 시간 : " + (stopTime - startTime)/1000 + " 초");
             return ChatRoomDto.of(roomId, user, lastLine);
         }
     }
@@ -169,7 +176,7 @@ public class ChatServiceImpl {
         if (connectUsers.get(chatMessage.getRoomId()) != 0) {
             if (chatMessage.getType() == MessageType.JOIN) {
                 reset(chatMessage.getRoomId(), chatMessage.getAuth());
-            } else {
+            } else if(chatMessage.getType() == MessageType.TALK) {
                 countChat(chatMessage.getRoomId(), chatMessage.getAuth());
             }
         }
@@ -177,6 +184,11 @@ public class ChatServiceImpl {
         jsonObject.addProperty("roomId", chatMessage.getRoomId());
         if (chatMessage.getType() == MessageType.JOIN) {
             jsonObject.addProperty("type", "JOINED");
+            if (lastMessageMap.containsKey(chatMessage.getRoomId())) {
+                chatMessage.setMessage(lastMessageMap.get(chatMessage.getRoomId()).getMessage());
+            }else{
+                chatMessage.setMessage("환영합니다.");
+            }
         } else {
             jsonObject.addProperty("type", chatMessage.getType().toString());
         }
@@ -230,12 +242,12 @@ public class ChatServiceImpl {
             userChat.putIfAbsent(roomId, 0);
             int num = userChat.get(roomId);
             userChat.put(roomId, num + 1);
-            adminChat.put(roomId, 0);
+            adminChat.putIfAbsent(roomId, 0);
         } else {
             adminChat.putIfAbsent(roomId, 0);
             int num = adminChat.get(roomId);
             adminChat.put(roomId, num + 1);
-            userChat.put(roomId, 0);
+            userChat.putIfAbsent(roomId, 0);
         }
     }
 
