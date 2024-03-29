@@ -63,7 +63,6 @@ public class VideoFile extends Timestamped {
     public void update(VideoFile updateVideoFile) {
         updateTitle(updateVideoFile.getTitle());
         updateContent(updateVideoFile.getContent());
-        updateVideoDate(updateVideoFile.getVideoDate());
     }
 
     public void updateTitle(String title) {
@@ -75,12 +74,6 @@ public class VideoFile extends Timestamped {
     public void updateContent(String content) {
         if (content != null) {
             this.content = content;
-        }
-    }
-
-    public void updateVideoDate(LocalDateTime videoDate) {
-        if (videoDate != null) {
-            this.videoDate = videoDate;
         }
     }
 

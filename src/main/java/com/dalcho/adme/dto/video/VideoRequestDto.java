@@ -28,7 +28,7 @@ public class VideoRequestDto {
                 .s3FileName(s3FileName)
                 .s3ThumbnailUrl(s3ThumbnailUrl)
                 .s3TenVideoUrl(s3TenVideoUrl)
-                .videoDate(LocalDateTime.now())
+                .videoDate(LocalDateTime.now().plusMinutes(10))
                 .build();
     }
 

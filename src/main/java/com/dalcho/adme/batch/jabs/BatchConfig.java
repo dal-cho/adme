@@ -15,14 +15,10 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
-import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManagerFactory;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Configuration
@@ -67,16 +63,19 @@ public class BatchConfig {
     @Bean
     @StepScope
     public JpaPagingItemReader<VideoFile> reader() throws Exception {
-        Map<String, Object> parameterValues = new HashMap<>();
+        JpaPagingItemReader<VideoFile> reader = new JpaPagingItemReader<VideoFile>() {
+            @Override
+            public int getPage() {
+                return 0;
+            }
+        };
 
-        return new JpaPagingItemReaderBuilder<VideoFile>()
-                .pageSize(5)
-                .parameterValues(parameterValues)
-//                .queryString("select vd from VideoFile vd where vd.status = 'valid' order by created_at desc")
-                .queryString("select vd from VideoFile vd order by created_at desc")
-                .entityManagerFactory(entityManagerFactory)
-                .name("JpaPagingItemReader")
-                .build();
+        reader.setQueryString("SELECT vf FROM VideoFile vf WHERE video_date <= CURRENT_TIMESTAMP AND status = 'valid' order by created_at desc");
+        reader.setPageSize(5);
+        reader.setEntityManagerFactory(entityManagerFactory);
+        reader.setName("JpaPagingItemReader");
+
+        return reader;
     }
 
     @Bean
@@ -85,19 +84,8 @@ public class BatchConfig {
         return new ItemProcessor<VideoFile, VideoFile>() {
             @Override
             public VideoFile process(VideoFile item) throws Exception {
-                LocalDateTime checkTime = item.getCreatedAt().plusMinutes(10);
-                log.info("[Batch] checkTime : "+ String.valueOf(checkTime));
-
-                boolean timeBoolean = LocalDateTime.now().isAfter(checkTime);
-                boolean statusCheck = item.getStatus() != null;
-                log.info("[Batch] 삭제 유무 : "+ String.valueOf(timeBoolean));
-
-                if (timeBoolean && statusCheck) {
-                    log.info("DELETE ID: "+ String.valueOf(item.getId()));
-                    return videoService.deleteLocalFiles(item.getId());
-                }
                 log.info("유효 아이디: "+ String.valueOf(item.getId()));
-                return item;
+                return videoService.deleteLocalFiles(item.getId());
             }
         };
     }
