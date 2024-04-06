@@ -21,17 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -63,10 +58,10 @@ public class ChatServiceImpl {
         this.chatUploadLocation = fileManager.getFolderPath();
     }
 
-    public void connectUser(String status, String roomId, ChatMessage chatMessage) {
+    public void countUser(String status, String roomId, ChatMessage chatMessage) {
         int num = 0;
         if (Objects.equals(status, "Connect")) {
-            log.info("[ ConnectUser ] roomId : " + roomId);
+            log.info("[ countUser ] roomId : " + roomId);
             num = connectUsers.getOrDefault(roomId, 0);
             connectUsers.put(roomId, (num + 1));
             saveFile(chatMessage);

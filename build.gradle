@@ -49,6 +49,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'redis.clients:jedis:3.6.3'
 
+    // rabbitmq
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
+
     // chat
     implementation 'org.webjars:webjars-locator-core'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
