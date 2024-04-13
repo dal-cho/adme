@@ -1,7 +1,5 @@
 package com.dalcho.adme.controller.chat;
 
-import com.dalcho.adme.config.RedisPublisher;
-import com.dalcho.adme.config.RedisSubscriber;
 import com.dalcho.adme.config.security.JwtTokenProvider;
 import com.dalcho.adme.domain.User;
 import com.dalcho.adme.dto.chat.ChatMessage;
@@ -10,59 +8,51 @@ import com.dalcho.adme.service.Impl.ChatServiceImpl;
 import com.dalcho.adme.service.Impl.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
 public class ChatController {
-	private final SimpMessagingTemplate template;
 	private final ChatServiceImpl chatService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisService redisService;
+	private final RabbitTemplate rabbitTemplate;
 
-	private final RedisMessageListenerContainer redisMessageListener;
-	private final RedisPublisher redisPublisher;
-	private final RedisSubscriber redisSubscriber;
-	private Map<String, ChannelTopic> channels;
+	@Value("${rabbitmq.connect.exchange}")
+	private String connectExchange;
 
-	@PostConstruct
-	public void init(){
-		channels = new HashMap<>();
-	}
-	@MessageMapping("/chat/sendMessage")
+	@Value("${rabbitmq.send.exchange}")
+	private String sendExchange;
+
+	@MessageMapping("chat.sendMessage")
 	public void sendMessage(@Payload ChatMessage chatMessage) {
-		ChannelTopic channel = channels.get("/topic/public/" + chatMessage.getRoomId());
-		redisPublisher.publish(channel, chatMessage);
+		String roomId = chatMessage.getRoomId();
+		rabbitTemplate.convertAndSend(sendExchange, "room." + roomId, chatMessage);
 	}
 
-	@MessageMapping("/chat/addUser")
+	@MessageMapping("chat.addUser")
 	public void addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
 		String sessionId = (String) headerAccessor.getHeader("simpSessionId");
 		String token = headerAccessor.getFirstNativeHeader("Authorization");
 		redisService.addSession(sessionId, token);
-		User user= jwtTokenProvider.getUserFromToken(token);
+
+		User user = jwtTokenProvider.getUserFromToken(token);
 		String roomId = chatMessage.getRoomId();
-		ChannelTopic channel = new ChannelTopic("/topic/public/" + roomId);
-		redisMessageListener.addMessageListener(redisSubscriber, channel);
-		channels.put("/topic/public/"+roomId, channel);
 		log.info("[chat] addUser token 검사: " + user.getNickname());
+
 		chatMessage.setSender(user.getNickname());
 		chatMessage.setType(MessageType.JOIN);
 		chatMessage.setAuth(user.getRole().name());
-		redisService.addRedis(chatMessage);
+
+		redisService.addRoomId(chatMessage);
 		redisService.addAuth(chatMessage);
-		chatService.connectUser("Connect", roomId, chatMessage);
-		template.convertAndSend("/topic/public/" + roomId, chatMessage);
+		chatService.countUser("Connect", roomId, chatMessage);
+		rabbitTemplate.convertAndSend(connectExchange, "room." + roomId, chatMessage);
 	}
 }

@@ -14,47 +14,43 @@ import java.util.concurrent.TimeUnit;
 public class RedisService {
     private final StringRedisTemplate redisTemplate;
 
-    public void addRedis(ChatMessage chatMessage) {
-        log.info("[addRedis의 KEY] : " + chatMessage.getSender());
+    public void addRoomId(ChatMessage chatMessage) {
         long expireTimeInSeconds = 24 * 60 * 60;
         long creationTimeInMillis = System.currentTimeMillis();
         long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
-        redisTemplate.opsForValue().set(chatMessage.getSender(), chatMessage.getRoomId(), remainingTimeInSeconds, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("getRoomId - " + chatMessage.getSender(), chatMessage.getRoomId(), remainingTimeInSeconds, TimeUnit.SECONDS);
     }
 
-    public String getRedis(String nickname) {
-        return redisTemplate.opsForValue().get(nickname);
+    public String getRoomId(String nickname) {
+        return redisTemplate.opsForValue().get("getRoomId - " + nickname);
     }
 
-    public void deleteRedis(String nickname) {
-        redisTemplate.delete(nickname);
+    public void deleteRoomId(String nickname) {
+        redisTemplate.delete("getRoomId - " + nickname);
     }
 
     public void addAuth(ChatMessage chatMessage){
         long expireTimeInSeconds = 24 * 60 * 60;
         long creationTimeInMillis = System.currentTimeMillis();
         long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
-        redisTemplate.opsForValue().set(chatMessage.getSender(), chatMessage.getAuth(), remainingTimeInSeconds, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("auth - " + chatMessage.getSender(), chatMessage.getAuth(), remainingTimeInSeconds, TimeUnit.SECONDS);
     }
     public String getAuth(String nickname){
-        return redisTemplate.opsForValue().get(nickname);
-    }
-
-    public void addToken(String email, String accessToken) {
-        long expireTimeInSeconds = 24 * 60 * 60;
-        long creationTimeInMillis = System.currentTimeMillis();
-        long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
-        redisTemplate.opsForValue().set(email, accessToken, remainingTimeInSeconds, TimeUnit.SECONDS);
+        return redisTemplate.opsForValue().get("auth - " + nickname);
     }
 
     public void addSession(String sessionId, String token) {
         long expireTimeInSeconds = 24 * 60 * 60;
         long creationTimeInMillis = System.currentTimeMillis();
         long remainingTimeInSeconds = expireTimeInSeconds - ((System.currentTimeMillis() - creationTimeInMillis) / 1000);
-        redisTemplate.opsForValue().set(sessionId, token, remainingTimeInSeconds, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("sessionId - " + sessionId, token, remainingTimeInSeconds, TimeUnit.SECONDS);
     }
 
     public String getSession(String sessionId) {
-        return redisTemplate.opsForValue().get(sessionId);
+        return redisTemplate.opsForValue().get("sessionId - " + sessionId);
+    }
+
+    public void deleteSession(String sessionId){
+        redisTemplate.delete("sessionId - " + sessionId);
     }
 }
