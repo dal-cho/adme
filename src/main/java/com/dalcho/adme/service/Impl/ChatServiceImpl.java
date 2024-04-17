@@ -62,7 +62,7 @@ public class ChatServiceImpl {
         int num = connectUsers.getOrDefault(roomId, 0);
         log.info("[ countUser ] roomId : " + roomId);
         if (Objects.equals(status, "Connect")) {
-            if (num < 2) { // 최대값이 2이므로 2보다 작을 때만 증가
+            if (num < 2) {
                 connectUsers.put(roomId, num + 1);
             }
             saveFile(chatMessage);
