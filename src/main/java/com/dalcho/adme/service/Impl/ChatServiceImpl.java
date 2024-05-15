@@ -59,24 +59,17 @@ public class ChatServiceImpl {
     }
 
     public void countUser(String status, String roomId, ChatMessage chatMessage) {
-        int num = 0;
+        int num = connectUsers.getOrDefault(roomId, 0);
+        log.info("[ countUser ] roomId : " + roomId);
         if (Objects.equals(status, "Connect")) {
-            log.info("[ countUser ] roomId : " + roomId);
-            num = connectUsers.getOrDefault(roomId, 0);
-            connectUsers.put(roomId, (num + 1));
+            if (num < 2) {
+                connectUsers.put(roomId, num + 1);
+            }
             saveFile(chatMessage);
         } else if (Objects.equals(status, "Disconnect")) {
             log.info("[ DisconnectUser ] roomId : " + roomId);
-            if(connectUsers.get(roomId)==null){
-                System.out.println("num = connectUsers.get(roomId) null ");
-            }else{
-                num = connectUsers.get(roomId);
-            }
-
-            if(num>0){
+            if (num > 0) {
                 connectUsers.put(roomId, (num - 1));
-            }else{
-                connectUsers.put(roomId, 0);
             }
         }
         log.info("현재 인원 : " + connectUsers.get(roomId));
@@ -91,7 +84,7 @@ public class ChatServiceImpl {
                 User user = userRepository.findById(all.get(i).getUser().getId()).orElseThrow(UserNotFoundException::new);
                 LastMessage lastMessage = lastLine(all.get(i).getRoomId());
                 if(!lastMessage.getMessage().equals("")){
-                    chatRoomDtos.add(ChatRoomDto.of(all.get(i).getRoomId(), user, lastLine(all.get(i).getRoomId())));
+                    chatRoomDtos.add(ChatRoomDto.of(user, lastLine(all.get(i).getRoomId())));
                 }
             }
         } catch (NullPointerException e) {
@@ -135,7 +128,7 @@ public class ChatServiceImpl {
             }
             stopTime = System.currentTimeMillis();
             log.info("채팅방 생성 소요 시간 : " + (stopTime - startTime)/1000 + " 초");
-            return ChatRoomDto.of(roomId, user, lastLine);
+            return ChatRoomDto.of(user, lastLine);
         }
     }
 
